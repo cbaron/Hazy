@@ -5,6 +5,8 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     Mongo: require('mongodb'),
 
     GET( resource ) {
+        if( resource.query.countOnly ) return this.handleCountOnly( resource )
+
         const cursorMethods = [ 'skip', 'limit', 'sort' ].reduce(
             ( memo, attr ) => {
                 if( resource.query[ attr ] !== undefined ) { memo[attr] = resource.query[attr]; delete resource.query[attr] }
@@ -55,8 +57,17 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         } )
     },
 
+
     cacheCollection( collection ) {
         return Promise.resolve( this.collections[ collection.name ] = { } )
+    },
+
+    handleCountOnly( resource ) {
+        delete resource.query.countOnly
+
+        return this.getDb()
+        .then( db => db.collection( resource.path[0] ).count( resource.query ) )
+        .then( result => Promise.resolve( { result } ) )
     },
 
     initialize() {

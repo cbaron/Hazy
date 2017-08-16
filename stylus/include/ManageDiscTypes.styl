@@ -1,6 +1,33 @@
 .ManageDiscTypes
-    .List
+    display: flex
+
+    .left-panel
+        border-right: 1px solid $LightGray
+        flex: 1
+        text-align: left
+
+        section
+            padding: 1rem 0rem 1rem 1rem
+
+        section+section
+            border-bottom: 1px solid $LightGray
+
+        svg
+            height: .75rem
+            width: .75rem
+
+        .side-by-side
+            display: flex
+            align-items: center
+
+            >*:last-child
+                padding-left: 1rem
+
+    .DiscTypes
+        flex: 4
+        overflow: hidden
         margin-right: 3rem
+
     >button
         bottom: 2rem
         right: 2rem

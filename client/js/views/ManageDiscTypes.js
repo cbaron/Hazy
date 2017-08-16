@@ -4,6 +4,13 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     Views: {
 
+        collections: {
+            events: { list: 'click' },
+            model: Object.create( this.Model ).constructor( { resource: 'Collections' } ),
+            itemTemplate: collection => collection.name,
+            templateOptions: { heading: 'Collections', toggle: true }
+        },
+
         discTypesList: {
 
             Views: { 
@@ -24,9 +31,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
             events: { list: 'click' },
             itemTemplate: require('./templates/DiscType'),
-            leftPanel: true,
             model: Object.create( DiscType ),
-            templateOptions: { goBack: 'Back to Admin', heading: 'Disc Types' }
+            templateOptions: { heading: 'Disc Types', name: 'DiscTypes' }
         },
 
         discTypeJson: {
@@ -39,7 +45,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     discType: Object.create( DiscType ),
     
     events: {
-        addButton: 'click'
+        addButton: 'click',
+        goBackBtn: 'click'
     },
 
     onAddButtonClick() {
@@ -53,8 +60,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.els[ time ].firstChild.focus()
     },
 
+    onGoBackBtnClick() {
+        this.emit( 'navigate', '/admin' )
+    },
+
     onItemSelected( item ) {
-        console.log( item )
         this.discType.constructor( item )
 
         this.emit( 'navigate', item.name, { append: true, silent: true } )
@@ -91,8 +101,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     postRender() {
+        this.discType.getCount()
+        .then( () => Promise.resolve( this.updateCount() ) )
+        .catch( this.Error )
+
         this.views.discTypesList.on( 'itemSelected', item => this.onItemSelected( item ) )
-       
+      
+        this.views.discTypeJson.els.container.classList.add('hidden')
+         
         this.views.discTypeJson.on( 'saveClicked', model => {
             const obj = model.toObj()
             this.discType.put( obj._id, this.omit( obj, [ '_id' ] ) )
@@ -104,11 +120,13 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         
         this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
 
-        this.views.discTypesList.on( 'goBackClicked', () => this.emit( 'navigate', '/admin' ) )
-
         if( this.path.length === 2 ) this.onNavigation( this.path )
 
         return this
-    }
+    },
+
+    updateCount() {
+        this.els.resource.textContent = `DiscType ( ${this.discType.metadata.count} )`
+    },
 
 } )

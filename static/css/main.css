@@ -9,7 +9,7 @@
 .autocomplete-suggestion.selected { background: #f0f0f0; }
 .Admin {
   color: #4ab74a;
-  margin: 8rem 2rem;
+  margin: 6rem 2rem 0rem 0rem;
   text-align: center;
 }
 .Admin .splash {
@@ -36,6 +36,24 @@
 .Admin .splash button:hover {
   background-color: #4ab74a;
   color: #fff;
+}
+button.back-btn {
+  align-items: center;
+  border: none;
+  display: flex;
+  font-size: 0.75rem;
+  height: 1rem;
+  padding: 0rem;
+}
+button.back-btn svg {
+  height: 1rem;
+}
+button.back-btn span {
+  font-size: 0.75rem;
+  padding-left: 1rem;
+}
+button.back-btn:hover {
+  text-decoration: underline;
 }
 .ButtonFlow .state {
   display: flex;
@@ -1015,9 +1033,6 @@ button.submitting {
 .JsonProperty.confirm-delete >div:hover {
   background-color: transparent;
 }
-.List {
-  padding: 0.5rem;
-}
 .List li {
   cursor: pointer;
 }
@@ -1040,28 +1055,13 @@ button.submitting {
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.5rem;
-  padding: 0rem 0.25rem 0.75rem 0.25rem;
+  padding: 0.75rem 0.25rem;
   position: relative;
 }
 .List .heading button {
-  border: none;
-  display: flex;
-  font-size: 0.75rem;
-  height: 1rem;
   left: 1rem;
-  padding: 0rem;
   position: absolute;
   top: 0.25rem;
-}
-.List .heading button svg {
-  height: 1rem;
-}
-.List .heading button span {
-  font-size: 0.75rem;
-  padding-left: 1rem;
-}
-.List .heading button:hover {
-  text-decoration: underline;
 }
 .Login {
   margin: 10rem auto 6rem auto;
@@ -1130,7 +1130,34 @@ button.submitting {
   background-color: #4ab74a;
   color: #fff;
 }
-.ManageDiscTypes .List {
+.ManageDiscTypes {
+  display: flex;
+}
+.ManageDiscTypes .left-panel {
+  border-right: 1px solid #acacac;
+  flex: 1;
+  text-align: left;
+}
+.ManageDiscTypes .left-panel section {
+  padding: 1rem 0rem 1rem 1rem;
+}
+.ManageDiscTypes .left-panel section+section {
+  border-bottom: 1px solid #acacac;
+}
+.ManageDiscTypes .left-panel svg {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+.ManageDiscTypes .left-panel .side-by-side {
+  display: flex;
+  align-items: center;
+}
+.ManageDiscTypes .left-panel .side-by-side >*:last-child {
+  padding-left: 1rem;
+}
+.ManageDiscTypes .DiscTypes {
+  flex: 4;
+  overflow: hidden;
   margin-right: 3rem;
 }
 .ManageDiscTypes >button {
@@ -1311,6 +1338,7 @@ button:focus {
   width: 3rem;
 }
 .side-by-side {
+  align-items: center;
   display: flex;
 }
 .animate-in {
