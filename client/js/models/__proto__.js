@@ -1,5 +1,7 @@
 module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('../../../lib/Model'), require('events').EventEmitter.prototype, {
 
+    Xhr: require('../Xhr'),
+
     add( datum ) {
         this.data.push( datum )
 
@@ -7,8 +9,6 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
         return this
     },
-
-    Xhr: require('../Xhr'),
 
     delete( id ) {
         return this.Xhr( { method: 'DELETE', resource: this.resource, id } )
@@ -63,8 +63,6 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     git( attr ) { return this.data[ attr ] },
 
-    meta: { },
-
     patch( id, data ) {
         return this.Xhr( { method: 'patch', id, resource: this.resource, headers: this.headers || {}, data: JSON.stringify( data ) } )
         .then( response => {
@@ -102,6 +100,8 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
             if( Array.isArray( this.data ) ) { 
                 this.data = this.data ? this.data.concat( response ) : [ response ]
                 if( this.store ) Object.keys( this.store ).forEach( attr => this._store( response, attr ) )
+            } else {
+                this.data = response
             }
 
             return Promise.resolve( response )
@@ -119,6 +119,28 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     set( attr, value ) {
         this.data[ attr ] = value
         this.emit( `${attr}Changed` )
+    },
+
+    validate( data ) {
+        let valid = true
+        
+        Object.keys( data ).forEach( name => { 
+            const val = data[ name ],
+                attribute = this.attributes.find( attr => attr.name === name )       
+            
+            if( valid && !this.validateDatum( attribute, val ) ) {
+                this.emit( 'validationError', attribute )
+                valid = false
+            } else if( this.validateDatum( attribute, val ) ) {
+                this.data[ name ] = val.trim()
+            }
+        } )
+
+        return valid
+    },
+
+    validateDatum( attr, val ) {
+        return attr.validate.call( this, val.trim() )
     }
 
 } )

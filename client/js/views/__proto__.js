@@ -60,6 +60,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
             rv.model = this.model.data
 
             if( this.model.meta ) rv.meta = this.model.meta
+            if( this.model.attributes ) rv.attributes = this.model.attributes
         }
 
         if( this.templateOptions ) rv.opts = typeof this.templateOptions === 'function' ? this.templateOptions() : this.templateOptions
@@ -170,8 +171,9 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
             let opts = { }
 
             if( this.Views && this.Views[ name ] ) opts = typeof this.Views[ name ] === "object" ? this.Views[ name ] : Reflect.apply( this.Views[ name ], this, [ ] )
-
+            
             this.views[ name ] = this.factory.create( obj.view, Object.assign( { insertion: { el: obj.el, method: 'insertBefore' } }, opts ) )
+            if( obj.el.classList.contains('hidden') ) this.views[name].hideSync()
             obj.el.remove()
         } )
 

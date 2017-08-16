@@ -1,40 +1,52 @@
-const DiscType = require('../models/DiscType')
-
 module.exports = Object.assign( { }, require('./__proto__'), {
+
+    Collection: require('../models/Collection'),
+    DiscType: require('../models/DiscType'),
 
     Views: {
 
         collections() {
             return {
+                Views: {
+                },
                 events: { list: 'click' },
-                model: Object.create( this.Model ).constructor( [], { resource: 'Collection' } ),
+                model: Object.create( this.Collection ),
+                //itemTemplate: collection => <div><span>collection</span><div data-view="buttonFlow"></div></div>,
                 itemTemplate: collection => collection,
                 templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
             }
         },
 
-        discTypesList: {
+        createCollection() {
+            return {
+                model: Object.create( this.Collection ).constructor(),
+                templateOptions: { heading: 'Create Collection' }
+            }
+        },
 
-            Views: { 
-                buttonFlow: { model: { data: {
-                    disabled: true,
-                    states: { 
-                        start: [
-                            { name: 'edit', svg: require('./templates/lib/pencil')( { name: 'edit' } ), emit: true },
-                            { name: 'delete', svg: require('./templates/lib/garbage')( { name: 'delete' } ), nextState: 'confirmDelete' }
-                        ],
-                        confirmDelete: [
-                            { name: 'confirmDelete', text: 'Delete Disc Type?', emit: true, nextState: 'start' },
-                            { name: 'cancel', svg: require('./templates/lib/ex')( { name: 'cancel' } ), nextState: 'start' }
-                        ]
-                    }
-                } } },
-            },
+        discTypesList() {
+            return {
+                Views: { 
+                    buttonFlow: { model: { data: {
+                        disabled: true,
+                        states: { 
+                            start: [
+                                { name: 'edit', svg: require('./templates/lib/pencil')( { name: 'edit' } ), emit: true },
+                                { name: 'delete', svg: require('./templates/lib/garbage')( { name: 'delete' } ), nextState: 'confirmDelete' }
+                            ],
+                            confirmDelete: [
+                                { name: 'confirmDelete', text: 'Delete Disc Type?', emit: true, nextState: 'start' },
+                                { name: 'cancel', svg: require('./templates/lib/ex')( { name: 'cancel' } ), nextState: 'start' }
+                            ]
+                        }
+                    } } },
+                },
 
-            events: { list: 'click' },
-            itemTemplate: require('./templates/DiscType'),
-            model: Object.create( DiscType ),
-            templateOptions: { heading: 'Disc Types', name: 'DiscTypes' }
+                events: { list: 'click' },
+                itemTemplate: this.Templates.DiscType,
+                model: Object.create( this.DiscType ),
+                templateOptions: { heading: 'Disc Types', name: 'DiscTypes' }
+            }
         },
 
         discTypeJson: {
@@ -43,9 +55,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             Model: require('../models/JsonProperty')
         }
     },
+                
+    Templates: {
+        DiscType: require('./templates/DiscType')
+    },
 
-    discType: Object.create( DiscType ),
-    
     events: {
         addButton: 'click',
         createCollectionBtn: 'click',
@@ -63,9 +77,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.els[ time ].firstChild.focus()
     },
 
-    oncreateCollectionBtnClick() {
+    onCreateCollectionBtnClick() {
         this.views.discTypesList.hide()
         .then( () => {
+            this.currentView = 'createCollection'
             this.views.createCollection.show()
         } )
         .catch( this.Error )
@@ -91,10 +106,20 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onNavigation( path ) {
 
-        this.path = path
-        
-        this.views.discTypeJson.hideSync()
-        this.views.discTypesList.hideSync()
+        if( path ) this.path = path
+
+        ( this.isHidden() ? this.show() : Promise.resolve() )
+        .then( () => {
+            const nextView = this.path.length === 2 ? 'discTypeJson' : 'discTypesList'
+            if( this.currentView === nextView ) return Promise.resolve()
+            return ( this.currentView.length ? this.views[ this.currentView ].hide() : Promise.resolve() )
+            .then( () => {
+                this.currentView = nextView
+                return this.views[ nextView ].show()
+            } )
+        } )
+        .catch( this.Error ) 
+
 
         if( this.isHidden() ) this.showSync()
 
@@ -112,6 +137,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     postRender() {
+        this.currentView = ''
+
+        this.discType = Object.create( this.DiscType )
+    
         this.discType.getCount()
         .then( () => Promise.resolve( this.updateCount() ) )
         .catch( this.Error )
@@ -131,7 +160,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         
         this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
 
-        if( this.path.length === 2 ) this.onNavigation( this.path )
+        this.views.createCollection.on( 'posted', name => this.views.collections.add( posted ) )
+
+        this.onNavigation()
 
         return this
     },

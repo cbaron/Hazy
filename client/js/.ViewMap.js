@@ -12,6 +12,7 @@ module.exports={
 	Division: require('./views/Division'),
 	DivisionDropdown: require('./views/DivisionDropdown'),
 	Footer: require('./views/Footer'),
+	Form: require('./views/Form'),
 	Header: require('./views/Header'),
 	Home: require('./views/Home'),
 	Json: require('./views/Json'),
@@ -21,6 +22,7 @@ module.exports={
 	Login: require('./views/Login'),
 	ManageByop: require('./views/ManageByop'),
 	ManageDiscTypes: require('./views/ManageDiscTypes'),
+	Submitter: require('./views/Submitter'),
 	Toast: require('./views/Toast'),
 	TypeAhead: require('./views/TypeAhead')
 }

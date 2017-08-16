@@ -1,8 +1,12 @@
+const AdminOnly = new Set( [ 'admin' ] )
 module.exports = {
+
     Collection: {
-        GET: new Set( [ 'admin' ] )
+        GET: AdminOnly,
+        POST: AdminOnly
     },
+
     DiscType: {
-        PUT: new Set( [ 'admin' ] )
+        PUT: AdminOnly
     }
 }

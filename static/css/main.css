@@ -1174,6 +1174,13 @@ button.submitting {
   overflow: hidden;
   margin-right: 3rem;
 }
+.ManageDiscTypes .Form {
+  flex: 4;
+  padding: 1rem 0rem;
+}
+.ManageDiscTypes .Form form {
+  padding: 2rem 3rem;
+}
 .ManageDiscTypes >button {
   bottom: 2rem;
   right: 2rem;
