@@ -10,6 +10,8 @@ module.exports = Object.assign( { }, require('../lib/MyObject'), {
 
     Permissions: require('./.Permissions'),
 
+    Mongo: require('../dal/Mongo'),
+
     Postgres: require('../dal/Postgres'),
 
     QueryString: require('querystring'),
@@ -20,11 +22,12 @@ module.exports = Object.assign( { }, require('../lib/MyObject'), {
         if( check && this[method] ) return this[method]()
 
         return this.getUser()
+        .then( () => this.validateUser() ) 
         .then( () => 
             method === 'GET'
                 ? Promise.resolve( this.getQs() )
                 : method === 'PATCH' || method === 'POST' || method === 'PUT'
-                    ? this.validateUser().then( () => this.slurpBody() )
+                    ? this.slurpBody()
                     : method === 'DELETE'
                         ? Promise.resolve()
                         : this.respond( { stopChain: true, code: 404 } )

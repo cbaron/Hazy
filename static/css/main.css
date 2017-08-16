@@ -1063,6 +1063,15 @@ button.submitting {
   position: absolute;
   top: 0.25rem;
 }
+.List .heading.side-by-side {
+  border-bottom: none;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0;
+}
+.List .heading.is-hidden .caret-down {
+  transform: rotate(180deg);
+}
 .Login {
   margin: 10rem auto 6rem auto;
   text-align: center;
@@ -1138,10 +1147,10 @@ button.submitting {
   flex: 1;
   text-align: left;
 }
-.ManageDiscTypes .left-panel section {
+.ManageDiscTypes .left-panel >section {
   padding: 1rem 0rem 1rem 1rem;
 }
-.ManageDiscTypes .left-panel section+section {
+.ManageDiscTypes .left-panel >section+section {
   border-bottom: 1px solid #acacac;
 }
 .ManageDiscTypes .left-panel svg {
@@ -1154,6 +1163,11 @@ button.submitting {
 }
 .ManageDiscTypes .left-panel .side-by-side >*:last-child {
   padding-left: 1rem;
+}
+.ManageDiscTypes .left-panel button {
+  border: none;
+  font-size: 0.75rem;
+  padding: 0.5rem 0rem 0rem 0rem;
 }
 .ManageDiscTypes .DiscTypes {
   flex: 4;

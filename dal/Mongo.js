@@ -72,7 +72,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     initialize() {
         return this.forEach( db => db.listCollections( { name: { $ne: 'system.indexes' } } ), this.cacheCollection, this )
-        .then( () => Promise.resolve( this.collectionNames = Object.keys( this.collections ) ) )
+        .then( () => Promise.resolve( this.collectionNames = Object.keys( this.collections ).sort() ) )
     },
 
     getDb() { return this.Client.connect(process.env.MONGODB) },

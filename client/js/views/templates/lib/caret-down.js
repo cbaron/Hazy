@@ -1,7 +1,7 @@
 module.exports = ( p = {} ) => {
     const dataJs = p.name ? `data-js="${p.name}"` : ``
     return `` +
-`<svg version="1.1" class="caret-down" ${dataJs}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+`<svg class="caret-down" version="1.1" class="caret-down" ${dataJs}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 292.362 292.362" style="enable-background:new 0 0 292.362 292.362;"
 	 xml:space="preserve">
 <g>

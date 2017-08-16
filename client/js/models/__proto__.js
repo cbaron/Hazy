@@ -56,14 +56,14 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     getCount() {
         return this.Xhr( { method: 'get', resource: this.resource, headers: this.headers || {}, qs: JSON.stringify( { countOnly: true } ) } )
         .then( ( { result } ) => {
-            this.metadata.count = result
+            this.meta.count = result
             return Promise.resolve( result )
         } )
     },
 
     git( attr ) { return this.data[ attr ] },
 
-    metadata: { },
+    meta: { },
 
     patch( id, data ) {
         return this.Xhr( { method: 'patch', id, resource: this.resource, headers: this.headers || {}, data: JSON.stringify( data ) } )

@@ -8,7 +8,7 @@ const getHeading = opts => {
         <h3>${opts.heading}</h3>
       </div>`
     : opts.toggle
-        ? `<div data-js="heading" class="heading side-by-side">
+        ? `<div data-js="toggle" class="heading side-by-side">
             ${require('./lib/caret-down')()}
             <span>${opts.heading}</span>
           </div>`

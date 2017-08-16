@@ -4,11 +4,13 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     Views: {
 
-        collections: {
-            events: { list: 'click' },
-            model: Object.create( this.Model ).constructor( { resource: 'Collections' } ),
-            itemTemplate: collection => collection.name,
-            templateOptions: { heading: 'Collections', toggle: true }
+        collections() {
+            return {
+                events: { list: 'click' },
+                model: Object.create( this.Model ).constructor( [], { resource: 'Collection' } ),
+                itemTemplate: collection => collection,
+                templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
+            }
         },
 
         discTypesList: {
@@ -46,6 +48,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     
     events: {
         addButton: 'click',
+        createCollectionBtn: 'click',
         goBackBtn: 'click'
     },
 
@@ -58,6 +61,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             this.factory.create( 'literal', { model: { data: 'new-value', meta: { editable: true } }, insertion: { el: this.els[time] } } )
 
         this.els[ time ].firstChild.focus()
+    },
+
+    oncreateCollectionBtnClick() {
+        this.views.discTypesList.hide()
+        .then( () => {
+            this.views.createCollection.show()
+        } )
+        .catch( this.Error )
     },
 
     onGoBackBtnClick() {
@@ -126,7 +137,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     updateCount() {
-        this.els.resource.textContent = `DiscType ( ${this.discType.metadata.count} )`
+        this.els.resource.textContent = `DiscType ( ${this.discType.meta.count} )`
     },
 
 } )

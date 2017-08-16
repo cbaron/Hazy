@@ -31,6 +31,12 @@ module.exports = Object.assign( { }, Super, {
         return Reflect.apply( Super.hide, this, [ ] )
     },
 
+    hideList() {
+        return this.hideEl( this.els.list )
+        .then( () => Promise.resolve( this.els.toggle.classList.add('is-hidden') ) )
+        .catch( this.Error )
+    },
+
     onDeleted( datum ) {
         this.model.remove( datum )
 
@@ -50,7 +56,8 @@ module.exports = Object.assign( { }, Super, {
     events: {
         goBackBtn: 'click',
         resetBtn: 'click',
-        saveBtn: 'click'
+        saveBtn: 'click',
+        toggle: 'click',
     },
 
     onGoBackBtnClick( e ) {
@@ -72,6 +79,8 @@ module.exports = Object.assign( { }, Super, {
     onSaveBtnClick() {
         this.emit( 'saveClicked', this.model )
     },
+
+    onToggleClick() { this.els.list.classList.contains('hidden') ? this.showList() : this.hideList() },
 
     populateList() {
         if( this.item ) {
@@ -128,6 +137,12 @@ module.exports = Object.assign( { }, Super, {
         if( this.els.resetBtn ) this.els.resetBtn.classList.remove('hidden')
         if( this.els.saveBtn ) this.els.saveBtn.classList.remove('hidden')
         return Reflect.apply( Super.show, this, [ ] )
+    },
+
+    showList() {
+        return this.showEl( this.els.list )
+        .then( () => Promise.resolve( this.els.toggle.classList.remove('is-hidden') ) )
+        .catch( this.Error )
     },
 
     update( items ) {

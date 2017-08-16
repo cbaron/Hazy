@@ -7,12 +7,8 @@ module.exports = ( p ) => `<section>
             <div data-js="resource"></div>
         </section>
         <section>
-            <div class="side-by-side" data-js="collectionsDropDownBtn">
-                ${require('./lib/caret-down')( { name: 'collectionCaret' } )}
-                <span>Collections</span>
-            </div>
-            <div data-view="list" data-name="collections" />
-            <button class="link">
+            <div data-view="list" data-name="collections"></div>
+            <button data-js="createCollectionBtn" class="side-by-side link">
                 <span>+</span>
                 <span>Create Collection</span>
             </button>
@@ -20,5 +16,6 @@ module.exports = ( p ) => `<section>
     </div>
     <div data-view="list" data-name="discTypesList"></div>
     <div data-view="list" data-name="discTypeJson"></div>
+    <div data-view="form" data-name="createCollection"></div>
     <button class="floating" data-js="addButton">Add</button>
 </section>`
