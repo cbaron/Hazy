@@ -1034,12 +1034,31 @@ button.submitting {
   background-color: transparent;
 }
 .List li {
+  align-items: center;
+  display: flex;
   cursor: pointer;
+}
+.List li >*:first-child {
+  flex: 10;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.List li >*:last-child {
+  align-items: center;
+  display: flex;
+  flex: 1;
+}
+.List li >*:last-child svg {
+  display: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0rem 0.5rem;
 }
 .List li:hover {
   background-color: rgba(172,172,172,0.1);
 }
-.List li:hover svg {
+.List li:hover >*:last-child svg {
   display: inline-block;
 }
 .List >button {
@@ -1071,6 +1090,26 @@ button.submitting {
 }
 .List .heading.is-hidden .caret-down {
   transform: rotate(180deg);
+}
+.DiscType {
+  text-align: left;
+}
+.DiscType >span:first-child {
+  flex: 10;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.DiscType >span:last-child {
+  align-items: center;
+  display: flex;
+  flex: 1;
+}
+.DiscType svg {
+  display: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0rem 0.5rem;
 }
 .Login {
   margin: 10rem auto 6rem auto;

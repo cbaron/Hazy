@@ -16,6 +16,5 @@ module.exports = ( p ) => `<section>
     </div>
     <div class="hidden" data-view="list" data-name="discTypesList"></div>
     <div class="hidden" data-view="list" data-name="discTypeJson"></div>
-    <div class="hidden" data-view="form" data-name="createCollection"></div>
     <button class="floating" data-js="addButton">Add</button>
 </section>`

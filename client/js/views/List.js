@@ -2,6 +2,21 @@ const Super = require('./__proto__')
 
 module.exports = Object.assign( { }, Super, {
 
+    Views: { 
+        buttonFlow() {
+            const start = [ ]
+            if( this.canDelete ) start.push( { name: 'delete', svg: this.Format.Icons.garbage( { name: 'delete' } ) } )
+            return {
+                model: {
+                    data: {
+                        disabled: true,
+                        states: { start }
+                    }
+                }
+            }
+        },
+    },
+
     add( datum ) {
         if( !this.model ) this.model = Object.create( this.Model )
 
@@ -14,7 +29,7 @@ module.exports = Object.assign( { }, Super, {
             return this.slurpTemplate( {
                 insertion,
                 renderSubviews: true,
-                template: `<li data-key="${keyValue}">${this.itemTemplate( datum )}</li>`
+                template: this.getItemTemplateResult( keyValue, datum )
              } )
         }
 
@@ -23,6 +38,11 @@ module.exports = Object.assign( { }, Super, {
             .on( 'deleted', () => this.onDeleted( datum ) )
        
         window.scroll( { behavior: 'smooth', top: this.itemViews[ keyValue ].els.container.getBoundingClientRect().bottom - document.documentElement.clientHeight + window.pageYOffset + 50 } )
+    },
+
+    getItemTemplateResult( keyValue, datum ) {
+        const buttonFlow = this.canDelete ? `<div data-view="buttonFlow"></div>` : ``
+        return `<li data-key="${keyValue}">${this.itemTemplate( datum )}${buttonFlow}</li>`
     },
 
     hide() {
@@ -107,9 +127,10 @@ module.exports = Object.assign( { }, Super, {
                 renderSubviews: true,
                 template: this.model.data.reduce(
                     ( memo, datum ) => {
-                        const keyValue = datum[ this.key ]
+                        const keyValue = datum[ this.key ],
+                            buttonFlow = this.canDelete ? `<div data-view="buttonFlow"></div>` : ``
                         this.model.store[ this.key ][ keyValue ] = datum
-                        return memo + `<li data-key="${keyValue}">${this.itemTemplate( datum )}</li>`
+                        return memo + this.getItemTemplateResult( keyValue, datum )
                     },
                     ''
                 )
@@ -129,6 +150,8 @@ module.exports = Object.assign( { }, Super, {
             .then( () => this.populateList() )
             .catch( this.Error )
         }
+
+        if( this.views.buttonFlow ) this.views.buttonFlow.on( 'deleteClicked', () => this.emit('deleteClicked') )
 
         return this
     },

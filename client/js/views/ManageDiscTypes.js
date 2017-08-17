@@ -7,12 +7,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         collections() {
             return {
-                Views: {
-                },
+                canDelete: true,
                 events: { list: 'click' },
                 model: Object.create( this.Collection ),
-                //itemTemplate: collection => <div><span>collection</span><div data-view="buttonFlow"></div></div>,
-                itemTemplate: collection => collection,
+                itemTemplate: collection => `<span>${collection}</span>`,
                 templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
             }
         },
@@ -26,22 +24,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         discTypesList() {
             return {
-                Views: { 
-                    buttonFlow: { model: { data: {
-                        disabled: true,
-                        states: { 
-                            start: [
-                                { name: 'edit', svg: require('./templates/lib/pencil')( { name: 'edit' } ), emit: true },
-                                { name: 'delete', svg: require('./templates/lib/garbage')( { name: 'delete' } ), nextState: 'confirmDelete' }
-                            ],
-                            confirmDelete: [
-                                { name: 'confirmDelete', text: 'Delete Disc Type?', emit: true, nextState: 'start' },
-                                { name: 'cancel', svg: require('./templates/lib/ex')( { name: 'cancel' } ), nextState: 'start' }
-                            ]
-                        }
-                    } } },
-                },
-
+                canDelete: true,
                 events: { list: 'click' },
                 itemTemplate: this.Templates.DiscType,
                 model: Object.create( this.DiscType ),
@@ -80,6 +63,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     onCreateCollectionBtnClick() {
         this.views.discTypesList.hide()
         .then( () => {
+            //this.views.createCollection = this.factory.create( 'form', 
             this.currentView = 'createCollection'
             this.views.createCollection.show()
         } )
@@ -160,7 +144,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         
         this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
 
-        this.views.createCollection.on( 'posted', name => this.views.collections.add( posted ) )
+        //this.views.createCollection.on( 'posted', name => this.views.collections.add( posted ) )
+        
+        this.views.collections.on( 'posted', name => this.views.collections.add( posted ) )
 
         this.onNavigation()
 
