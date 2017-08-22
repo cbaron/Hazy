@@ -10,15 +10,24 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 canDelete: true,
                 events: { list: 'click' },
                 model: Object.create( this.Collection ),
-                itemTemplate: collection => `<span>${collection}</span>`,
+                itemTemplate: collection => `<span>${collection.name}</span>`,
                 templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
             }
         },
 
         createCollection() {
             return {
+                insertion: { el: this.els.container },
                 model: Object.create( this.Collection ).constructor(),
                 templateOptions: { heading: 'Create Collection' }
+            }
+        },
+
+        deleteCollection( model ) {
+            return {
+                insertion: { el: this.els.container },
+                model: Object.create( this.Collection ).constructor( model ),
+                templateOptions: { message: `Delete '${model.name}' Collection?` }
             }
         },
 
@@ -43,10 +52,27 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         DiscType: require('./templates/DiscType')
     },
 
+    createView( type, name, model ) {
+        this.views[ name ] = this.factory.create( type, Reflect.apply( this.Views[ name ], this, [ model ] ) )
+
+        if( this.events.views[ name ] ) this.events.views[ name ].forEach( arr => this.views[ name ].on( arr[0], eventData => Reflect.apply( arr[1], this, [ eventData ] ) ) )
+        this.currentView = name
+    },
+
     events: {
         addButton: 'click',
         createCollectionBtn: 'click',
-        goBackBtn: 'click'
+        goBackBtn: 'click',
+
+        views: {
+            createCollection: [
+                [ 'posted', function( collection ) { this.views.collections.add( collection ) } ]
+            ],
+            deleteCollection: [
+                [ 'deleted', function() { this.views.discTypesList.show().catch(this.Error) } ],
+                [ 'modelDeleted', function( keyValue ) { this.views.collections.remove( keyValue ) } ]
+            ],
+        }
     },
 
     onAddButtonClick() {
@@ -62,11 +88,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onCreateCollectionBtnClick() {
         this.views.discTypesList.hide()
-        .then( () => {
-            //this.views.createCollection = this.factory.create( 'form', 
-            this.currentView = 'createCollection'
-            this.views.createCollection.show()
-        } )
+        .then( () => Promise.resolve( this.createView( 'form', 'createCollection' ) ) )
         .catch( this.Error )
     },
 
@@ -90,15 +112,15 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onNavigation( path ) {
 
-        if( path ) this.path = path
+        if( path ) this.path = path;
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
         .then( () => {
-            const nextView = this.path.length === 2 ? 'discTypeJson' : 'discTypesList'
+            const nextView = this.path.length === 2 ? 'discTypeJson' : 'discTypesList';
             if( this.currentView === nextView ) return Promise.resolve()
             return ( this.currentView.length ? this.views[ this.currentView ].hide() : Promise.resolve() )
             .then( () => {
-                this.currentView = nextView
+                this.currentView = nextView;
                 return this.views[ nextView ].show()
             } )
         } )
@@ -147,6 +169,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         //this.views.createCollection.on( 'posted', name => this.views.collections.add( posted ) )
         
         this.views.collections.on( 'posted', name => this.views.collections.add( posted ) )
+
+        this.views.collections.on( 'deleteClicked', model => {
+            this.views[ this.currentView ].hide()
+            .then( () => Promise.resolve( this.createView( 'deleter', 'deleteCollection', model ) ) )
+            .catch( this.Error )
+        } )
 
         this.onNavigation()
 

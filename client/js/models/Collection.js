@@ -11,5 +11,9 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         }
     ],
 
+    meta: {
+        key: 'name'
+    },
+
     resource: 'Collection'
 } )

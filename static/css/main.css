@@ -447,6 +447,12 @@ button.back-btn:hover {
 .ByopWaitingListSwap .waiting-list >div {
   flex: 3;
 }
+.Deleter .side-by-side {
+  justify-content: center;
+}
+.Deleter .side-by-side button {
+  margin: 0rem 1rem;
+}
 .DiscType {
   align-items: center;
   display: flex;
@@ -1213,11 +1219,13 @@ button.submitting {
   overflow: hidden;
   margin-right: 3rem;
 }
-.ManageDiscTypes .Form {
+.ManageDiscTypes .Form,
+.ManageDiscTypes .Deleter {
   flex: 4;
   padding: 1rem 0rem;
 }
-.ManageDiscTypes .Form form {
+.ManageDiscTypes .Form form,
+.ManageDiscTypes .Deleter form {
   padding: 2rem 3rem;
 }
 .ManageDiscTypes >button {

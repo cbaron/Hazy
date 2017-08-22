@@ -5,11 +5,10 @@ module.exports = Object.assign( { }, Super, {
     Views: { 
         buttonFlow() {
             const start = [ ]
-            if( this.canDelete ) start.push( { name: 'delete', svg: this.Format.Icons.garbage( { name: 'delete' } ) } )
+            if( this.canDelete ) start.push( { name: 'delete', svg: this.Format.Icons.garbage( { name: 'delete' } ), emit: true } )
             return {
                 model: {
                     data: {
-                        disabled: true,
                         states: { start }
                     }
                 }
@@ -80,16 +79,24 @@ module.exports = Object.assign( { }, Super, {
         toggle: 'click',
     },
 
+    getListItemKey( e ) {
+        const el = e.target.closest('LI')
+
+        if( !el ) return false
+
+        return this.model.store[ this.key ][ el.getAttribute('data-key') ]
+    },
+
     onGoBackBtnClick( e ) {
         this.emit( 'goBackClicked' )
     },
 
     onListClick( e ) {
-        const el = e.target.closest('LI')
+        const model = this.getListItemKey( e )
 
-        if( !el ) return
+        if( !model ) return
 
-        this.emit( 'itemSelected', this.model.store[ this.key ][ el.getAttribute('data-key') ] )
+        this.emit( 'itemSelected', model )
     },
     
     onResetBtnClick() {
@@ -135,6 +142,16 @@ module.exports = Object.assign( { }, Super, {
                     ''
                 )
             } )
+
+            if( this.views.buttonFlow ) {
+                this.views.buttonFlow.on( 'deleteClicked', e => {
+                    const model = this.getListItemKey(e)
+                    if( !model ) return
+
+                    this.emit( 'deleteClicked', model )
+                } )
+            }
+
         }
     },
 
@@ -151,9 +168,31 @@ module.exports = Object.assign( { }, Super, {
             .catch( this.Error )
         }
 
-        if( this.views.buttonFlow ) this.views.buttonFlow.on( 'deleteClicked', () => this.emit('deleteClicked') )
-
         return this
+    },
+
+    remove( keyValue ) {
+        if( !this.model ) this.model = Object.create( this.Model )
+
+        const insertion = { el: this.els.list },
+            keyValue = datum[ this.key ]
+
+        this.model.add( datum )
+
+        if( this.itemTemplate ) {
+            return this.slurpTemplate( {
+                insertion,
+                renderSubviews: true,
+                template: this.getItemTemplateResult( keyValue, datum )
+             } )
+        }
+
+        this.itemViews[ keyValue ] =
+            this.factory.create( this.item, { insertion, model: Object.create( this.Model ).constructor( datum ) } )
+            .on( 'deleted', () => this.onDeleted( datum ) )
+       
+        window.scroll( { behavior: 'smooth', top: this.itemViews[ keyValue ].els.container.getBoundingClientRect().bottom - document.documentElement.clientHeight + window.pageYOffset + 50 } )
+    },
     },
 
     show() {

@@ -14,7 +14,7 @@ module.exports = {
         if( this.submitting ) return
         this.onSubmitStart()
         this.submit()
-        .then( () => this.onSubmitEnd() )
+        .then( () => Promise.resolve( this.onSubmitEnd() ) )
         .catch( e => this.handleSubmissionError(e) )
     },
 

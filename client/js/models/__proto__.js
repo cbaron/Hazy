@@ -10,22 +10,28 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         return this
     },
 
-    delete( id ) {
-        return this.Xhr( { method: 'DELETE', resource: this.resource, id } )
-        .then( id => {
-            const datum = this.data.find( datum => datum.id == id )
+    delete() {
+        const keyValue = this.data[ this.meta.key ]
+        return this.Xhr( { method: 'DELETE', resource: this.resource, id: keyValue } )
+        .then( () => {
+            const key = this.meta.key
 
-            if( this.store ) {
-                Object.keys( this.store ).forEach( attr => {
-                    this.store[ attr ][ datum[ attr ] ] = this.store[ attr ][ datum[ attr ] ].filter( datum => datum.id != id )
-                    if( this.store[ attr ][ datum[ attr ] ].length === 0 ) { this.store[ attr ][ datum[ attr ] ] = undefined }
-                } )
+            if( Array.isArray( this.data ) ) {
+                const datum = this.data.find( datum => datum[ key ] == keyValue )
+
+                if( this.store ) {
+                    Object.keys( this.store ).forEach( attr => {
+                        this.store[ attr ][ datum[ attr ] ] = this.store[ attr ][ datum[ attr ] ].filter( datum => datum[ key ] != keyValue )
+                        if( this.store[ attr ][ datum[ attr ] ].length === 0 ) { this.store[ attr ][ datum[ attr ] ] = undefined }
+                    } )
+                }
+
+                this.data = this.data.filter( datum => datum[ key ] != keyValue )
+            } else {
+                this.data = { }
             }
 
-            this.data = this.data.filter( datum => datum.id != id )
-            if( this.ids ) delete this.ids[id]
-
-            return Promise.resolve(id)
+            return Promise.resolve( keyValue )
         } )
     },
 
