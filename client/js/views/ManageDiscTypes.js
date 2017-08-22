@@ -37,7 +37,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 events: { list: 'click' },
                 itemTemplate: this.Templates.DiscType,
                 model: Object.create( this.DiscType ),
-                templateOptions: { heading: 'Disc Types', name: 'DiscTypes' }
+                templateOptions: { heading: 'Disc Types', name: 'DiscTypes' },
+                toggleSelection: true,
             }
         },
 
@@ -70,7 +71,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             ],
             deleteCollection: [
                 [ 'deleted', function() { this.views.discTypesList.show().catch(this.Error) } ],
-                [ 'modelDeleted', function( keyValue ) { this.views.collections.remove( keyValue ) } ]
+                [ 'modelDeleted', function( model ) { this.views.collections.remove( model ) } ]
             ],
         }
     },
@@ -142,6 +143,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         } 
     },
 
+    onToggledOn( item ) {
+    },
+
+    onToggledOff( item ) {
+    },
+
     postRender() {
         this.currentView = ''
 
@@ -152,6 +159,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .catch( this.Error )
 
         this.views.discTypesList.on( 'itemSelected', item => this.onItemSelected( item ) )
+        
+        this.views.discTypesList.on( 'toggledOn', item => this.onToggledOn( item ) )
+        this.views.discTypesList.on( 'toggledOff', item => this.onToggledOff( item ) )
       
         this.views.discTypeJson.els.container.classList.add('hidden')
          
@@ -166,8 +176,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         
         this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
 
-        //this.views.createCollection.on( 'posted', name => this.views.collections.add( posted ) )
-        
         this.views.collections.on( 'posted', name => this.views.collections.add( posted ) )
 
         this.views.collections.on( 'deleteClicked', model => {

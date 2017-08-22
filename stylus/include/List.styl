@@ -4,13 +4,26 @@
         display: flex
         cursor: pointer
 
-        >*:first-child
+        >.selection
+            align-items: center
+            display: flex
+            flex: 1
+            justify-content: center
+
+            input
+                display: none
+                width: initial
+                transform: scale(2)
+                -ms-transform: scale(2)
+                -webkit-transform: scale(2)
+
+        >.item
             flex: 10
             overflow: hidden
             text-overflow: ellipsis
             white-space: nowrap
         
-        >*:last-child
+        >.ButtonFlow
             align-items: center
             display: flex
             flex: 1
@@ -24,9 +37,18 @@
         &:hover
             background-color: $LightGrayTransparent
 
-            >*:last-child
+            >.ButtonFlow
                 svg
                     display: inline-block
+
+            >.selection input
+                display: inherit
+
+        &.checked 
+            background-color: $LightGrayTransparent
+
+            >.selection input
+                display: inherit
 
     >button
         right: 2rem

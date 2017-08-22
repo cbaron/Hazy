@@ -5,6 +5,7 @@ module.exports = ( p ) => `<section>
         </section>
         <section>
             <div data-js="resource"></div>
+            <div data-js="resource"></div>
         </section>
         <section>
             <div data-view="list" data-name="collections"></div>

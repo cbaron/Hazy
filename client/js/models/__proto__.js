@@ -27,11 +27,9 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
                 }
 
                 this.data = this.data.filter( datum => datum[ key ] != keyValue )
-            } else {
-                this.data = { }
             }
 
-            return Promise.resolve( keyValue )
+            return Promise.resolve( this.data )
         } )
     },
 

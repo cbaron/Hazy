@@ -40,8 +40,10 @@ module.exports = Object.assign( { }, Super, {
     },
 
     getItemTemplateResult( keyValue, datum ) {
-        const buttonFlow = this.canDelete ? `<div data-view="buttonFlow"></div>` : ``
-        return `<li data-key="${keyValue}">${this.itemTemplate( datum )}${buttonFlow}</li>`
+        const buttonFlow = this.canDelete ? `<div data-view="buttonFlow"></div>` : ``,
+            selection = this.toggleSelection ? `<div class="selection"><input data-js="checkbox" type="checkbox" /></div>` : ``
+
+        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum )}</div>${buttonFlow}</li>`
     },
 
     hide() {
@@ -56,23 +58,15 @@ module.exports = Object.assign( { }, Super, {
         .catch( this.Error )
     },
 
-    onDeleted( datum ) {
-        this.model.remove( datum )
+    onDeleted( datum ) { return this.remove( datum ) },
 
-        if( this.item ) {
-            delete this.itemViews[ datum[ this.key ] ]
-        } else {
-            const child = this.els.list.querySelector( `[data-key="${datum[ this.key ]}"]` )
-
-            if( child ) this.els.list.removeChild( child )
-        }
-    },
 
     empty() {
         this.els.list.innerHTML = ''
     },
 
     events: {
+        checkbox: 'change',
         goBackBtn: 'click',
         resetBtn: 'click',
         saveBtn: 'click',
@@ -87,11 +81,28 @@ module.exports = Object.assign( { }, Super, {
         return this.model.store[ this.key ][ el.getAttribute('data-key') ]
     },
 
+    onCheckboxChange( e ) {
+        const el = e.target.closest('LI')
+
+        if( !el ) return false
+
+        const model = this.model.store[ this.key ][ el.getAttribute('data-key') ]
+            event = `toggled${ e.target.checked ? 'On' : 'Off'}`
+
+        if( !model ) return
+
+        el.classList.toggle( 'checked', e.target.checked )
+
+        this.emit( event, model )
+    },
+
     onGoBackBtnClick( e ) {
         this.emit( 'goBackClicked' )
     },
 
     onListClick( e ) {
+        if( e.target.tagName === 'INPUT' ) return
+
         const model = this.getListItemKey( e )
 
         if( !model ) return
@@ -129,6 +140,7 @@ module.exports = Object.assign( { }, Super, {
 
             this.els.list.appendChild( fragment )
         } else {
+            console.log(this.key)
             this.slurpTemplate( {
                 insertion: { el: this.els.list },
                 renderSubviews: true,
@@ -158,7 +170,13 @@ module.exports = Object.assign( { }, Super, {
     postRender() {
         this.skip = this.skip || 0
         this.pageSize = this.pageSize || 100
-        this.key = this.Model.meta ? this.Model.meta.key : '_id'
+        this.key = this.model
+            ? this.model.meta.key || '_id'
+            : this.Model
+                ? this.Model.meta
+                    ? this.Model.meta.key
+                    : '_id'
+                : '_id'
 
         if( this.model ) this.model.store = { [ this.key ]: { } }
 
@@ -171,28 +189,18 @@ module.exports = Object.assign( { }, Super, {
         return this
     },
 
-    remove( keyValue ) {
-        if( !this.model ) this.model = Object.create( this.Model )
+    remove( datum ) {
+        this.model.remove( datum )
 
-        const insertion = { el: this.els.list },
-            keyValue = datum[ this.key ]
+        if( this.item ) {
+            delete this.itemViews[ datum[ this.key ] ]
+        } else {
+            const child = this.els.list.querySelector( `[data-key="${datum[ this.key ]}"]` )
 
-        this.model.add( datum )
-
-        if( this.itemTemplate ) {
-            return this.slurpTemplate( {
-                insertion,
-                renderSubviews: true,
-                template: this.getItemTemplateResult( keyValue, datum )
-             } )
+            if( child ) this.els.list.removeChild( child )
         }
 
-        this.itemViews[ keyValue ] =
-            this.factory.create( this.item, { insertion, model: Object.create( this.Model ).constructor( datum ) } )
-            .on( 'deleted', () => this.onDeleted( datum ) )
-       
-        window.scroll( { behavior: 'smooth', top: this.itemViews[ keyValue ].els.container.getBoundingClientRect().bottom - document.documentElement.clientHeight + window.pageYOffset + 50 } )
-    },
+        return this
     },
 
     show() {

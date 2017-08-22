@@ -1044,18 +1044,31 @@ button.submitting {
   display: flex;
   cursor: pointer;
 }
-.List li >*:first-child {
+.List li >.selection {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+.List li >.selection input {
+  display: none;
+  width: initial;
+  transform: scale(2);
+  -ms-transform: scale(2);
+  -webkit-transform: scale(2);
+}
+.List li >.item {
   flex: 10;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.List li >*:last-child {
+.List li >.ButtonFlow {
   align-items: center;
   display: flex;
   flex: 1;
 }
-.List li >*:last-child svg {
+.List li >.ButtonFlow svg {
   display: none;
   width: 1.25rem;
   height: 1.25rem;
@@ -1064,8 +1077,17 @@ button.submitting {
 .List li:hover {
   background-color: rgba(172,172,172,0.1);
 }
-.List li:hover >*:last-child svg {
+.List li:hover >.ButtonFlow svg {
   display: inline-block;
+}
+.List li:hover >.selection input {
+  display: inherit;
+}
+.List li.checked {
+  background-color: rgba(172,172,172,0.1);
+}
+.List li.checked >.selection input {
+  display: inherit;
 }
 .List >button {
   right: 2rem;

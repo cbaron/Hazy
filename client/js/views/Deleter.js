@@ -21,7 +21,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     submit() {
         return this.model.delete()
         .then( keyValue => {
-            this.emit( 'modelDeleted', keyValue )
+            this.emit( 'modelDeleted', this.model.data )
             this.Toast.showMessage( 'success', this.toastSuccess || `Success` )
             return Promise.resolve()
         } )
