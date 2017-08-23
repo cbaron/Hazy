@@ -1,6 +1,8 @@
 module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), {
 
     Client: require('mongodb').MongoClient,
+
+    Fs: require('fs'),
     
     Mongo: require('mongodb'),
 
@@ -72,7 +74,18 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     initialize() {
         return this.forEach( db => db.listCollections( { name: { $ne: 'system.indexes' } } ), this.cacheCollection, this )
-        .then( () => Promise.resolve( this.collectionNames = Object.keys( this.collections ).sort() ) )
+        .then( () => {
+            this.collectionNames = Object.keys( this.collections ).sort()
+            this.model = { }
+            /*
+            return this.P( this.Fs.readdir, [ `${__dirname}../models` ], this.fs )
+            .then( files => {
+                files.forEach( filename => {
+                    const name = filename.replace('.js','')
+                this.model[ name ] = require( `${__dirname}../models/${name}` ) this.filter( this.collectionNames, name => this.reducer( this.collectionNames, name => ( { name:  } ) )
+            */
+            return Promise.resolve()
+        } )
     },
 
     getDb() { return this.Client.connect(process.env.MONGODB) },

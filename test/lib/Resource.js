@@ -3,8 +3,14 @@ module.exports = Object.create( Object.assign( { }, require('../../lib/MyObject'
     Auth: require('./Auth'),
 
     Chai: require('chai'),
+    
+    ColumnFixture: require('./ColumnFixture'),
 
     Model: require('./Model'),
+    
+    Postgres: require('../../dal/Postgres'),
+    
+    Request: require('./Request'),
 
     assert( opts ) {
         this.Postgres.tables[ opts.name ].columns
@@ -12,6 +18,15 @@ module.exports = Object.create( Object.assign( { }, require('../../lib/MyObject'
         .forEach( column => this.Chai.assert.isDefined( opts.model[ column.name ], `${column.name} is not defined` ) )
     },
 
+    create() {
+        return Promise.all(
+            this.Postgres.tables[ this.resource ].columns
+                .filter( column => column.name !== 'id' && this.data[ column.name ] === undefined )
+                .map( column => this.ColumnFixture( column, { headers: this._getHeaders() } ).then( result => this.data[ column.name ] = result ) )
+        ).then( () => Promise.resolve( this.data ) )
+    },
+
+    /*
     create( opts={} ) {
         return ( opts.token
             ? Promise.resolve(opts.token)
@@ -32,6 +47,7 @@ module.exports = Object.create( Object.assign( { }, require('../../lib/MyObject'
             } ) ) 
         )
     },
+    */
 
     put( opts ) {
         return this.create( Object.assign( opts, { method: 'PUT' } ) )
