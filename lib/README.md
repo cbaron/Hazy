@@ -75,7 +75,7 @@ Some information on ./lib/
   #### meta
   Holds information about the model.  Currently `sort`, and `key` are used on the client.
   
-  ## MyError
+## MyError
   Error logger.  To be used if/when more configuration is needed in this area.  Mostly used currently to log a caught exception.
   
   exports: `factory function`
@@ -84,8 +84,8 @@ Some information on ./lib/
   ```sh
     someFn() { return somePromise.catch( MyError ) }
   ```
-  
-  ## MyObject
+
+## MyObject
   The mother / father of objects.  Should eventually factor out a few methods here.  Generally used by other object definitions as a base object.
   
   exports: `JSON object`
@@ -118,6 +118,62 @@ Some information on ./lib/
   Used to get a list of properties on a JSON object ( see underscore )
   ```sh
     MyObj.pick( { a: 'b' }, [ 'a' ] ) -> returns { a: 'b' }
+  ```
+
+  #### reducer
+  Turns an array into an object by applying a passed in function to each array item.  The return values for each iteration are accumulated via `[].reduce`.
+  ```sh
+    MyObj.reducer( someArr, datum => ( { [ datum.key ]: datum.value } ) ) -> returns SomeJsonObject
+  ```
+  
+  #### shuffleArray
+  Given an array, shuffleArray returns a new array with items from the passed in array in a random order.  Useful for testing.
+  ```sh
+    MyObj.shuffleArray( [ 0, 1 ] ) -> returns [ 0, 1 ] || [ 1, 0 ]
+  ```
+  #### Error
+  Reference to the MyError factory
+  ```sh
+    SomePromise.catch( MyObj.Error ) -> logs caught exception
+  ```
+  
+  #### P
+  Intended to reduce "callback hell".  A common attack on javascript:
+  ```sh
+    doAsyncThing( param1, param2, function( err, asyncResult ) {
+        if( err ) return handleErr(err)
+        doAnotherAsyncThing( asyncResult, function( errTwo, asyncResultTwo ) {
+           if( errTwo ) return handleErr( errTwo )
+  ```
+  can be transformed into:
+  ```sh
+    MyObj.P( doAsyncThing [ param1, param2 ] )
+    .then( result => MyObj.P( doAnotherAsyncThing, [ result ] ) )
+    .catch( handleErr )
+  ```
+  #### constructor
+  Intended to do something.  Doesn't.  Should probably move toward Classes.
+
+## Request
+  Factory method for making http(s) requests.
+  
+  exports: `factory function`
+  
+  #### factory
+  Makes an http(s) request.  Returns a promise.  Content-Length will automatically be sent for requests with a payload.  When `streamIn` is false, successfully resolves `[ parsedResponseBody, http.IncomingMessage ( node class ) ]`
+  ```sh
+    Request( {
+        agent: http.agent || Boolean ( optional, see [node](https://nodejs.org/api/http.html#http_http_request_options_callback) documentation ),
+        contentType: content type header ( default: 'application/json' )
+        headers: headers ( default: { accept: 'application/json' } ),
+        hostname: hostname ( default node's `http.request` default )
+        method: request method ( default: 'GET' )
+        path: this.opts.path,
+        port: port ( default: process.env.PORT ),
+        protocol: 'https' || 'http'(default),
+        streamIn: Boolean, (when true this method will resolve with the `http.IncomingMessage` without doing any parsing.  Useful for streaming file responses,
+        streamOut: WriteStream, when used the request payload will be streamed using the WriteStream.pipe method.  See [node](https://nodejs.org/api/stream.html#stream_writable_streams)
+    } )
   ```
 
 
