@@ -6,6 +6,7 @@ module.exports = Object.create( {
         return Object.create(
             this.Views[ name ],
             Object.assign( {
+                Dragger: { value: this.Dragger },
                 Toast: { value: this.Toast },
                 name: { value: name },
                 factory: { value: this },
@@ -16,6 +17,7 @@ module.exports = Object.create( {
     },
 
 }, {
+    Dragger: { value: require('../views/Dragger') },
     Templates: { value: require('../.TemplateMap') },
     Toast: { value: require('../views/Toast') },
     User: { value: require('../models/User') },

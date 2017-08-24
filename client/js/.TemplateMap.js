@@ -14,6 +14,7 @@ module.exports={
 	DiscType: require('./views/templates/DiscType'),
 	Division: require('./views/templates/Division'),
 	DivisionDropdown: require('./views/templates/DivisionDropdown'),
+	Dragger: require('./views/templates/Dragger'),
 	Footer: require('./views/templates/Footer'),
 	Form: require('./views/templates/Form'),
 	Header: require('./views/templates/Header'),

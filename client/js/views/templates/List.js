@@ -1,4 +1,4 @@
-const getHeading = opts => {
+const getHeading = ( opts ) => {
     return opts.goBack
     ? `<div class="heading">
         <button class="back-btn" data-js="goBackBtn">
@@ -15,12 +15,12 @@ const getHeading = opts => {
         : `<h3>${opts.heading}</h3>`
 }
 
-module.exports = ( { opts={} } ) => {
+module.exports = ( { model={}, opts={} } ) => {
 return `` +
 `<section class="${opts.name || ''}">
     ${getHeading(opts)}
-    <ol data-js="list"></ol>
-    ${opts.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
-    ${opts.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
+    <ol data-js="list" class="${model.draggable ? 'no-select' : '' }"></ol>
+    ${model.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
+    ${model.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
 </section>`
 }

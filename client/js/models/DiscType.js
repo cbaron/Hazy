@@ -7,6 +7,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     meta: {
+        key: '_id',
         sort: { 'title': 1 }
     },
 

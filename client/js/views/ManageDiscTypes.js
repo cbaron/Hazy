@@ -7,9 +7,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         collections() {
             return {
-                canDelete: true,
+                model: Object.create( this.Model ).constructor( { delete: true, fetch: true } ),
                 events: { list: 'click' },
-                model: Object.create( this.Collection ),
+                collection: Object.create( this.Collection ),
                 itemTemplate: collection => `<span>${collection.name}</span>`,
                 templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
             }
@@ -31,21 +31,31 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         },
 
-        discTypesList() {
+        deleteDiscType( model ) {
             return {
-                canDelete: true,
-                events: { list: 'click' },
-                itemTemplate: this.Templates.DiscType,
-                model: Object.create( this.DiscType ),
-                templateOptions: { heading: 'Disc Types', name: 'DiscTypes' },
-                toggleSelection: true,
+                insertion: { el: this.els.container },
+                model: Object.create( this.DiscType ).constructor( model ),
+                templateOptions: { message: `Delete '${model.name}' Disc Type?` }
             }
         },
 
-        discTypeJson: {
-            item: 'jsonProperty',
-            templateOptions: { goBack: 'Back to Disc Types', heading: 'Disc Type', reset: true, save: true },
-            Model: require('../models/JsonProperty')
+        discTypesList() {
+            return {
+                model: Object.create( this.Model ).constructor( { delete: true, draggable: true, fetch: true } ),
+                events: { list: 'click' },
+                itemTemplate: this.Templates.DiscType,
+                collection: Object.create( this.DiscType ),
+                templateOptions: { heading: 'Disc Types', name: 'DiscTypes' },
+            }
+        },
+
+        discTypeJson() {
+            return {
+                model: Object.create( this.Model ).constructor( { reset: true, save: true } ),
+                item: 'jsonProperty',
+                templateOptions: { goBack: 'Back to Disc Types', heading: 'Disc Type' },
+                collection: require('../models/JsonProperty')
+            }
         }
     },
                 
@@ -70,8 +80,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 [ 'posted', function( collection ) { this.views.collections.add( collection ) } ]
             ],
             deleteCollection: [
-                [ 'deleted', function() { this.views.discTypesList.show().catch(this.Error) } ],
+                [ 'deleted', function() { this.currentView = 'discTypesList'; this.views.discTypesList.show().catch(this.Error) } ],
                 [ 'modelDeleted', function( model ) { this.views.collections.remove( model ) } ]
+            ],
+            deleteDiscType: [
+                [ 'deleted', function() { this.currentView = 'discTypesList'; this.views.discTypesList.show().catch(this.Error) } ],
+                [ 'modelDeleted', function( model ) { this.views.discTypesList.remove( model ) } ]
             ],
         }
     },
@@ -158,7 +172,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .then( () => Promise.resolve( this.updateCount() ) )
         .catch( this.Error )
 
-        this.views.discTypesList.on( 'itemSelected', item => this.onItemSelected( item ) )
+        this.views.discTypesList.on( 'itemDblClicked', item => this.onItemSelected( item ) )
+        this.views.discTypesList.on( 'dragging', () => this.views.collections.showDroppable() )
+        this.views.discTypesList.on( 'dropped', data => {
+            this.views.collections.hideDroppable()
+            this.views.collections.checkDrop( data )
+        } )
         
         this.views.discTypesList.on( 'toggledOn', item => this.onToggledOn( item ) )
         this.views.discTypesList.on( 'toggledOff', item => this.onToggledOff( item ) )
@@ -183,6 +202,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             .then( () => Promise.resolve( this.createView( 'deleter', 'deleteCollection', model ) ) )
             .catch( this.Error )
         } )
+
+        this.views.discTypesList.on( 'deleteClicked', model =>
+            this.views.discTypesList.hide()
+            .then( () => Promise.resolve( this.createView( 'deleter', 'deleteDiscType', model ) ) )
+            .catch( this.Error )
+        )
 
         this.onNavigation()
 

@@ -9,6 +9,7 @@ module.exports = {
     },
 
     DiscType: {
+        DELETE: AdminOnly,
         PUT: AdminOnly
     }
 }

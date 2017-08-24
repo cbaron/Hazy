@@ -33,6 +33,8 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         } )
     },
 
+    git( attr ) { return this.data[ attr ] },
+
     get( opts={ query:{} } ) {
         if( opts.query || this.pagination ) Object.assign( opts.query, this.pagination )
 

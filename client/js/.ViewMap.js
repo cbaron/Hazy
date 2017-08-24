@@ -12,6 +12,7 @@ module.exports={
 	Deleter: require('./views/Deleter'),
 	Division: require('./views/Division'),
 	DivisionDropdown: require('./views/DivisionDropdown'),
+	Dragger: require('./views/Dragger'),
 	Footer: require('./views/Footer'),
 	Form: require('./views/Form'),
 	Header: require('./views/Header'),

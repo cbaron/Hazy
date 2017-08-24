@@ -6,6 +6,12 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     
     Mongo: require('mongodb'),
 
+    DELETE( resource ) {
+        return this.getDb()
+        .then( db => db.collection( resource.path[0] ).remove( { _id: new ( this.Mongo.ObjectID )( resource.path[1] ) } ) )
+        .then( result => Promise.resolve( [ { } ] ) )
+    },
+
     GET( resource ) {
         if( resource.query.countOnly ) return this.handleCountOnly( resource )
 

@@ -6,6 +6,7 @@ module.exports = Object.create( {
     
     Views: require('./.ViewMap'),
 
+    Dragger: require('./views/Dragger'),
     Toast: require('./views/Toast'),
 
     User: require('./models/User'),
@@ -17,6 +18,7 @@ module.exports = Object.create( {
         this.contentContainer = document.querySelector('#content')
 
         this.Toast.constructor()
+        this.Dragger.constructor()
 
         window.onpopstate = this.handle.bind(this)
 

@@ -2,27 +2,13 @@ const Super = require('./__proto__')
 
 module.exports = Object.assign( { }, Super, {
 
-    Views: { 
-        buttonFlow() {
-            const start = [ ]
-            if( this.canDelete ) start.push( { name: 'delete', svg: this.Format.Icons.garbage( { name: 'delete' } ), emit: true } )
-            return {
-                model: {
-                    data: {
-                        states: { start }
-                    }
-                }
-            }
-        },
-    },
-
     add( datum ) {
-        if( !this.model ) this.model = Object.create( this.Model )
+        if( !this.collection ) this.collection = Object.create( this.Model )
 
         const insertion = { el: this.els.list },
             keyValue = datum[ this.key ]
 
-        this.model.add( datum )
+        this.collection.add( datum )
 
         if( this.itemTemplate ) {
             return this.slurpTemplate( {
@@ -39,11 +25,40 @@ module.exports = Object.assign( { }, Super, {
         window.scroll( { behavior: 'smooth', top: this.itemViews[ keyValue ].els.container.getBoundingClientRect().bottom - document.documentElement.clientHeight + window.pageYOffset + 50 } )
     },
 
+    checkDrag( e ) {
+        if( !this.dragging ) return
+    
+		this.Dragger.els.container.classList.remove('hidden')
+		this.Dragger.els.container.style.top = `${e.clientY}px`
+    	this.Dragger.els.container.style.left = `${e.clientX}px`
+    },
+
+    checkDragEnd( e ) {
+        if( !this.dragging ) return
+
+        this.emit( 'dropped', this.dragging.model )
+        this.dragging.el.classList.remove('is-dragging')
+        this.els.container.el.classList.remove('is-dragging')
+		this.Dragger.els.container.classList.add('hidden')
+        this.dragging = false
+    },
+
+    checkDragStart( e ) {
+        const el = e.target.closest('.item')
+
+        if( !el ) return null
+
+        this.dragging = { el: el.parentNode, model: this.collection.store[ this.key ][ el.parentNode.getAttribute('data-key') ] }
+        this.dragging.el.classList.add('is-dragging')
+        this.els.container.classList.add('is-dragging')
+    
+    },
+
     getItemTemplateResult( keyValue, datum ) {
-        const buttonFlow = this.canDelete ? `<div data-view="buttonFlow"></div>` : ``,
+        const buttonsOnRight = this.model.git('delete') ? `<div class="buttons">${this.deleteIcon}</div>` : ``,
             selection = this.toggleSelection ? `<div class="selection"><input data-js="checkbox" type="checkbox" /></div>` : ``
 
-        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum )}</div>${buttonFlow}</li>`
+        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum )}</div>${buttonsOnRight}</li>`
     },
 
     hide() {
@@ -56,6 +71,12 @@ module.exports = Object.assign( { }, Super, {
         return this.hideEl( this.els.list )
         .then( () => Promise.resolve( this.els.toggle.classList.add('is-hidden') ) )
         .catch( this.Error )
+    },
+
+    initializeDragDrop() {
+        this.els.list.addEventListener( 'mousedown', e => this.checkDragStart(e) )
+        this.els.list.addEventListener( 'mouseup', e => this.checkDragEnd(e) )
+        this.els.list.addEventListener( 'mousemove', e => this.checkDrag(e) )
     },
 
     onDeleted( datum ) { return this.remove( datum ) },
@@ -74,11 +95,14 @@ module.exports = Object.assign( { }, Super, {
     },
 
     getListItemKey( e ) {
-        const el = e.target.closest('LI')
+        const el = e.target.closest('.item')
 
-        if( !el ) return false
+        if( !el ) return null
 
-        return this.model.store[ this.key ][ el.getAttribute('data-key') ]
+        return this.collection.store[ this.key ][ el.parentNode.getAttribute('data-key') ]
+    },
+
+    hideDroppable() {
     },
 
     onCheckboxChange( e ) {
@@ -86,7 +110,7 @@ module.exports = Object.assign( { }, Super, {
 
         if( !el ) return false
 
-        const model = this.model.store[ this.key ][ el.getAttribute('data-key') ]
+        const model = this.collection.store[ this.key ][ el.getAttribute('data-key') ]
             event = `toggled${ e.target.checked ? 'On' : 'Off'}`
 
         if( !model ) return
@@ -101,13 +125,19 @@ module.exports = Object.assign( { }, Super, {
     },
 
     onListClick( e ) {
-        if( e.target.tagName === 'INPUT' ) return
-
         const model = this.getListItemKey( e )
 
         if( !model ) return
 
-        this.emit( 'itemSelected', model )
+        this.emit( 'itemClicked', model )
+    },
+
+    onListDblclick( e ) {
+        const model = this.getListItemKey( e )
+
+        if( !model ) return
+
+        this.emit( 'itemDblClicked', model )
     },
     
     onResetBtnClick() {
@@ -115,7 +145,7 @@ module.exports = Object.assign( { }, Super, {
     },
 
     onSaveBtnClick() {
-        this.emit( 'saveClicked', this.model )
+        this.emit( 'saveClicked', this.collection )
     },
 
     onToggleClick() { this.els.list.classList.contains('hidden') ? this.showList() : this.hideList() },
@@ -123,10 +153,10 @@ module.exports = Object.assign( { }, Super, {
     populateList() {
         if( this.item ) {
             const fragment =
-                this.model.data.reduce(
+                this.collection.data.reduce(
                     ( fragment, datum ) => {
                         const keyValue = datum[ this.key ]
-                        this.model.store[ this.key ][ keyValue ] = datum
+                        this.collection.store[ this.key ][ keyValue ] = datum
 
                         this.itemViews[ keyValue ] =
                             this.factory.create( this.item, { model: Object.create( this.Model ).constructor( datum ), storeFragment: true } )
@@ -140,57 +170,52 @@ module.exports = Object.assign( { }, Super, {
 
             this.els.list.appendChild( fragment )
         } else {
-            console.log(this.key)
             this.slurpTemplate( {
                 insertion: { el: this.els.list },
                 renderSubviews: true,
-                template: this.model.data.reduce(
+                template: this.collection.data.reduce(
                     ( memo, datum ) => {
-                        const keyValue = datum[ this.key ],
-                            buttonFlow = this.canDelete ? `<div data-view="buttonFlow"></div>` : ``
-                        this.model.store[ this.key ][ keyValue ] = datum
+                        const keyValue = datum[ this.key ]
+                        this.collection.store[ this.key ][ keyValue ] = datum
                         return memo + this.getItemTemplateResult( keyValue, datum )
                     },
                     ''
                 )
             } )
 
-            if( this.views.buttonFlow ) {
-                this.views.buttonFlow.on( 'deleteClicked', e => {
-                    const model = this.getListItemKey(e)
-                    if( !model ) return
-
-                    this.emit( 'deleteClicked', model )
+            if( this.model.git('delete') ) {
+                this.els.list.addEventListener( 'click', e => {
+                    const target = e.target
+                    if( target.tagName === 'svg' && target.classList.contains('garbage') ) {
+                        this.emit( 'deleteClicked', this.collection.store[ this.key ][ target.closest('LI').getAttribute('data-key') ] )
+                    }
                 } )
             }
-
         }
     },
 
     postRender() {
         this.skip = this.skip || 0
         this.pageSize = this.pageSize || 100
-        this.key = this.model
-            ? this.model.meta.key || '_id'
-            : this.Model
-                ? this.Model.meta
-                    ? this.Model.meta.key
-                    : '_id'
-                : '_id'
+        this.key = this.collection.meta.key
 
-        if( this.model ) this.model.store = { [ this.key ]: { } }
+        if( this.collection ) this.collection.store = { [ this.key ]: { } }
 
-        if( this.model ) {
-            this.model.get( { query: { skip: this.skip, limit: this.pageSize, sort: this.model.meta.sort || { } } } )
+        if( this.model.git('delete') ) this.deleteIcon = this.Format.GetIcon('garbage')
+
+        if( this.model.git('fetch') ) {
+            this.collection.get( { query: { skip: this.skip, limit: this.pageSize, sort: this.collection.meta.sort || { } } } )
             .then( () => this.populateList() )
             .catch( this.Error )
         }
+
+        if( this.model.git('draggable') ) this.initializeDragDrop()
 
         return this
     },
 
     remove( datum ) {
-        this.model.remove( datum )
+        this.collection.remove( datum )
 
         if( this.item ) {
             delete this.itemViews[ datum[ this.key ] ]
@@ -215,10 +240,13 @@ module.exports = Object.assign( { }, Super, {
         .catch( this.Error )
     },
 
-    update( items ) {
-        if( !this.model ) this.model = Object.create( this.Model )
+    showDroppable() {
+    },
 
-        this.model.constructor( items, { storeBy: [ this.key ] } )
+    update( items ) {
+        if( !this.collection ) this.collection = Object.create( this.Model )
+
+        this.collection.constructor( items, { storeBy: [ this.key ] } )
 
         if( this.itemTemplate ) return this.removeChildren( this.els.list ).populateList()
 

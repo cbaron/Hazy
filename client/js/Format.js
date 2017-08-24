@@ -24,6 +24,8 @@ module.exports = {
         } ).join('')
     },
 
+    GetIcon( name, opts ) { return Reflect.apply( this.Icons[ name ], this, [ opts ] ) },
+
     GetListItems( items=[], opts={} ) {
         return items.map( item => {
             const attr = opts.dataAttr ? `data-${opts.dataAttr}="${item[ opts.dataAttr ]}"` : ``
@@ -47,8 +49,10 @@ module.exports = {
     GetSelectOptions( options=[], opts={ valueAttr: 'value' } ) {
         return options.map( option => `<option value="${option[ opts.valueAttr ]}">${option.label}</option>` ).join('')
     },
-    
+
     Icons: require('./.IconMap'),
+    
+    IconDataJs( p ) { return p.name ? `data-js="${p.name}"` : `` },
 
     ImageSrc( name ) { return `https://storage.googleapis.com/mega-poetry-9665/${name}` },
 

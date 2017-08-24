@@ -8,17 +8,19 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         },
 
-        buttonFlow: {
-            model: {
-                data: {
-                    states: { 
-                        start: [
-                            { name: 'delete', svg: require('./templates/lib/garbage')( { name: 'delete' } ), nextState: 'confirmDelete', emit: true }
-                        ],
-                        confirmDelete: [
-                            { name: 'doDelete', class: 'link', text: 'Delete?', emit: true, nextState: 'start' },
-                            { name: 'cancel', svg: require('./templates/lib/ex')( { name: 'cancel' } ), nextState: 'start', emit: true }
-                        ]
+        buttonFlow() {
+            return {
+                model: {
+                    data: {
+                        states: { 
+                            start: [
+                                { name: 'delete', svg: this.Format.getIcon( 'garbage', { name: 'delete' } ), nextState: 'confirmDelete', emit: true }
+                            ],
+                            confirmDelete: [
+                                { name: 'doDelete', class: 'link', text: 'Delete?', emit: true, nextState: 'start' },
+                                { name: 'cancel', svg: require('./templates/lib/ex')( { name: 'cancel' } ), nextState: 'start', emit: true }
+                            ]
+                        }
                     }
                 }
             }
