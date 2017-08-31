@@ -5,7 +5,6 @@ module.exports = ( p ) => `<section>
         </section>
         <section>
             <div data-js="resource"></div>
-            <div data-js="resource"></div>
         </section>
         <section>
             <div data-view="list" data-name="collections"></div>
@@ -15,7 +14,7 @@ module.exports = ( p ) => `<section>
             </button>
         </section>
     </div>
-    <div class="hidden" data-view="list" data-name="discTypesList"></div>
-    <div class="hidden" data-view="list" data-name="discTypeJson"></div>
+    <div class="hidden" data-view="list" data-name="documentList"></div>
+    <div class="hidden" data-view="list" data-name="documentView"></div>
     <button class="floating" data-js="addButton">Add</button>
 </section>`

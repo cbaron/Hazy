@@ -17,8 +17,10 @@ module.exports = Object.create( {
 
         this.contentContainer = document.querySelector('#content')
 
-        this.Toast.constructor()
-        this.Dragger.constructor()
+        this.ViewFactory.constructor()
+
+        this.Toast.constructor( { range: this.ViewFactory.range } )
+        this.Dragger.constructor( { range: this.ViewFactory.range } )
 
         window.onpopstate = this.handle.bind(this)
 

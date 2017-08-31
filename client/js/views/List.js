@@ -29,16 +29,16 @@ module.exports = Object.assign( { }, Super, {
         if( !this.dragging ) return
     
 		this.Dragger.els.container.classList.remove('hidden')
-		this.Dragger.els.container.style.top = `${e.clientY}px`
-    	this.Dragger.els.container.style.left = `${e.clientX}px`
+		this.Dragger.els.container.style.top = `${e.clientY+5}px`
+    	this.Dragger.els.container.style.left = `${e.clientX+5}px`
     },
 
     checkDragEnd( e ) {
         if( !this.dragging ) return
 
-        this.emit( 'dropped', this.dragging.model )
+        this.emit( 'dropped', { e, type: this.draggable, model: this.dragging.model } )
         this.dragging.el.classList.remove('is-dragging')
-        this.els.container.el.classList.remove('is-dragging')
+        this.els.list.classList.remove('is-dragging')
 		this.Dragger.els.container.classList.add('hidden')
         this.dragging = false
     },
@@ -48,10 +48,17 @@ module.exports = Object.assign( { }, Super, {
 
         if( !el ) return null
 
-        this.dragging = { el: el.parentNode, model: this.collection.store[ this.key ][ el.parentNode.getAttribute('data-key') ] }
+        const model = this.collection.store[ this.key ][ el.parentNode.getAttribute('data-key') ]
+        this.dragging = { el: el.parentNode, model }
         this.dragging.el.classList.add('is-dragging')
-        this.els.container.classList.add('is-dragging')
+        this.els.list.classList.add('is-dragging')
+        if( model.label ) this.Dragger.els.container.textContent = `Move ${model.label}.`
+        this.emit( 'dragStart', this.model.git('draggable') )
     
+    },
+
+    checkDrop( { e, type, model } ) {
+
     },
 
     getItemTemplateResult( keyValue, datum ) {
@@ -74,9 +81,10 @@ module.exports = Object.assign( { }, Super, {
     },
 
     initializeDragDrop() {
-        this.els.list.addEventListener( 'mousedown', e => this.checkDragStart(e) )
-        this.els.list.addEventListener( 'mouseup', e => this.checkDragEnd(e) )
-        this.els.list.addEventListener( 'mousemove', e => this.checkDrag(e) )
+        this.Dragger.on( 'mousedown', e => this.checkDragStart(e) )
+        this.Dragger.on( 'mouseup', e => this.checkDragEnd(e) )
+        this.Dragger.on( 'mousemove', e => this.checkDrag(e) )
+        this.Dragger.listen()
     },
 
     onDeleted( datum ) { return this.remove( datum ) },
@@ -103,6 +111,8 @@ module.exports = Object.assign( { }, Super, {
     },
 
     hideDroppable() {
+        this.els.list.classList.remove('is-droppable')
+        Array.from( this.els.list.children ).forEach( child => child.removeChild( child.lastChild ) )
     },
 
     onCheckboxChange( e ) {
@@ -123,6 +133,9 @@ module.exports = Object.assign( { }, Super, {
     onGoBackBtnClick( e ) {
         this.emit( 'goBackClicked' )
     },
+
+    onItemMouseenter( e ) { e.target.classList.add('mouseover') },
+    onItemMouseleave( e ) { e.target.classList.remove('mouseover') },
 
     onListClick( e ) {
         const model = this.getListItemKey( e )
@@ -240,7 +253,13 @@ module.exports = Object.assign( { }, Super, {
         .catch( this.Error )
     },
 
-    showDroppable() {
+    showDroppable( type ) {
+        this.els.list.classList.add('is-droppable')
+        Array.from( this.els.list.children ).forEach( child => {
+            this.bindEvent( 'item', 'mouseenter', child )           
+            this.bindEvent( 'item', 'mouseleave', child )           
+            child.appendChild( this.htmlToFragment(`<div class="drag">Drag here to move ${type}</div>`) )
+        } )
     },
 
     update( items ) {

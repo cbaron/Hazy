@@ -1,13 +1,14 @@
 module.exports = Object.assign( { }, require('./__proto__'), {
 
+    model: require('../models/CollectionManager'),
     Collection: require('../models/Collection'),
-    DiscType: require('../models/DiscType'),
+    DocumentModel: require('../models/Document'),
 
     Views: {
 
         collections() {
             return {
-                model: Object.create( this.Model ).constructor( { delete: true, fetch: true } ),
+                model: Object.create( this.Model ).constructor( { delete: true, droppable: 'document', fetch: true } ),
                 events: { list: 'click' },
                 collection: Object.create( this.Collection ),
                 itemTemplate: collection => `<span>${collection.name}</span>`,
@@ -39,9 +40,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         },
 
-        discTypesList() {
+        documentList() {
             return {
-                model: Object.create( this.Model ).constructor( { delete: true, draggable: true, fetch: true } ),
+                model: Object.create( this.Model ).constructor( { delete: true, draggable: 'document', fetch: true } ),
                 events: { list: 'click' },
                 itemTemplate: this.Templates.DiscType,
                 collection: Object.create( this.DiscType ),
@@ -49,7 +50,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         },
 
-        discTypeJson() {
+        documentView() {
             return {
                 model: Object.create( this.Model ).constructor( { reset: true, save: true } ),
                 item: 'jsonProperty',
@@ -61,6 +62,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 
     Templates: {
         DiscType: require('./templates/DiscType')
+    },
+
+    onDocumentSave( model ) {
+        const obj = model.toObj()
+       
+        this.documentList.put( obj._id, this.omit( obj, [ '_id' ] ) )
+        .then( () => this.Toast.showMessage( 'success', `${this.model.git('currentCollection')} updated.` ) )
+        .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
     },
 
     createView( type, name, model ) {
@@ -87,6 +96,23 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 [ 'deleted', function() { this.currentView = 'discTypesList'; this.views.discTypesList.show().catch(this.Error) } ],
                 [ 'modelDeleted', function( model ) { this.views.discTypesList.remove( model ) } ]
             ],
+            documentList: [
+                [ 'itemDblClicked', function( item ) { this.onItemSelected( item ) } ],
+                [ 'dragStart', function( type ) { this.views.collections.showDroppable( type ) } ],
+                [ 'dropped', function( data ) { this.views.collections.hideDroppable(); this.views.collections.checkDrop( data ) } ]
+            ],
+            documentView: [
+                [ 'savedClick', function( document ) { this.onDocumentSave( document ) } ],
+                [ 'resetClicked', function( model ) { this.views.documentView.update( this.DocumentModel.toList() ) } ],
+                [ 'goBackClicked', function( model ) { this.views.documentView.update( this.DocumentModel.toList() ) } ],
+                this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
+this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.update( this.discType.toList() ) )
+
+            ]
+        } )
+        
+        this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.update( this.discType.toList() ) )
+        
         }
     },
 
@@ -157,32 +183,33 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         } 
     },
 
-    onToggledOn( item ) {
-    },
-
-    onToggledOff( item ) {
-    },
-
     postRender() {
         this.currentView = ''
 
-        this.discType = Object.create( this.DiscType )
-    
-        this.discType.getCount()
+        this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
+
+        //this.discType = Object.create( this.DiscType )
+
+        this.documentList.getCount()   
         .then( () => Promise.resolve( this.updateCount() ) )
         .catch( this.Error )
 
+        /* 
+        this.discType.getCount()
+        .then( () => Promise.resolve( this.updateCount() ) )
+        .catch( this.Error )
+        */
+
+        /*
         this.views.discTypesList.on( 'itemDblClicked', item => this.onItemSelected( item ) )
-        this.views.discTypesList.on( 'dragging', () => this.views.collections.showDroppable() )
+        this.views.discTypesList.on( 'dragStart', type => this.views.collections.showDroppable( type ) )
         this.views.discTypesList.on( 'dropped', data => {
             this.views.collections.hideDroppable()
             this.views.collections.checkDrop( data )
         } )
+        */
         
-        this.views.discTypesList.on( 'toggledOn', item => this.onToggledOn( item ) )
-        this.views.discTypesList.on( 'toggledOff', item => this.onToggledOff( item ) )
-      
-        this.views.discTypeJson.els.container.classList.add('hidden')
+        //this.views.discTypeJson.els.container.classList.add('hidden')
          
         this.views.discTypeJson.on( 'saveClicked', model => {
             const obj = model.toObj()
@@ -215,7 +242,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     updateCount() {
-        this.els.resource.textContent = `DiscType ( ${this.discType.meta.count} )`
+        this.els.resource.textContent = `${this.model.git('currentCollection') (${this.documentList.meta.count})`
     },
 
 } )

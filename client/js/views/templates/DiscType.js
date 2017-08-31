@@ -1,4 +1,4 @@
 module.exports = datum =>
     `<div class="DiscType">
-        <span>${datum.title}</span>
+        <span>${datum.label}</span>
     </div>`

@@ -1,7 +1,7 @@
 module.exports = Object.assign( { }, require('./__proto__'), {
 
     events: {
-        manageDiscTypes: 'click',
+        collectionManager: 'click',
         manageByop: 'click',
     },
 
@@ -9,14 +9,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         manageByop: { label: 'Manage Byop', roles: new Set( [ 'superuser' ] ), url: 'manage-byop' },
 
-        manageDiscTypes: {
-            label: 'Manage Disc Types',
+        collectionManager: {
+            label: 'Collection Manager',
             roles: new Set( [ 'superuser' ] ),
-            url: 'manage-disc-types',
-            typeAhead: {
+            url: 'collection-manager'
+            /*typeAhead: {
                 Resource: 'DiscType',
                 templateOptions: { placeholder: 'Search Disc Types' }
-            }
+            }*/
         }
     },
     
@@ -26,8 +26,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.emit( 'navigate', `manage-disc-types`, { append: true } )
     },
 
-    onManageByopClick() {
-        this.emit( 'navigate', `/admin/manage-byop`, { append: true } )
+    onCollectionManagerClick() {
+        this.emit( 'navigate', `collection-manager`, { append: true } )
     },
 
     onNavigation( path ) {
@@ -70,6 +70,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 ? this.model[ key ].view.onNavigation( this.path.slice( 1 ) )
                 : this.model[ key ].view = this.factory.create( key, { insertion: { el: this.els.views }, path: this.path.slice(1) } )
                     .on( 'navigate', ( route, opts ) => this.emit( 'navigate', route, opts ) )
+                    .on( 'enableHeaderTypeahead', model => this.emit( 'enableHeaderTypeAhead', model, this.onHeaderTypeAheadSelection.bind(this) ) )
         
             if( this.model[ key ].typeAhead ) this.emit( 'enableHeaderTypeAhead', this.model[ key ].typeAhead, this.onHeaderTypeAheadSelection.bind(this) )
 

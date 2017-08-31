@@ -9,6 +9,7 @@ module.exports={
 	ByopSponsors: require('./views/ByopSponsors'),
 	ByopTeamEditor: require('./views/ByopTeamEditor'),
 	ByopWaitingListSwap: require('./views/ByopWaitingListSwap'),
+	CollectionManager: require('./views/CollectionManager'),
 	Deleter: require('./views/Deleter'),
 	Division: require('./views/Division'),
 	DivisionDropdown: require('./views/DivisionDropdown'),
@@ -23,7 +24,6 @@ module.exports={
 	Literal: require('./views/Literal'),
 	Login: require('./views/Login'),
 	ManageByop: require('./views/ManageByop'),
-	ManageDiscTypes: require('./views/ManageDiscTypes'),
 	Submitter: require('./views/Submitter'),
 	Toast: require('./views/Toast'),
 	TypeAhead: require('./views/TypeAhead')

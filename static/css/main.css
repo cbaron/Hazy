@@ -14,6 +14,7 @@
 }
 .Admin .splash {
   display: flex;
+  padding-top: 2rem;
 }
 .Admin .splash >* {
   flex: 1;
@@ -42,7 +43,7 @@ button.back-btn {
   border: none;
   display: flex;
   font-size: 0.75rem;
-  height: 1rem;
+  line-height: 1rem;
   padding: 0rem;
 }
 button.back-btn svg {
@@ -447,6 +448,58 @@ button.back-btn:hover {
 .ByopWaitingListSwap .waiting-list >div {
   flex: 3;
 }
+.CollectionManager {
+  display: flex;
+}
+.CollectionManager .left-panel {
+  border-right: 1px solid #acacac;
+  flex: 1;
+  text-align: left;
+}
+.CollectionManager .left-panel >section {
+  padding: 1rem 0rem 1rem 1rem;
+}
+.CollectionManager .left-panel >section+section,
+.CollectionManager .left-panel >section:first-child {
+  border-bottom: 1px solid #acacac;
+}
+.CollectionManager .left-panel svg {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+.CollectionManager .left-panel .side-by-side {
+  display: flex;
+  align-items: center;
+}
+.CollectionManager .left-panel .side-by-side >*:last-child {
+  padding-left: 1rem;
+}
+.CollectionManager .left-panel button {
+  border: none;
+  font-size: 0.75rem;
+  padding: 0.5rem 0rem 0rem 0rem;
+}
+.CollectionManager .left-panel .Collections li {
+  padding: 0.25rem 0rem;
+}
+.CollectionManager .DiscTypes {
+  flex: 4;
+  overflow: hidden;
+  margin-right: 3rem;
+}
+.CollectionManager .Form,
+.CollectionManager .Deleter {
+  flex: 4;
+  padding: 1rem 0rem;
+}
+.CollectionManager .Form form,
+.CollectionManager .Deleter form {
+  padding: 2rem 3rem;
+}
+.CollectionManager >button {
+  bottom: 2rem;
+  right: 2rem;
+}
 .Deleter .side-by-side {
   justify-content: center;
 }
@@ -540,6 +593,7 @@ button.back-btn:hover {
   background-color: #fff;
   border: 1px solid #000;
   color: #000;
+  cursor: pointer;
   font-size: 0.5rem;
   font-weight: 700;
   line-height: 0.5rem;
@@ -1049,73 +1103,86 @@ button.submitting {
 .JsonProperty.confirm-delete >div:hover {
   background-color: transparent;
 }
-.List li {
+.List .list li {
   align-items: center;
   display: flex;
   cursor: pointer;
+  position: relative;
 }
-.List li >.selection {
+.List .list li >.selection {
   align-items: center;
   display: flex;
   flex: 1;
   justify-content: center;
 }
-.List li >.selection input {
+.List .list li >.selection input {
   display: none;
   width: initial;
   transform: scale(2);
   -ms-transform: scale(2);
   -webkit-transform: scale(2);
 }
-.List li >.item {
+.List .list li >.item {
   flex: 10;
   overflow: hidden;
+  position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.List li >.buttons {
+.List .list li >.buttons {
   align-items: center;
   display: flex;
   flex: 1;
 }
-.List li >.buttons svg {
+.List .list li >.buttons svg {
   display: none;
   width: 1.25rem;
   height: 1.25rem;
   margin: 0rem 0.5rem;
 }
-.List li:hover {
+.List .list li .drag {
+  bottom: 0px;
+  color: #acacac;
+  font-size: 0.5rem;
+  position: absolute;
+  flex: none;
+  line-height: 0.25rem;
+}
+.List .list li:hover {
   background-color: rgba(172,172,172,0.1);
 }
-.List li:hover >.buttons svg {
+.List .list li:hover >.buttons svg {
   display: inline-block;
 }
-.List li:hover >.selection input {
+.List .list li:hover >.selection input {
   display: inherit;
 }
-.List li.checked {
+.List .list li.checked {
   background-color: rgba(172,172,172,0.1);
 }
-.List li.checked >.selection input {
+.List .list li.checked >.selection input {
   display: inherit;
 }
-.List li.is-dragging {
+.List .list li.is-dragging {
   background-color: rgba(172,172,172,0.1);
 }
-.List.is-dragging li >.buttons svg {
+.List .list.is-dragging li >.buttons svg {
   display: none;
 }
-.List.is-dragging li >.selection input {
+.List .list.is-dragging li >.selection input {
   display: none;
 }
-.List.is-dragging li:not(.is-dragging):hover {
+.List .list.is-dragging li:not(.is-dragging):hover {
   background-color: initial;
 }
-.List >button {
+.List .list.is-droppable li.mouseover {
+  background-color: rgba(172,172,172,0.1);
+}
+.List .list >button {
   right: 2rem;
   top: 10rem;
 }
-.List >button+button {
+.List .list >button+button {
   top: 16rem;
 }
 .List .heading {
@@ -1140,6 +1207,10 @@ button.submitting {
 }
 .List .heading.is-hidden .caret-down {
   transform: rotate(180deg);
+}
+.List .heading.toggle:hover {
+  background-color: rgba(172,172,172,0.1);
+  cursor: pointer;
 }
 .Login {
   margin: 10rem auto 6rem auto;
@@ -1207,54 +1278,6 @@ button.submitting {
 .ManageByop button:not(.disabled):hover {
   background-color: #4ab74a;
   color: #fff;
-}
-.ManageDiscTypes {
-  display: flex;
-}
-.ManageDiscTypes .left-panel {
-  border-right: 1px solid #acacac;
-  flex: 1;
-  text-align: left;
-}
-.ManageDiscTypes .left-panel >section {
-  padding: 1rem 0rem 1rem 1rem;
-}
-.ManageDiscTypes .left-panel >section+section {
-  border-bottom: 1px solid #acacac;
-}
-.ManageDiscTypes .left-panel svg {
-  height: 0.75rem;
-  width: 0.75rem;
-}
-.ManageDiscTypes .left-panel .side-by-side {
-  display: flex;
-  align-items: center;
-}
-.ManageDiscTypes .left-panel .side-by-side >*:last-child {
-  padding-left: 1rem;
-}
-.ManageDiscTypes .left-panel button {
-  border: none;
-  font-size: 0.75rem;
-  padding: 0.5rem 0rem 0rem 0rem;
-}
-.ManageDiscTypes .DiscTypes {
-  flex: 4;
-  overflow: hidden;
-  margin-right: 3rem;
-}
-.ManageDiscTypes .Form,
-.ManageDiscTypes .Deleter {
-  flex: 4;
-  padding: 1rem 0rem;
-}
-.ManageDiscTypes .Form form,
-.ManageDiscTypes .Deleter form {
-  padding: 2rem 3rem;
-}
-.ManageDiscTypes >button {
-  bottom: 2rem;
-  right: 2rem;
 }
 .Toast {
   background-color: #b13325;

@@ -11,8 +11,12 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     Xhr: require('../Xhr'),
 
     bindEvent( key, event, el ) {
-        var els = el ? [ el ] : Array.isArray( this.els[ key ] ) ? this.els[ key ] : [ this.els[ key ] ]
-        els.forEach( el => el.addEventListener( event || 'click', e => this[ `on${this.capitalizeFirstLetter(key)}${this.capitalizeFirstLetter(event)}` ]( e ) ) )
+        const els = el ? [ el ] : Array.isArray( this.els[ key ] ) ? this.els[ key ] : [ this.els[ key ] ],
+           name = this.getEventMethodName( key, event )
+
+        if( !this[ `_${name}` ] ) this[ `_${name}` ] = e => this[ name ](e)
+
+        els.forEach( el => el.addEventListener( event || 'click', this[ `_${name}` ] ) )
     },
 
     constructor( opts={} ) {
@@ -50,6 +54,8 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     events: {},
+
+    getEventMethodName( key, event ) { return `on${this.capitalizeFirstLetter(key)}${this.capitalizeFirstLetter(event)}` },
 
     getContainer() { return this.els.container },
 
@@ -101,10 +107,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     htmlToFragment( str ) {
-        let range = document.createRange();
-        // make the parent of the first div in the document becomes the context node
-        range.selectNode(document.getElementsByTagName("div").item(0))
-        return range.createContextualFragment( str )
+        return this.range.createContextualFragment( str )
     },
 
     initialize() {
@@ -173,6 +176,12 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
             if( this.Views && this.Views[ name ] ) opts = typeof this.Views[ name ] === "object" ? this.Views[ name ] : Reflect.apply( this.Views[ name ], this, [ ] )
             
             this.views[ name ] = this.factory.create( obj.view, Object.assign( { insertion: { el: obj.el, method: 'insertBefore' } }, opts ) )
+
+            if( this.events.views ) {
+                if( this.events.views[ name ] ) this.events.views[ name ].forEach( arr => this.views[ name ].on( arr[0], eventData => Reflect.apply( arr[1], this, [ eventData ] ) ) )
+                else if( this.events.views[ obj.view ] ) this.events.views[ obj.view ].forEach( arr => this.views[ name ].on( arr[0], eventData => Reflect.apply( arr[1], this, [ eventData ] ) ) )
+            }
+
             if( obj.el.classList.contains('hidden') ) this.views[name].hideSync()
             obj.el.remove()
         } )
@@ -252,5 +261,12 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         if( options.renderSubviews ) this.renderSubviews()
 
         return this
+    },
+
+    unbindEvent( key, event, el ) {
+        const els = el ? [ el ] : Array.isArray( this.els[ key ] ) ? this.els[ key ] : [ this.els[ key ] ],
+           name = this.getEventMethodName( key, event )
+
+        els.forEach( el => el.removeEventListener( event || 'click', this[ `_${name}` ] ) )
     }
 } )

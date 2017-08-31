@@ -106,7 +106,7 @@ module.exports = Object.create( Object.assign( {}, require('./lib/MyObject'), {
             response.writeHead(
                 200,
                 {
-                    'Cache-Control': `max-age=600`,
+                    'Cache-Control': process.env.NODE_ENV === 'development' ? `no-cache` : `max-age=600`,
                     'Connection': 'keep-alive',
                     'Content-Encoding': ext === ".gz" ? 'gzip' : 'identity',
                     'Content-Length': stat.size,

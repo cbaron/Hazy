@@ -1,26 +1,26 @@
-const getHeading = ( opts ) => {
-    return opts.goBack
+const getHeading = ( p ) => {
+    return p.opts.goBack
     ? `<div class="heading">
         <button class="back-btn" data-js="goBackBtn">
             ${require('./lib/leftArrow')()}
-            <span>${opts.goBack}</span>
+            <span>${p.opts.goBack}</span>
         </button>
-        <h3>${opts.heading}</h3>
+        <h3>${p.opts.heading}</h3>
       </div>`
-    : opts.toggle
-        ? `<div data-js="toggle" class="heading side-by-side">
-            ${require('./lib/caret-down')()}
-            <span>${opts.heading}</span>
+    : p.opts.toggle
+        ? `<div data-js="toggle" class="heading side-by-side toggle">
+            ${p.GetIcon('caret-down')}
+            <span>${p.opts.heading}</span>
           </div>`
-        : `<h3>${opts.heading}</h3>`
+        : `<h3>${p.opts.heading}</h3>`
 }
 
-module.exports = ( { model={}, opts={} } ) => {
+module.exports = function( p ) {
 return `` +
-`<section class="${opts.name || ''}">
-    ${getHeading(opts)}
-    <ol data-js="list" class="${model.draggable ? 'no-select' : '' }"></ol>
-    ${model.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
-    ${model.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
+`<section class="${p.opts.name || ''}">
+    ${getHeading(p)}
+    <ol data-js="list" class="list ${p.model.draggable ? 'no-select' : '' }"></ol>
+    ${p.model.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
+    ${p.model.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
 </section>`
 }

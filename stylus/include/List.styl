@@ -1,60 +1,71 @@
 .List
-    li
-        align-items: center
-        display: flex
-        cursor: pointer
-
-        >.selection
-            align-items: center
-            display: flex
-            flex: 1
-            justify-content: center
-
-            input
-                display: none
-                width: initial
-                transform: scale(2)
-                -ms-transform: scale(2)
-                -webkit-transform: scale(2)
-
-        >.item
-            flex: 10
-            overflow: hidden
-            text-overflow: ellipsis
-            white-space: nowrap
-        
-        >.buttons
-            align-items: center
-            display: flex
-            flex: 1
-
-            svg
-                display: none
-                width: 1.25rem
-                height: 1.25rem
-                margin: 0rem .5rem
-        
-        &:hover
-            background-color: $LightGrayTransparent
-
-            >.buttons
-                svg
-                    display: inline-block
-
-            >.selection input
-                display: inherit
-
-        &.checked 
-            background-color: $LightGrayTransparent
-
-            >.selection input
-                display: inherit
-        
-        &.is-dragging
-            background-color: $LightGrayTransparent
-            
-    &.is-dragging
+    .list
         li
+            align-items: center
+            display: flex
+            cursor: pointer
+            position: relative
+
+            >.selection
+                align-items: center
+                display: flex
+                flex: 1
+                justify-content: center
+
+                input
+                    display: none
+                    width: initial
+                    transform: scale(2)
+                    -ms-transform: scale(2)
+                    -webkit-transform: scale(2)
+
+            >.item
+                flex: 10
+                overflow: hidden
+                position: relative
+                text-overflow: ellipsis
+                white-space: nowrap
+
+            
+            >.buttons
+                align-items: center
+                display: flex
+                flex: 1
+
+                svg
+                    display: none
+                    width: 1.25rem
+                    height: 1.25rem
+                    margin: 0rem .5rem
+            .drag
+                bottom: 0px
+                color: $LightGray
+                font-size: .5rem
+                position: absolute
+                flex: none
+                line-height: 0.25rem
+
+            &:hover
+                background-color: $LightGrayTransparent
+
+                >.buttons
+                    svg
+                        display: inline-block
+
+                >.selection input
+                    display: inherit
+
+            &.checked 
+                background-color: $LightGrayTransparent
+
+                >.selection input
+                    display: inherit
+            
+            &.is-dragging
+                background-color: $LightGrayTransparent
+                
+        &.is-dragging
+            li
                 >.buttons
                     svg
                         display: none
@@ -62,17 +73,23 @@
                 >.selection input
                     display: none
 
-        li:not(.is-dragging)
-            &:hover
-                background-color: initial
+            li:not(.is-dragging)
+                &:hover
+                    background-color: initial
 
-    >button
-        right: 2rem
-        top: 10rem
-    
-    >button+button
-        top: 16rem
+        &.is-droppable
+            li.mouseover
+                background-color: $LightGrayTransparent
 
+        >button
+            right: 2rem
+            top: 10rem
+        
+        >button+button
+            top: 16rem
+
+        
+                
     .heading
         border-bottom: 1px solid $LightGray
         color: black
@@ -96,5 +113,8 @@
         &.is-hidden
             .caret-down
                 transform: rotate(180deg)
-        
-    
+
+        &.toggle
+            &:hover
+                background-color: $LightGrayTransparent
+                cursor: pointer
