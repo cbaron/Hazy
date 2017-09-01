@@ -479,10 +479,14 @@ button.back-btn:hover {
   font-size: 0.75rem;
   padding: 0.5rem 0rem 0rem 0rem;
 }
+.CollectionManager .left-panel button:hover {
+  font-weight: 700;
+  text-decoration: none;
+}
 .CollectionManager .left-panel .Collections li {
   padding: 0.25rem 0rem;
 }
-.CollectionManager .DiscTypes {
+.CollectionManager .DiscType {
   flex: 4;
   overflow: hidden;
   margin-right: 3rem;

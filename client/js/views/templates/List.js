@@ -5,14 +5,14 @@ const getHeading = ( p ) => {
             ${require('./lib/leftArrow')()}
             <span>${p.opts.goBack}</span>
         </button>
-        <h3>${p.opts.heading}</h3>
+        <h3>${p.opts.name}</h3>
       </div>`
     : p.opts.toggle
         ? `<div data-js="toggle" class="heading side-by-side toggle">
             ${p.GetIcon('caret-down')}
-            <span>${p.opts.heading}</span>
+            <span>${p.opts.name}</span>
           </div>`
-        : `<h3>${p.opts.heading}</h3>`
+        : `<h3>${p.opts.name}</h3>`
 }
 
 module.exports = function( p ) {

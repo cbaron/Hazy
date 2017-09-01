@@ -28,7 +28,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         },
 
         DiscType: {
-            Model: require('../models/DiscType'),
+            Model: require('../models/Document'),
             renderItem: ( item, search ) => `<div class="autocomplete-suggestion" data-val="${item.title}" data-id="${item._id}">${item.title}</div>`,
             search( term, suggest ) {
                 return this.Xhr( { method: 'get', qs: JSON.stringify( { title: { '$regex': term, '$options': 'i' } } ), resource: 'DiscType' } )

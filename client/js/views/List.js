@@ -61,6 +61,12 @@ module.exports = Object.assign( { }, Super, {
 
     },
 
+    getCount() {
+        return this.collection.getCount()
+        .then( () => Promise.resolve( this.collection.meta.count ) )
+        .catch( this.Error )
+    },
+
     getItemTemplateResult( keyValue, datum ) {
         const buttonsOnRight = this.model.git('delete') ? `<div class="buttons">${this.deleteIcon}</div>` : ``,
             selection = this.toggleSelection ? `<div class="selection"><input data-js="checkbox" type="checkbox" /></div>` : ``
@@ -72,6 +78,11 @@ module.exports = Object.assign( { }, Super, {
         if( this.els.resetBtn ) this.els.resetBtn.classList.add('hidden')
         if( this.els.saveBtn ) this.els.saveBtn.classList.add('hidden')
         return Reflect.apply( Super.hide, this, [ ] )
+    },
+
+    hideItems( keys ) {
+        Promise.all( keys.map( key => this.hideEl( this.els.list.querySelector(`li[data-key="${key}"]`) ) ) )
+        .catch( this.Error )
     },
 
     hideList() {
@@ -208,8 +219,7 @@ module.exports = Object.assign( { }, Super, {
     },
 
     postRender() {
-        this.skip = this.skip || 0
-        this.pageSize = this.pageSize || 100
+        this.collection = this.model.git('collection')
         this.key = this.collection.meta.key
 
         if( this.collection ) this.collection.store = { [ this.key ]: { } }
@@ -217,8 +227,9 @@ module.exports = Object.assign( { }, Super, {
         if( this.model.git('delete') ) this.deleteIcon = this.Format.GetIcon('garbage')
 
         if( this.model.git('fetch') ) {
-            this.collection.get( { query: { skip: this.skip, limit: this.pageSize, sort: this.collection.meta.sort || { } } } )
+            this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
             .then( () => this.populateList() )
+            .then( () => Promise.resolve( this.emit('fetched') ) )
             .catch( this.Error )
         }
 

@@ -94,7 +94,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     hideEl( el, isSlow ) {
-        if( this.isHidden() ) return Promise.resolve()
+        if( this.isHidden() || this.isHiding ) return Promise.resolve()
 
         const time = new Date().getTime(),
             hash = `${time}Hide`

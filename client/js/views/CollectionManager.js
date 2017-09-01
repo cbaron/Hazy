@@ -3,14 +3,19 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     model: require('../models/CollectionManager'),
     Collection: require('../models/Collection'),
     DocumentModel: require('../models/Document'),
+    JsonProperty: require('../models/JsonProperty'),
 
     Views: {
 
         collections() {
             return {
-                model: Object.create( this.Model ).constructor( { delete: true, droppable: 'document', fetch: true } ),
+                model: Object.create( this.Model ).constructor( {
+                    collection: Object.create( this.Collection ),
+                    delete: true,
+                    droppable: 'document',
+                    fetch: true
+                } ),
                 events: { list: 'click' },
-                collection: Object.create( this.Collection ),
                 itemTemplate: collection => `<span>${collection.name}</span>`,
                 templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
             }
@@ -32,36 +37,46 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         },
 
-        deleteDiscType( model ) {
+        deleteDocument( document ) {
             return {
                 insertion: { el: this.els.container },
-                model: Object.create( this.DiscType ).constructor( model ),
-                templateOptions: { message: `Delete '${model.name}' Disc Type?` }
+                model: Object.create( this.DocumentModel ).constructor( model ),
+                templateOptions: { message: `Delete '${model.label}' ${this.model.git('currentCollection')}?` }
             }
         },
 
         documentList() {
             return {
-                model: Object.create( this.Model ).constructor( { delete: true, draggable: 'document', fetch: true } ),
+                model: Object.create( this.Model ).constructor( {
+                    collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } ),
+                    delete: true,
+                    draggable: 'document',
+                    fetch: true,
+                    pageSize: 100,
+                    skip: 0,
+                    sort: { 'label': 1 }
+                } ),
                 events: { list: 'click' },
-                itemTemplate: this.Templates.DiscType,
-                collection: Object.create( this.DiscType ),
-                templateOptions: { heading: 'Disc Types', name: 'DiscTypes' },
+                itemTemplate: this.Templates.Document,
+                templateOptions: { name: this.model.git('currentCollection') },
             }
         },
 
         documentView() {
             return {
-                model: Object.create( this.Model ).constructor( { reset: true, save: true } ),
-                item: 'jsonProperty',
-                templateOptions: { goBack: 'Back to Disc Types', heading: 'Disc Type' },
-                collection: require('../models/JsonProperty')
+                model: Object.create( this.Model ).constructor( {
+                    collection: Object.create( this.JsonProperty ),
+                    view: 'jsonProperty',
+                    reset: true,
+                    save: true
+                } ),
+                templateOptions: { goBack: `Back to ${this.model.git('currentCollection')} collection`, name: this.model.git('currentCollection') },
             }
         }
     },
                 
     Templates: {
-        DiscType: require('./templates/DiscType')
+        Document: require('./templates/Document')
     },
 
     onDocumentSave( model ) {
@@ -85,34 +100,44 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         goBackBtn: 'click',
 
         views: {
+            collections: [
+                [ 'deleteClicked',
+                  function( collection ) {
+                      this.views[ this.currentView ].hide()
+                      .then( () => Promise.resolve( this.createView( 'deleter', 'deleteCollection', collection ) ) )
+                      .catch( this.Error )
+                  }
+                ],
+                [ 'fetched', function() { this.views.collections.hideItems( [ this.model.git('currentCollection') ] ) } ]
+            ],
             createCollection: [
                 [ 'posted', function( collection ) { this.views.collections.add( collection ) } ]
             ],
             deleteCollection: [
-                [ 'deleted', function() { this.currentView = 'discTypesList'; this.views.discTypesList.show().catch(this.Error) } ],
+                [ 'deleted', function() { this.currentView = 'documentList'; this.views.documentList.show().catch(this.Error) } ],
                 [ 'modelDeleted', function( model ) { this.views.collections.remove( model ) } ]
             ],
-            deleteDiscType: [
-                [ 'deleted', function() { this.currentView = 'discTypesList'; this.views.discTypesList.show().catch(this.Error) } ],
-                [ 'modelDeleted', function( model ) { this.views.discTypesList.remove( model ) } ]
+            deleteDocument: [
+                [ 'deleted', function() { this.currentView = 'documentList'; this.views.documentList.show().catch(this.Error) } ],
+                [ 'modelDeleted', function( model ) { this.views.documentList.remove( model ) } ]
             ],
             documentList: [
                 [ 'itemDblClicked', function( item ) { this.onItemSelected( item ) } ],
                 [ 'dragStart', function( type ) { this.views.collections.showDroppable( type ) } ],
-                [ 'dropped', function( data ) { this.views.collections.hideDroppable(); this.views.collections.checkDrop( data ) } ]
+                [ 'dropped', function( data ) { this.views.collections.hideDroppable(); this.views.collections.checkDrop( data ) } ],
+                [ 'deleteClicked',
+                  function( document ) { 
+                    this.views.discTypesList.hide()
+                    .then( () => Promise.resolve( this.createView( 'deleter', 'deleteDocument', document ) ) )
+                    .catch( this.Error )
+                  }
+                ]
             ],
             documentView: [
                 [ 'savedClick', function( document ) { this.onDocumentSave( document ) } ],
                 [ 'resetClicked', function( model ) { this.views.documentView.update( this.DocumentModel.toList() ) } ],
-                [ 'goBackClicked', function( model ) { this.views.documentView.update( this.DocumentModel.toList() ) } ],
-                this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
-this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.update( this.discType.toList() ) )
-
+                [ 'goBackClicked', function( model ) { this.emit( 'navigate', `/admin/${this.model.git('currentCollection')}` ) } ]
             ]
-        } )
-        
-        this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.update( this.discType.toList() ) )
-        
         }
     },
 
@@ -128,7 +153,9 @@ this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.upd
     },
 
     onCreateCollectionBtnClick() {
-        this.views.discTypesList.hide()
+        if( this.views.documentList.isHidden() ) return
+
+        this.views.documentList.hide()
         .then( () => Promise.resolve( this.createView( 'form', 'createCollection' ) ) )
         .catch( this.Error )
     },
@@ -157,42 +184,38 @@ this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.upd
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
         .then( () => {
-            const nextView = this.path.length === 2 ? 'discTypeJson' : 'discTypesList';
-            if( this.currentView === nextView ) return Promise.resolve()
-            return ( this.currentView.length ? this.views[ this.currentView ].hide() : Promise.resolve() )
+            const nextView = this.path.length === 2 ? 'documentView' : 'documentList';
+            if( this.model.git('currentView') === nextView ) return Promise.resolve()
+            return ( this.model.git('currentView') ? this.views[ this.this.model.git('currentView') ].hide() : Promise.resolve() )
             .then( () => {
-                this.currentView = nextView;
+                this.model.set('currentView', nextView )
                 return this.views[ nextView ].show()
             } )
         } )
         .catch( this.Error ) 
 
-
         if( this.isHidden() ) this.showSync()
 
         if( this.path.length === 2 ) { 
-            this.discType.get( { query: { name: this.path[1] } } )
-            .then( () => {
-                if( Object.keys( this.discType.data ).length === 0 ) return Promise.resolve( this.emit( 'navigate', '/admin/manage-disc-types' ) )
-                this.views.discTypeJson.update( this.discType.toList() )
-                return this.views.discTypeJson.show()
-            } )
+            this.views.documentView.fetch( { query: { name: this.path[1] } } )
+            .then( () =>
+                this.views.documentView.collection.length === 0 
+                    ? Promise.resolve( this.emit( 'navigate', '/admin/collection-manager' ) )
+                    : this.views.documentView.show()
+            )
             .catch( this.Error )
         } else {
-            this.views.discTypesList.show().catch( this.Error )
+            this.views.documentList.show().catch( this.Error )
         } 
     },
 
     postRender() {
-        this.currentView = ''
 
-        this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
+        //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
 
         //this.discType = Object.create( this.DiscType )
 
-        this.documentList.getCount()   
-        .then( () => Promise.resolve( this.updateCount() ) )
-        .catch( this.Error )
+        this.views.documentList.getCount().then( count => this.updateCount(count) )   
 
         /* 
         this.discType.getCount()
@@ -210,7 +233,8 @@ this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.upd
         */
         
         //this.views.discTypeJson.els.container.classList.add('hidden')
-         
+    
+        /*     
         this.views.discTypeJson.on( 'saveClicked', model => {
             const obj = model.toObj()
             this.discType.put( obj._id, this.omit( obj, [ '_id' ] ) )
@@ -221,7 +245,9 @@ this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.upd
         this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.update( this.discType.toList() ) )
         
         this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
+        */
 
+        /*
         this.views.collections.on( 'posted', name => this.views.collections.add( posted ) )
 
         this.views.collections.on( 'deleteClicked', model => {
@@ -229,20 +255,23 @@ this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.upd
             .then( () => Promise.resolve( this.createView( 'deleter', 'deleteCollection', model ) ) )
             .catch( this.Error )
         } )
+        */
 
+        /*
         this.views.discTypesList.on( 'deleteClicked', model =>
             this.views.discTypesList.hide()
             .then( () => Promise.resolve( this.createView( 'deleter', 'deleteDiscType', model ) ) )
             .catch( this.Error )
         )
+        */
 
         this.onNavigation()
 
         return this
     },
 
-    updateCount() {
-        this.els.resource.textContent = `${this.model.git('currentCollection') (${this.documentList.meta.count})`
+    updateCount( count ) {
+        this.els.resource.textContent = `${this.model.git('currentCollection')} (${count})`
     },
 
 } )
