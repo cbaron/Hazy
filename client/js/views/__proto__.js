@@ -81,7 +81,13 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         return this
     },
 
-    hide( isSlow ) { return this.hideEl( this.els.container, isSlow ) },
+    hide( isSlow ) {
+        if( this.isHiding ) return Promise.resolve()
+
+        this.isHiding = true;
+        return this.hideEl( this.els.container, isSlow )
+        .then( () => Promise.resolve( this.hiding = false ) )
+    },
     
     hideSync() { this.els.container.classList.add('hidden'); return this },
 
@@ -94,7 +100,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     hideEl( el, isSlow ) {
-        if( this.isHidden() || this.isHiding ) return Promise.resolve()
+        if( this.isHidden() ) return Promise.resolve()
 
         const time = new Date().getTime(),
             hash = `${time}Hide`

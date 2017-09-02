@@ -5,5 +5,5 @@ module.exports = ( { user, ImageSrc } ) =>
         <img src="${ImageSrc('hazy-tree.svg')}"/>
         <div data-js="column1"></div>
     </div>
-    <div data-js="views"></div>
+    <div class="views" data-js="views"></div>
 </div>`

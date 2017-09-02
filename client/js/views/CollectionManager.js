@@ -23,7 +23,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         createCollection() {
             return {
-                insertion: { el: this.els.container },
+                insertion: { el: this.els.mainPanel },
                 model: Object.create( this.Collection ).constructor(),
                 templateOptions: { heading: 'Create Collection' }
             }
@@ -31,7 +31,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         deleteCollection( model ) {
             return {
-                insertion: { el: this.els.container },
+                insertion: { el: this.els.mainPanel },
                 model: Object.create( this.Collection ).constructor( model ),
                 templateOptions: { message: `Delete '${model.name}' Collection?` }
             }
@@ -39,7 +39,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         deleteDocument( document ) {
             return {
-                insertion: { el: this.els.container },
+                insertion: { el: this.els.mainPanel },
                 model: Object.create( this.DocumentModel ).constructor( model ),
                 templateOptions: { message: `Delete '${model.label}' ${this.model.git('currentCollection')}?` }
             }
@@ -57,8 +57,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     sort: { 'label': 1 }
                 } ),
                 events: { list: 'click' },
-                itemTemplate: this.Templates.Document,
-                templateOptions: { name: this.model.git('currentCollection') },
+                itemTemplate: this.Templates.Document
             }
         },
 
@@ -168,7 +167,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.discType.constructor( item )
 
         this.emit( 'navigate', item.name, { append: true, silent: true } )
-        this.path = [ `manage-disc-types`, item.name ]
+        this.path = [ `collection-manager`, item.name ]
 
         this.views.discTypesList.hide()
         .then( () => {
@@ -184,7 +183,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
         .then( () => {
-            const nextView = this.path.length === 2 ? 'documentView' : 'documentList';
+            const nextView = this.path.length === 3 ? 'documentView' : 'documentList';
             if( this.model.git('currentView') === nextView ) return Promise.resolve()
             return ( this.model.git('currentView') ? this.views[ this.this.model.git('currentView') ].hide() : Promise.resolve() )
             .then( () => {
@@ -210,6 +209,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     postRender() {
+
+        if( this.path.length === 1 ) this.emit( 'navigate', this.model.git('currentCollection'), { append: true } ); return this;
 
         //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
 
