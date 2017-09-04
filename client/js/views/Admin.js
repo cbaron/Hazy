@@ -13,10 +13,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             label: 'Collection Manager',
             roles: new Set( [ 'superuser' ] ),
             url: 'collection-manager'
-            /*typeAhead: {
-                Resource: 'DiscType',
-                templateOptions: { placeholder: 'Search Disc Types' }
-            }*/
         }
     },
     
@@ -70,10 +66,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 ? this.model[ key ].view.onNavigation( this.path.slice( 1 ) )
                 : this.model[ key ].view = this.factory.create( key, { insertion: { el: this.els.views }, path: this.path.slice(1) } )
                     .on( 'navigate', ( route, opts ) => this.emit( 'navigate', route, opts ) )
-                    .on( 'enableHeaderTypeahead', model => this.emit( 'enableHeaderTypeAhead', model, this.onHeaderTypeAheadSelection.bind(this) ) )
         
-            if( this.model[ key ].typeAhead ) this.emit( 'enableHeaderTypeAhead', this.model[ key ].typeAhead, this.onHeaderTypeAheadSelection.bind(this) )
-
             this.currentView = this.model[ key ].view
             this.currentEl = this.model[ key ].view.getContainer()
             return Promise.resolve()

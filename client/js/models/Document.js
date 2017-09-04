@@ -10,8 +10,9 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         key: '_id',
     },
 
-    toList() {
-        return Object.keys( this.data ).sort().map( key => ( { key, value: this.data[ key ] } ) )
+    toList( document ) {
+        document = document || this.data
+        return Object.keys( document ).sort().map( key => ( { key, value: document[ key ] } ) )
     }
 
 } )

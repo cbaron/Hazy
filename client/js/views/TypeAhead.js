@@ -27,15 +27,15 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             }
         },
 
-        DiscType: {
+        Document: {
             Model: require('../models/Document'),
-            renderItem: ( item, search ) => `<div class="autocomplete-suggestion" data-val="${item.title}" data-id="${item._id}">${item.title}</div>`,
+            renderItem: ( item, search ) => `<div class="autocomplete-suggestion" data-val="${item.label}" data-id="${item._id}">${item.label}</div>`,
             search( term, suggest ) {
-                return this.Xhr( { method: 'get', qs: JSON.stringify( { title: { '$regex': term, '$options': 'i' } } ), resource: 'DiscType' } )
-                .then( discTypes => {
-                    if( discTypes.length === 0 ) return Promise.resolve( false )
+                return this.Xhr( { method: 'get', qs: JSON.stringify( { label: { '$regex': term, '$options': 'i' } } ), resource: this.Resource } )
+                .then( documents => {
+                    if( documents.length === 0 ) return Promise.resolve( false )
                 
-                    this.resource.Model.constructor( discTypes, { storeBy: [ '_id' ] } )
+                    this.resource.Model.constructor( documents, { storeBy: [ '_id' ] } )
                     suggest( this.resource.Model.data )
                     return Promise.resolve( true )
                 } )
@@ -63,7 +63,9 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     postRender() {
-        this.resource = this.Resources[ this.Resource || 'Byop' ]
+        this.Resource = this.Resource || 'Byop'
+        this.Type = this.Type || 'Byop'
+        this.resource = this.Resources[ this.Type ]
 
         new this.AutoComplete( {
             delay: 500,

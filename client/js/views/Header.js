@@ -1,4 +1,4 @@
-module.exports = Object.assign( {}, require('./__proto__'), {
+module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
 
     Views: {
         typeAhead: { }
@@ -37,6 +37,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         logout: 'click'
     },
 
+    insertion() { return { el: document.querySelector('#content'), method: 'insertBefore' } },
+
+    name: 'Header',
+
     onLogoClick() { this.emit( 'navigate', '/' ) },
 
     onLogoutClick() {
@@ -61,6 +65,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         this.user.on( 'logout', () => this.onUserLogout() )
 
         return this
-    }
+    },
 
-} )
+    template: require('./templates/Header'),
+
+    user: require('../models/User')
+
+} ), { } )

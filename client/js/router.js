@@ -6,8 +6,7 @@ module.exports = Object.create( {
     
     Views: require('./.ViewMap'),
 
-    Dragger: require('./views/Dragger'),
-    Toast: require('./views/Toast'),
+    Singletons: [ 'Dragger', 'Header', 'Toast' ],
 
     User: require('./models/User'),
 
@@ -17,10 +16,9 @@ module.exports = Object.create( {
 
         this.contentContainer = document.querySelector('#content')
 
-        this.ViewFactory.constructor()
+        this.ViewFactory.constructor();
 
-        this.Toast.constructor( { range: this.ViewFactory.range } )
-        this.Dragger.constructor( { range: this.ViewFactory.range } )
+        this.Singletons.forEach( name => this.Views[name].constructor( { factory: this.ViewFactory } ) )
 
         window.onpopstate = this.handle.bind(this)
 
@@ -30,9 +28,7 @@ module.exports = Object.create( {
             .catch( this.Error )
         )
         
-        this.header =
-            this.ViewFactory.create( 'header', { insertion: { el: this.contentContainer, method: 'insertBefore' } } )
-            .on( 'navigate', route => this.navigate( route ) )
+        this.Views.Header.on( 'navigate', route => this.navigate( route ) )
 
         this.footer = this.ViewFactory.create( 'footer', { insertion: { el: document.body, method: 'appendChild' } } )
 
@@ -47,7 +43,7 @@ module.exports = Object.create( {
         const name = this.pathToView( path[0] ),
             view = this.Views[ name ] ? name : 'home'
 
-        this.header.disableTypeAhead()
+        this.Views.Header.disableTypeAhead()
         this.footer.els.container.classList.toggle( 'hidden', path[0] === 'admin' )
 
         if( view === this.currentView ) return this.views[ view ].onNavigation( path.slice(1) )
@@ -66,15 +62,13 @@ module.exports = Object.create( {
                     this.ViewFactory.create( view, { insertion: { el: this.contentContainer }, path } )
                     .on( 'navigate', ( route, options ) => this.navigate( route, options ) )
                     .on( 'deleted', () => delete this.views[ view ] )
-                    .on( 'enableHeaderTypeAhead', ( meta, method ) => this.header.enableTypeAhead( meta, method ) )
-                    .on( 'disableHeaderTypeAhead', meta => this.header.disableTypeAhead() )
             )
         } )
         .catch( this.Error )
     },
 
     navigate( location, options={} ) {
-        if( this.header.displayingTypeAhead ) this.header.removeTypeAhead()
+        if( this.Views.Header.displayingTypeAhead ) this.Views.Header.removeTypeAhead()
 
         if( options.replace ) {
             let path = `${window.location.pathname}`.split('/')

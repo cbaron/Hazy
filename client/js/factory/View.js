@@ -13,6 +13,7 @@ module.exports = Object.create( {
             this.Views[ name ],
             Object.assign( {
                 Dragger: { value: this.Dragger },
+                Header: { value: this.Header },
                 Toast: { value: this.Toast },
                 name: { value: name },
                 factory: { value: this },
@@ -25,6 +26,7 @@ module.exports = Object.create( {
 
 }, {
     Dragger: { value: require('../views/Dragger') },
+    Header: { value: require('../views/Header') },
     Templates: { value: require('../.TemplateMap') },
     Toast: { value: require('../views/Toast') },
     User: { value: require('../models/User') },

@@ -65,7 +65,7 @@ module.exports = Object.assign( { }, Super, {
     },
 
     fetch() {
-        this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
+        return this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
         .then( () => this.populateList() )
         .then( () => Promise.resolve( this.emit('fetched') ) )
     },
@@ -90,7 +90,12 @@ module.exports = Object.assign( { }, Super, {
     },
 
     hideItems( keys ) {
-        Promise.all( keys.map( key => this.hideEl( this.els.list.querySelector(`li[data-key="${key}"]`) ) ) )
+        Promise.all(
+            keys.map( key => {
+                const el = this.els.list.querySelector(`li[data-key="${key}"]`)
+                return el ? this.hideEl( el ) : Promise.resolve() 
+            } )
+        )
         .catch( this.Error )
     },
 
@@ -188,7 +193,8 @@ module.exports = Object.assign( { }, Super, {
 
         if( this.collection.data.length === 0 ) return
 
-        if( this.item ) {
+        if( this.model.git('view') ) {
+            let viewName = this.model.git('view')
             const fragment =
                 this.collection.data.reduce(
                     ( fragment, datum ) => {
@@ -196,7 +202,7 @@ module.exports = Object.assign( { }, Super, {
                         this.collection.store[ this.key ][ keyValue ] = datum
 
                         this.itemViews[ keyValue ] =
-                            this.factory.create( this.item, { model: Object.create( this.Model ).constructor( datum ), storeFragment: true } )
+                            this.factory.create( viewName, { model: Object.create( this.Model ).constructor( datum ), storeFragment: true } )
                                 .on( 'deleted', () => this.onDeleted( datum ) )
 
                         while( this.itemViews[ keyValue ].fragment.firstChild ) fragment.appendChild( this.itemViews[ keyValue ].fragment.firstChild )
@@ -239,7 +245,7 @@ module.exports = Object.assign( { }, Super, {
 
         if( this.model.git('delete') ) this.deleteIcon = this.Format.GetIcon('garbage')
 
-        if( this.model.git('fetch') ) this.collection.fetch().catch( this.Error )
+        if( this.model.git('fetch') ) this.fetch().catch( this.Error )
 
         if( this.model.git('draggable') ) this.initializeDragDrop()
 

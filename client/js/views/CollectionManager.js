@@ -53,6 +53,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } ),
                     delete: true,
                     draggable: 'document',
+                    fetch: true,
                     pageSize: 100,
                     skip: 0,
                     sort: { 'label': 1 }
@@ -96,9 +97,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         )
     },
 
-    createDocumentList( collectionName] ) {
+    createDocumentList( collectionName ) {
         this.model.set( 'currentCollection', collectionName )
         this.createView( 'list', 'documentList' )
+        this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, placeholder: `Search ${collectionName} collection.` }, document => this.onDocumentSelected(document) )
         return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
     },
 
@@ -152,7 +154,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 [ 'modelDeleted', function( model ) { this.views.documentList.remove( model ) } ]
             ],
             documentList: [
-                [ 'itemDblClicked', function( item ) { this.onItemSelected( item ) } ],
+                [ 'itemClicked', function( document ) { this.onDocumentSelected( item ) } ],
                 [ 'dragStart', function( type ) { this.views.collections.showDroppable( type ) } ],
                 [ 'dropped', function( data ) { this.views.collections.hideDroppable(); this.views.collections.checkDrop( data ) } ],
                 [ 'deleteClicked',
@@ -192,10 +194,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.emit( 'navigate', '/admin' )
     },
 
-    onItemSelected( item ) {
-        this.discType.constructor( item )
-
-        this.emit( 'navigate', item.name, { append: true, silent: true } )
+    onDocumentSelected( document ) {
+        return this.clearCurrentView()
+        .then( () => this.showDocumentView( document ) )
+        .catch( this.Error )
+        
         this.path = [ `collection-manager`, item.name ]
 
         this.views.discTypesList.hide()
@@ -245,7 +248,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     postRender() {
 
         if( this.path.length === 2 ) this.createDocumentList( this.path[1] )
-        else if( this.path.length === 3 ) this.createDocumentList( this.path[1] )
+        else if( this.path.length === 3 ) this.updateDocumentView( this.path[1] )
 
 
         //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
@@ -304,6 +307,15 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
 
         return this
+    },
+
+    showDocumentView( document ) {
+        return this.views.documentView.update( this.DocumentModel.toList( document ) ).show()
+        .then( () => {
+            this.emit( 'navigate', document.name, Object.assign( { silent: true }, this.model.git( 'currentView' ) === 'documentView' ? { replace: true } : { append: true } ) );
+            this.model.set('currentView', 'documentView' );
+            return Promise.resolve()
+        } )
     },
 
     updateCount( count ) {

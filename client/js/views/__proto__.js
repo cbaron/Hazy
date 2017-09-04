@@ -115,7 +115,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     htmlToFragment( str ) {
-        return this.range.createContextualFragment( str )
+        return this.factory.range.createContextualFragment( str )
     },
 
     initialize() {
@@ -123,9 +123,11 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     insertToDom( fragment, options ) {
-        options.insertion.method === 'insertBefore'
-            ? options.insertion.el.parentNode.insertBefore( fragment, options.insertion.el )
-            : options.insertion.el[ options.insertion.method || 'appendChild' ]( fragment )
+        const insertion = typeof options.insertion === 'function' ? options.insertion() : options.insertion;
+
+        insertion.method === 'insertBefore'
+            ? insertion.el.parentNode.insertBefore( fragment, insertion.el )
+            : insertion.el[ insertion.method || 'appendChild' ]( fragment )
     },
 
     isAllowed( user ) {
