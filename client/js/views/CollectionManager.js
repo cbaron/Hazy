@@ -86,11 +86,19 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
     },
 
+    clearCurrentView() {
+        const currentView = this.model.git('currentView');
+        return ( currentView !== 'documentList'
+            ? this.views[ currentView ].delete( { silent: true } )
+            : Promise.all( [ this.views[ currentView ].hide(), this.hideEl( this.els.addButton ) ] )
+        )
+    },
+
     createView( type, name, model ) {
         this.views[ name ] = this.factory.create( type, Reflect.apply( this.Views[ name ], this, [ model ] ) )
 
         if( this.events.views[ name ] ) this.events.views[ name ].forEach( arr => this.views[ name ].on( arr[0], eventData => Reflect.apply( arr[1], this, [ eventData ] ) ) )
-        this.currentView = name
+        this.model.set( 'currentView', name )
     },
 
     events: {
@@ -102,7 +110,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             collections: [
                 [ 'deleteClicked',
                   function( collection ) {
-                      this.views[ this.currentView ].hide()
+                      this.clearCurrentView()
                       .then( () => Promise.resolve( this.createView( 'deleter', 'deleteCollection', collection ) ) )
                       .catch( this.Error )
                   }
@@ -110,6 +118,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 [ 'fetched', function() { this.views.collections.hideItems( [ this.model.git('currentCollection') ] ) } ]
             ],
             createCollection: [
+                [ 'deleted', function() {
+                    console.log('TT')
+                    this.model.set( 'currentView', 'documentList' )
+                    Promise.all( [ this.views.documentList.show(), this.showEl( this.els.addButton ) ] ).catch(this.Error)
+                } ],
                 [ 'posted', function( collection ) { this.views.collections.add( collection ) } ]
             ],
             deleteCollection: [
@@ -152,9 +165,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     onCreateCollectionBtnClick() {
-        if( this.views.documentList.isHidden() ) return
-
-        this.views.documentList.hide()
+        this.clearCurrentView()
         .then( () => Promise.resolve( this.createView( 'form', 'createCollection' ) ) )
         .catch( this.Error )
     },
@@ -191,11 +202,16 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 return this.views[ nextView ].show()
             } )
         } )
+        .then( () =>
+            this.path.length === 1 
+                ? this.emit( 'navigate', this.model.git('currentCollection'), { append: true, silent: true } )
+                : Promise.resolve()
+        )
         .catch( this.Error ) 
 
         if( this.isHidden() ) this.showSync()
 
-        if( this.path.length === 2 ) { 
+        if( this.path.length === 3 ) { 
             this.views.documentView.fetch( { query: { name: this.path[1] } } )
             .then( () =>
                 this.views.documentView.collection.length === 0 
@@ -209,8 +225,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     postRender() {
-
-        if( this.path.length === 1 ) this.emit( 'navigate', this.model.git('currentCollection'), { append: true } ); return this;
 
         //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
 

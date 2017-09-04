@@ -44,6 +44,9 @@ module.exports = Object.assign( { }, Super, {
     },
 
     checkDragStart( e ) {
+        const closestList = e.target.closest('.List')
+        if( closestList === null || ( !closestList.isSameNode( this.els.container ) ) ) return
+             
         const el = e.target.closest('.item')
 
         if( !el ) return null

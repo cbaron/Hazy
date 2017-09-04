@@ -1,6 +1,7 @@
 module.exports = {
 
     events: {
+        'cancelBtn': 'click',
         'submitBtn': 'click'
     },
 
@@ -8,6 +9,10 @@ module.exports = {
         this.Toast.showMessage( 'error', this.toastError || 'Error' )
         this.Error( e )
         this.onSubmitEnd()
+    },
+
+    onCancelBtnClick() {
+        this.delete().catch( this.Error )
     },
 
     onSubmitBtnClick() {

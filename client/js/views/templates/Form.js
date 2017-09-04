@@ -12,6 +12,9 @@ return `<section>
             <button data-js="submitBtn" type="button">
                 <span>${p.opts.submitText || 'Submit'}</span>
             </button>
+            <button data-js="cancelBtn" type="button">
+                <span>${p.opts.cancelText || 'Cancel'}</span>
+            </button>
         </div>
     </div>
 </section>`

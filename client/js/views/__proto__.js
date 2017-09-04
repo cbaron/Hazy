@@ -43,13 +43,14 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         }
     },
 
-    delete() {
+    delete( { silent } = { silent: false } ) {
         return this.hide()
         .then( () => {
             const container = this.els.container,
                 parent = container.parentNode
             if( container && parent ) parent.removeChild( container )
-            return Promise.resolve( this.emit('deleted') )
+            if( !silent ) this.emit('deleted')
+            return Promise.resolve()
         } )
     },
 
@@ -96,11 +97,12 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         el.classList.add('hidden')
         el.classList.remove(`animate-out${ isSlow ? '-slow' : ''}`)
         delete this[hash]
+        this.isHiding = false
         resolve()
     },
 
     hideEl( el, isSlow ) {
-        if( this.isHidden() ) return Promise.resolve()
+        if( this.isHidden( el ) ) return Promise.resolve()
 
         const time = new Date().getTime(),
             hash = `${time}Hide`
@@ -131,7 +133,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         return this.requiresRole && user.data.roles.includes( this.requiresRole )
     },
     
-    isHidden() { return this.els.container.classList.contains('hidden') },
+    isHidden( el ) { return el ? el.classList.contains('hidden') : this.els.container.classList.contains('hidden') },
 
     onLogin() {
 
