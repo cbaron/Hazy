@@ -76,7 +76,14 @@ module.exports = Object.create( {
     navigate( location, options={} ) {
         if( this.header.displayingTypeAhead ) this.header.removeTypeAhead()
 
-        if( options.append ) location = `${window.location.pathname}/${location}`
+        if( options.replace ) {
+            let path = `${window.location.pathname}`.split('/')
+            path.pop()
+            path.push( location )
+            location = path.join('/')
+        }
+        else if( options.append ) { location = `${window.location.pathname}/${location}` }
+
         if( location !== window.location.pathname ) history.pushState( {}, '', location )
         if( !options.silent ) this.handle()
     },

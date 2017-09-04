@@ -1108,6 +1108,12 @@ button.submitting {
 .JsonProperty.confirm-delete >div:hover {
   background-color: transparent;
 }
+.List .list.no-items {
+  padding-top: 1rem;
+}
+.List .list.no-items::before {
+  content: 'No Items';
+}
 .List .list li {
   align-items: center;
   display: flex;

@@ -9,13 +9,15 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         collections() {
             return {
+                events: {
+                    list: 'click'
+                },
                 model: Object.create( this.Model ).constructor( {
                     collection: Object.create( this.Collection ),
                     delete: true,
                     droppable: 'document',
                     fetch: true
                 } ),
-                events: { list: 'click' },
                 itemTemplate: collection => `<span>${collection.name}</span>`,
                 templateOptions: { heading: 'Collections', name: 'Collections', toggle: true }
             }
@@ -51,12 +53,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } ),
                     delete: true,
                     draggable: 'document',
-                    fetch: true,
                     pageSize: 100,
                     skip: 0,
                     sort: { 'label': 1 }
                 } ),
                 events: { list: 'click' },
+                insertion: { el: this.els.mainPanel },
                 itemTemplate: this.Templates.Document
             }
         },
@@ -94,6 +96,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         )
     },
 
+    createDocumentList( collectionName] ) {
+        this.model.set( 'currentCollection', collectionName )
+        this.createView( 'list', 'documentList' )
+        return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
+    },
+
     createView( type, name, model ) {
         this.views[ name ] = this.factory.create( type, Reflect.apply( this.Views[ name ], this, [ model ] ) )
 
@@ -115,7 +123,17 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                       .catch( this.Error )
                   }
                 ],
-                [ 'fetched', function() { this.views.collections.hideItems( [ this.model.git('currentCollection') ] ) } ]
+                [ 'fetched', function() { this.views.collections.hideItems( [ this.model.git('currentCollection') ] ) } ],
+                [ 'itemClicked', function( model ) {
+                    this.clearCurrentView()
+                    .then( () => this.views.documentList.delete() )
+                    .then( () => this.createDocumentList( model.name ) )
+                    .then( () => {
+                        this.emit( 'navigate', model.name, { silent: true, replace: true } )
+                        return Promise.resolve()
+                    } )
+                    .catch( this.Error )
+                } ]
             ],
             createCollection: [
                 [ 'deleted', function() {
@@ -190,7 +208,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onNavigation( path ) {
 
-        if( path ) this.path = path;
+        this.path = path
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
         .then( () => {
@@ -225,6 +243,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     postRender() {
+
+        if( this.path.length === 2 ) this.createDocumentList( this.path[1] )
+        else if( this.path.length === 3 ) this.createDocumentList( this.path[1] )
+
 
         //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
 
@@ -280,7 +302,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         )
         */
 
-        this.onNavigation()
 
         return this
     },

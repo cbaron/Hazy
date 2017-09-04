@@ -1,5 +1,12 @@
 .List
     .list
+
+        &.no-items
+            padding-top: 1rem
+
+            &::before
+                content: 'No Items'
+
         li
             align-items: center
             display: flex

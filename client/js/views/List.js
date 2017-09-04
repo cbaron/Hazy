@@ -64,6 +64,12 @@ module.exports = Object.assign( { }, Super, {
 
     },
 
+    fetch() {
+        this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
+        .then( () => this.populateList() )
+        .then( () => Promise.resolve( this.emit('fetched') ) )
+    },
+
     getCount() {
         return this.collection.getCount()
         .then( () => Promise.resolve( this.collection.meta.count ) )
@@ -178,6 +184,10 @@ module.exports = Object.assign( { }, Super, {
     onToggleClick() { this.els.list.classList.contains('hidden') ? this.showList() : this.hideList() },
 
     populateList() {
+        this.els.list.classList.toggle( 'no-items', this.collection.data.length === 0 )
+
+        if( this.collection.data.length === 0 ) return
+
         if( this.item ) {
             const fragment =
                 this.collection.data.reduce(
@@ -229,12 +239,7 @@ module.exports = Object.assign( { }, Super, {
 
         if( this.model.git('delete') ) this.deleteIcon = this.Format.GetIcon('garbage')
 
-        if( this.model.git('fetch') ) {
-            this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
-            .then( () => this.populateList() )
-            .then( () => Promise.resolve( this.emit('fetched') ) )
-            .catch( this.Error )
-        }
+        if( this.model.git('fetch') ) this.collection.fetch().catch( this.Error )
 
         if( this.model.git('draggable') ) this.initializeDragDrop()
 
@@ -274,6 +279,13 @@ module.exports = Object.assign( { }, Super, {
             this.bindEvent( 'item', 'mouseleave', child )           
             child.appendChild( this.htmlToFragment(`<div class="drag">Drag here to move ${type}</div>`) )
         } )
+    },
+
+    unhideItems() {
+        Promise.all( Array.from( this.els.list.querySelectorAll(`li.hidden`) ).map( el => this.showEl(el) ) )
+        .catch( this.Error )
+
+        return this
     },
 
     update( items ) {
