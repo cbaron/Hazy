@@ -3,7 +3,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     model: require('../models/CollectionManager'),
     Collection: require('../models/Collection'),
     DocumentModel: require('../models/Document'),
-    JsonProperty: require('../models/JsonProperty'),
+    JsonPropertyModel: require('../models/JsonProperty'),
 
     Views: {
 
@@ -53,7 +53,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } ),
                     delete: true,
                     draggable: 'document',
-                    fetch: true,
                     pageSize: 100,
                     skip: 0,
                     sort: { 'label': 1 }
@@ -67,12 +66,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         documentView() {
             return {
                 model: Object.create( this.Model ).constructor( {
-                    collection: Object.create( this.JsonProperty ),
                     view: 'jsonProperty',
                     reset: true,
                     save: true
                 } ),
-                templateOptions: { goBack: `Back to ${this.model.git('currentCollection')} collection`, name: this.model.git('currentCollection') },
             }
         }
     },
@@ -81,6 +78,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         Document: require('./templates/Document')
     },
 
+    getDocument( collection, documentName ) {
+        return Object.create( this.Model ).constructor( {}, { resource: collection } ).get( { query: { name: documentName } } )
+    },
+    
     onDocumentSave( model ) {
         const obj = model.toObj()
        
@@ -100,6 +101,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     createDocumentList( collectionName ) {
         this.model.set( 'currentCollection', collectionName )
         this.createView( 'list', 'documentList' )
+        this.views.documentList.fetch()
         this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, placeholder: `Search ${collectionName} collection.` }, document => this.onDocumentSelected(document) )
         return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
     },
@@ -247,9 +249,16 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     postRender() {
 
-        if( this.path.length === 2 ) this.createDocumentList( this.path[1] )
-        else if( this.path.length === 3 ) this.updateDocumentView( this.path[1] )
-
+        if( this.path.length === 2 ) this.views.documentList.fetch().then( () => this.views.documentList.show() ).catch( this.Error )
+        else if( this.path.length === 3 ) {
+            this.getDocument( this.path[1], this.path[2] )
+            .then( documents =>
+                documents.length !== 1 
+                    ? Promise.resolve( this.emit( 'navigate', '', { up: true } ) )
+                    : this.showDocumentView( documents[0], false )
+            )
+            .catch( this.Error )
+        }
 
         //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
 
@@ -309,10 +318,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         return this
     },
 
-    showDocumentView( document ) {
-        return this.views.documentView.update( this.DocumentModel.toList( document ) ).show()
+    showDocumentView( document, emit=true ) {
+        return this.views.documentView.update( this.DocumentModel.toList( document ).map( keyValuePair => Object.create( this.JsonPropertyModel ).constructor( keyValuePair ) ) ).show()
         .then( () => {
-            this.emit( 'navigate', document.name, Object.assign( { silent: true }, this.model.git( 'currentView' ) === 'documentView' ? { replace: true } : { append: true } ) );
+            if( emit ) this.emit( 'navigate', document.name, Object.assign( { silent: true }, this.model.git( 'currentView' ) === 'documentView' ? { replace: true } : { append: true } ) );
             this.model.set('currentView', 'documentView' );
             return Promise.resolve()
         } )
@@ -321,5 +330,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     updateCount( count ) {
         this.els.resource.textContent = `${this.model.git('currentCollection')} (${count})`
     },
+
+    
 
 } )

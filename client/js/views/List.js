@@ -202,7 +202,7 @@ module.exports = Object.assign( { }, Super, {
                         this.collection.store[ this.key ][ keyValue ] = datum
 
                         this.itemViews[ keyValue ] =
-                            this.factory.create( viewName, { model: Object.create( this.Model ).constructor( datum ), storeFragment: true } )
+                            this.factory.create( viewName, { model: datum, storeFragment: true } )
                                 .on( 'deleted', () => this.onDeleted( datum ) )
 
                         while( this.itemViews[ keyValue ].fragment.firstChild ) fragment.appendChild( this.itemViews[ keyValue ].fragment.firstChild )
@@ -238,7 +238,7 @@ module.exports = Object.assign( { }, Super, {
     },
 
     postRender() {
-        this.collection = this.model.git('collection')
+        this.collection = this.model.git('collection') || Object.create( this.Model )
         this.key = this.collection.meta.key
 
         if( this.collection ) this.collection.store = { [ this.key ]: { } }
@@ -295,8 +295,6 @@ module.exports = Object.assign( { }, Super, {
     },
 
     update( items ) {
-        if( !this.collection ) this.collection = Object.create( this.Model )
-
         this.collection.constructor( items, { storeBy: [ this.key ] } )
 
         if( this.itemTemplate ) return this.removeChildren( this.els.list ).populateList()
@@ -306,5 +304,7 @@ module.exports = Object.assign( { }, Super, {
         Object.assign( this, { itemViews: { } } ).populateList()
         
         window.scroll( { behavior: 'smooth', top: this.els.container.getBoundingClientRect().top + window.pageYOffset - 50 } )
+
+        return this
     }
 } )

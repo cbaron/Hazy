@@ -14,7 +14,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     data: {
                         states: { 
                             start: [
-                                { name: 'delete', svg: this.Format.getIcon( 'garbage', { name: 'delete' } ), nextState: 'confirmDelete', emit: true }
+                                { name: 'delete', svg: this.Format.GetIcon( 'garbage', { name: 'delete' } ), nextState: 'confirmDelete', emit: true }
                             ],
                             confirmDelete: [
                                 { name: 'doDelete', class: 'link', text: 'Delete?', emit: true, nextState: 'start' },
