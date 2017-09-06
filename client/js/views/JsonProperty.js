@@ -28,6 +28,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     },
 
+    getProposedModel() {
+        return { key: this.els.key.textContent, value: this.views.Literal.els.container.textContent }
+    },
+
     getTemplateOptions() {
         return {
             viewName: Array.isArray( this.model.data.value )

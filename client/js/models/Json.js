@@ -8,7 +8,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 : 'Literal'
     },
 
-    isEditable( key ) { return key === '_id' }
-
+    isEditable( key ) { return key === '_id' },
 
 } )

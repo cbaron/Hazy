@@ -10,7 +10,8 @@
 .Admin {
   color: #4ab74a;
   height: 100%;
-  margin: 6rem 2rem 0rem 0rem;
+  margin: 0rem 2rem 0rem 0rem;
+  padding-top: 6rem;
   text-align: center;
 }
 .Admin .splash {
@@ -511,7 +512,8 @@ button.back-btn:hover {
 .CollectionManager .main-panel .List ol {
   overflow-y: auto;
 }
-.CollectionManager .main-panel .List ol li {
+.CollectionManager .main-panel .List ol >li,
+.CollectionManager .main-panel .List ol >div {
   line-height: 1.25rem;
   margin-right: 3rem;
   padding: 1rem;
@@ -524,10 +526,6 @@ button.back-btn:hover {
 .CollectionManager .main-panel .Form form,
 .CollectionManager .main-panel .Deleter form {
   padding: 2rem 3rem;
-}
-.CollectionManager >button {
-  bottom: 2rem;
-  right: 2rem;
 }
 .Deleter .side-by-side {
   justify-content: center;
@@ -1190,12 +1188,15 @@ button.submitting {
 .List .list.is-droppable li.mouseover {
   background-color: rgba(172,172,172,0.1);
 }
-.List .list >button {
+.List >button {
+  bottom: 2rem;
   right: 2rem;
-  top: 10rem;
 }
-.List .list >button+button {
-  top: 16rem;
+.List >button+button {
+  bottom: 8rem;
+}
+.List >button+button+button {
+  bottom: 14rem;
 }
 .List .heading {
   border-bottom: 1px solid #acacac;

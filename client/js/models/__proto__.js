@@ -1,4 +1,4 @@
-module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('../../../lib/Model'), require('events').EventEmitter.prototype, {
+module.exports = Object.assign( { }, require('../../../lib/Model'), require('events').EventEmitter.prototype, {
 
     Xhr: require('../Xhr'),
 
@@ -84,13 +84,17 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         } )
     },
 
+    _put( keyValue, data ) {
+        let item = this.data.find( datum => datum[ this.meta.key ] == keyValue );
+        if( item ) item = data;
+        return this
+    },
+
     put( id, data ) {
         return this.Xhr( { method: 'put', id, resource: this.resource, headers: this.headers || {}, data: JSON.stringify( data ) } )
         .then( response => {
            
             if( Array.isArray( this.data ) ) { 
-                this.data = this.data ? this.data.concat( response ) : [ response ]
-                if( this.store ) Object.keys( this.store ).forEach( attr => this._store( response, attr ) )
             } else {
                 this.data = response
             }

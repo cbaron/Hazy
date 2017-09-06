@@ -19,10 +19,10 @@ module.exports = Object.assign( { }, Super, {
         }
 
         this.itemViews[ keyValue ] =
-            this.factory.create( this.item, { insertion, model: Object.create( this.Model ).constructor( datum ) } )
+            this.factory.create( this.model.git('view'), { insertion, model: Object.create( this.collection.model ).constructor( datum ) } )
             .on( 'deleted', () => this.onDeleted( datum ) )
        
-        window.scroll( { behavior: 'smooth', top: this.itemViews[ keyValue ].els.container.getBoundingClientRect().bottom - document.documentElement.clientHeight + window.pageYOffset + 50 } )
+        this.itemViews[ keyValue ].els.container.scrollIntoView( { behavior: 'smooth' } )
     },
 
     checkDrag( e ) {
@@ -67,7 +67,11 @@ module.exports = Object.assign( { }, Super, {
     fetch() {
         return this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
         .then( () => this.populateList() )
-        .then( () => Promise.resolve( this.emit('fetched') ) )
+        .then( () => {
+            this.fetched = true
+            this.emit('fetched')
+            return Promise.resolve()
+        } )
     },
 
     getCount() {
@@ -90,7 +94,7 @@ module.exports = Object.assign( { }, Super, {
     },
 
     hideItems( keys ) {
-        Promise.all(
+        return Promise.all(
             keys.map( key => {
                 const el = this.els.list.querySelector(`li[data-key="${key}"]`)
                 return el ? this.hideEl( el ) : Promise.resolve() 
@@ -120,11 +124,12 @@ module.exports = Object.assign( { }, Super, {
     },
 
     events: {
+        addBtn: 'click',
         checkbox: 'change',
         goBackBtn: 'click',
         resetBtn: 'click',
         saveBtn: 'click',
-        toggle: 'click',
+        toggle: 'click'
     },
 
     getListItemKey( e ) {
@@ -138,6 +143,10 @@ module.exports = Object.assign( { }, Super, {
     hideDroppable() {
         this.els.list.classList.remove('is-droppable')
         Array.from( this.els.list.children ).forEach( child => child.removeChild( child.lastChild ) )
+    },
+
+    onAddBtnClick( e ) {
+        this.add( this.collection.model.CreateDefault() )
     },
 
     onCheckboxChange( e ) {
@@ -183,7 +192,9 @@ module.exports = Object.assign( { }, Super, {
     },
 
     onSaveBtnClick() {
-        this.emit( 'saveClicked', this.collection )
+        if( this.model.git('view') ) {
+            this.emit( 'saveClicked', Object.keys( this.itemViews ).map( key => this.itemViews[key].getProposedModel() ) )
+        }
     },
 
     onToggleClick() { this.els.list.classList.contains('hidden') ? this.showList() : this.hideList() },
@@ -199,10 +210,11 @@ module.exports = Object.assign( { }, Super, {
                 this.collection.data.reduce(
                     ( fragment, datum ) => {
                         const keyValue = datum[ this.key ]
+                            
                         this.collection.store[ this.key ][ keyValue ] = datum
 
                         this.itemViews[ keyValue ] =
-                            this.factory.create( viewName, { model: datum, storeFragment: true } )
+                            this.factory.create( viewName, { model: Object.create( this.collection.model ).constructor( datum ), storeFragment: true } )
                                 .on( 'deleted', () => this.onDeleted( datum ) )
 
                         while( this.itemViews[ keyValue ].fragment.firstChild ) fragment.appendChild( this.itemViews[ keyValue ].fragment.firstChild )
@@ -306,5 +318,22 @@ module.exports = Object.assign( { }, Super, {
         window.scroll( { behavior: 'smooth', top: this.els.container.getBoundingClientRect().top + window.pageYOffset - 50 } )
 
         return this
+    },
+
+    updateItem( model ) {
+        const keyValue = model[ this.meta.key ]
+
+        this.collection._put( keyValue, model )
+        
+        if( !this.model.git('view') ) {
+            let oldItem = this.els.list.querySelector(`*[data-key="${keyValue}"]`)
+            return this.slurpTemplate( {
+                { insertion: method: 'insertBefore', el: oldItem },
+                renderSubviews: true,
+                template: this.getItemTemplateResult( keyValue, model )
+             } )
+            this.getItemTemplateResult( keyValue, model )
+            this.els.list.removeChild( oldItem )
+        }
     }
 } )

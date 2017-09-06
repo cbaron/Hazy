@@ -15,5 +15,6 @@ return `` +
     <ol data-js="list" class="list ${p.model.draggable ? 'no-select' : '' }"></ol>
     ${p.model.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
     ${p.model.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
+    ${p.model.add ? `<button class="floating" data-js="addBtn">Add</button>` : ``}
 </section>`
 }
