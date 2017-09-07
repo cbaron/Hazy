@@ -2,20 +2,30 @@ const Super = require('./__proto__')
 
 module.exports = Object.assign( { }, Super, {
 
-    add( datum ) {
+    add( datum, sort=false ) {
         if( !this.collection ) this.collection = Object.create( this.Model )
 
-        const insertion = { el: this.els.list },
-            keyValue = datum[ this.key ]
+        const keyValue = datum[ this.key ]
+        let insertion = { el: this.els.list }
 
         this.collection.add( datum )
+        this.collection.store[ this.key ][ keyValue ] = datum
+
+        if( sort ) {
+            this.collection.sort( this.model.git('sort') )
+            let index = this.collection.data.findIndex( datum => datum[this.key] == keyValue )
+            if( index !== -1 ) insertion = { method: 'insertBefore', el: this.els.list.children.item(index) }
+        }
 
         if( this.itemTemplate ) {
+
             return this.slurpTemplate( {
                 insertion,
                 renderSubviews: true,
                 template: this.getItemTemplateResult( keyValue, datum )
              } )
+            
+            this.els.list.querySelector(`*[data-key="${keyValue}"]`).scrollIntoView( { behavior: 'smooth' } )
         }
 
         this.itemViews[ keyValue ] =
@@ -146,7 +156,9 @@ module.exports = Object.assign( { }, Super, {
     },
 
     onAddBtnClick( e ) {
-        this.add( this.collection.model.CreateDefault() )
+        this.collection.model
+            ? this.add( this.collection.model.CreateDefault() )
+            : this.emit('addClicked')
     },
 
     onCheckboxChange( e ) {
@@ -188,7 +200,7 @@ module.exports = Object.assign( { }, Super, {
     },
     
     onResetBtnClick() {
-        this.emit( 'resetClicked' )
+        this.emit('resetClicked')
     },
 
     onSaveBtnClick() {
@@ -267,7 +279,7 @@ module.exports = Object.assign( { }, Super, {
     remove( datum ) {
         this.collection.remove( datum )
 
-        if( this.item ) {
+        if( this.model.git('view') ) {
             delete this.itemViews[ datum[ this.key ] ]
         } else {
             const child = this.els.list.querySelector( `[data-key="${datum[ this.key ]}"]` )
@@ -315,24 +327,24 @@ module.exports = Object.assign( { }, Super, {
         
         Object.assign( this, { itemViews: { } } ).populateList()
         
-        window.scroll( { behavior: 'smooth', top: this.els.container.getBoundingClientRect().top + window.pageYOffset - 50 } )
+        //window.scroll( { behavior: 'smooth', top: this.els.container.getBoundingClientRect().top + window.pageYOffset - 50 } )
+        this.els.container.scrollIntoView( { behavior: 'smooth' } )
 
         return this
     },
 
     updateItem( model ) {
-        const keyValue = model[ this.meta.key ]
+        const keyValue = model.git(this.key)
 
-        this.collection._put( keyValue, model )
+        this.collection._put( keyValue, model.data )
         
         if( !this.model.git('view') ) {
             let oldItem = this.els.list.querySelector(`*[data-key="${keyValue}"]`)
-            return this.slurpTemplate( {
-                { insertion: method: 'insertBefore', el: oldItem },
+            this.slurpTemplate( {
+                insertion: { method: 'insertBefore', el: oldItem },
                 renderSubviews: true,
-                template: this.getItemTemplateResult( keyValue, model )
-             } )
-            this.getItemTemplateResult( keyValue, model )
+                template: this.getItemTemplateResult( keyValue, model.data )
+            } )
             this.els.list.removeChild( oldItem )
         }
     }

@@ -27,6 +27,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     onNavigation( path ) {
+        this.path = path
+
         const key = this.keys.find( key => this.model[ key ].url === path[0] )
 
         if( key !== undefined ) return this.showView( key )

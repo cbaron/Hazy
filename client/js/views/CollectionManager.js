@@ -42,8 +42,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         deleteDocument( document ) {
             return {
                 insertion: { el: this.els.mainPanel },
-                model: Object.create( this.DocumentModel ).constructor( model ),
-                templateOptions: { message: `Delete '${model.label}' ${this.model.git('currentCollection')}?` }
+                model: Object.create( this.DocumentModel ).constructor( document, { resource: this.model.git('currentCollection') } ),
+                templateOptions: { message: `Delete '${document.label}' ${this.model.git('currentCollection')}?` }
             }
         },
 
@@ -82,20 +82,42 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     getDocument( collection, documentName ) {
-        return Object.create( this.Model ).constructor( {}, { resource: collection } ).get( { query: { name: documentName } } )
+        return Object.create( this.Model ).constructor( {}, { resource: this.path[0] } ).get( { query: { name: this.path[1] } } )
     },
     
     onDocumentSave( keyValuePairs ) {
         const doc = Object.create( this.DocumentModel ).constructor( keyValuePairs, { resource: this.model.git('currentCollection') } ).toObj()
-       
-        doc.put( doc.git('_id'), this.omit( doc.data, [ '_id' ] ) )
-        .then( () => {
-            this.Toast.showMessage( 'success', `${doc.git('label')} updated.` )
-            return this.clearCurrentView()
-        } )
-        .then( () => this.views.documentList.fetched ? this.views.documentList.updateItem( document ) : this.views.documentList.fetch() )
-        .then( () => this.views.documentList.show().then( () => Promise.resolve( this.model.set( 'currentView', 'documentList' ) ) ) )
-        .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
+        
+        if( doc.git('_id') ) {
+            doc.put( doc.git('_id'), this.omit( doc.data, [ '_id' ] ) )
+            .then( () => {
+                this.Toast.showMessage( 'success', `${doc.git('label')} updated.` )
+                return this.clearCurrentView()
+            } )
+            .then( () => this.views.documentList.fetched ? this.views.documentList.updateItem( doc ) : this.views.documentList.fetch() )
+            .then( () => this.views.documentList.show() )
+            .then( () => {
+                this.model.set( 'currentView', 'documentList' )
+                this.emit( 'navigate', '', { up: true, silent: true } )
+                return Promise.resolve()
+            } )
+            .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
+        } else {
+            if( !doc.git('name') || !doc.git('label') ) return this.Toast.showMessage( 'error', `'name', 'label' required` )
+
+            doc.post( doc.data )
+            .then( () => {
+                this.Toast.showMessage( 'success', `${doc.git('label')} created.` )
+                return this.clearCurrentView()
+            } )
+            .then( () => { this.views.documentList.add( doc.data, true ); return this.views.documentList.show() } )
+            .then( () => {
+                this.model.set( 'currentView', 'documentList' )
+                this.emit( 'navigate', '', { up: true, silent: true } )
+                return Promise.resolve()
+            } )
+            .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
+        }
     },
 
     clearCurrentView() {
@@ -111,7 +133,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.createView( 'list', 'documentList' )
         if( fetch ) { this.views.documentList.fetch().catch(this.Error) } else { this.views.documentList.hideSync() }
         this.views.documentList.getCount().then( count => this.updateCount(count) ).catch(this.Error)
-        this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, placeholder: `Search ${collectionName} collection.` }, document => this.onDocumentSelected(document) )
+        this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, templateOptions: { placeholder: `Search ${collectionName} collection.` } }, document => this.onDocumentSelected(document) )
         return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
     },
 
@@ -124,6 +146,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     events: {
         createCollectionBtn: 'click',
+        resource: 'click',
 
         views: {
             collections: [
@@ -154,20 +177,31 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 [ 'posted', function( collection ) { this.views.collections.add( collection ) } ]
             ],
             deleteCollection: [
-                [ 'deleted', function() { this.currentView = 'documentList'; this.views.documentList.show().catch(this.Error) } ],
+                [ 'deleted', function() { this.model.set('currentView', 'documentList' ); this.views.documentList.show().catch(this.Error) } ],
                 [ 'modelDeleted', function( model ) { this.views.collections.remove( model ) } ]
             ],
             deleteDocument: [
-                [ 'deleted', function() { this.currentView = 'documentList'; this.views.documentList.show().catch(this.Error) } ],
+                [ 'deleted', function() { this.model.set('currentView', 'documentList' ); this.views.documentList.show().catch(this.Error) } ],
                 [ 'modelDeleted', function( model ) { this.views.documentList.remove( model ) } ]
             ],
             documentList: [
+                [ 'addClicked', function() {
+                    this.clearCurrentView()
+                    .then( () => {
+                        this.model.set( 'currentView', 'documentView' )
+                        this.emit( 'navigate', 'new-document', { append: true, silent: true } )
+                        this.path.push('new-document')
+                        return this.views.documentView.update( [ this.JsonPropertyModel.CreateDefault() ] ).show()
+                    } )
+                    .catch( this.Error )
+                  }
+                ],
                 [ 'itemClicked', function( document ) { this.onDocumentSelected( document ) } ],
                 [ 'dragStart', function( type ) { this.views.collections.showDroppable( type ) } ],
                 [ 'dropped', function( data ) { this.views.collections.hideDroppable(); this.views.collections.checkDrop( data ) } ],
                 [ 'deleteClicked',
                   function( document ) { 
-                    this.views.discTypesList.hide()
+                    this.clearCurrentView()
                     .then( () => Promise.resolve( this.createView( 'deleter', 'deleteDocument', document ) ) )
                     .catch( this.Error )
                   }
@@ -175,21 +209,13 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             ],
             documentView: [
                 [ 'saveClicked', function( document ) { this.onDocumentSave( document ) } ],
-                [ 'resetClicked', function( model ) { this.views.documentView.update( this.DocumentModel.toList() ) } ],
+                [ 'resetClicked', function() {
+                    if( this.path[1] === 'new-document' ) return this.emit( 'navigate', '', { up: true } )
+                    this.getDocument().then( document => Promise.resolve( this.views.documentView.update( this.DocumentModel.toList( document ) ) ) ).catch(this.Error)
+                } ],
                 [ 'goBackClicked', function( model ) { this.emit( 'navigate', `/admin/${this.model.git('currentCollection')}` ) } ]
             ]
         }
-    },
-
-    onAddButtonClick() {
-        this.views.discTypeJson.add( { key: 'new key', value: 'new value' } )
-        return
-        const time = new Date().getTime()
-        this.slurpTemplate( { template: this.Templates.Key( time, 'new-attribute', true ), insertion: { el: this.els.data } } )
-        this.views[ time ] =
-            this.factory.create( 'literal', { model: { data: 'new-value', meta: { editable: true } }, insertion: { el: this.els[time] } } )
-
-        this.els[ time ].firstChild.focus()
     },
 
     onCreateCollectionBtnClick() {
@@ -201,15 +227,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     onDocumentSelected( document ) {
         return this.clearCurrentView()
         .then( () => this.showDocumentView( document ) )
-        .catch( this.Error )
-        
-        this.path = [ `collection-manager`, item.name ]
-
-        this.views.discTypesList.hide()
-        .then( () => {
-            this.views.discTypeJson.update( this.discType.toList( item ) )
-            return this.views.discTypeJson.show()
-        } )
         .catch( this.Error )
     },
 
@@ -223,66 +240,26 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .catch( this.Error ) 
     },
 
+    onResourceClick() {
+        if( this.model.git('currentView') === 'documentList' ) return
+
+        this.clearCurrentView()
+        .then( () => {
+            if( this.path.length === 2 ) {
+                this.emit( 'navigate', '', { up: true, silent: true } )
+                this.path.pop()
+            }
+            this.model.set('currentView', 'documentList')
+            return this.showProperView()
+        } )
+        .catch( this.Error )
+    },
+
     postRender() {
 
-        if( this.path.length > 1 ) this.model.set( 'currentCollection', this.path[1] )
+        if( this.path.length > 0 ) this.model.set( 'currentCollection', this.path[0] )
 
-        this.showProperView( true )
-        .catch( this.Error )
-
-        //this.documentList = Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } )
-
-        //this.discType = Object.create( this.DiscType )
-
-
-        /* 
-        this.discType.getCount()
-        .then( () => Promise.resolve( this.updateCount() ) )
-        .catch( this.Error )
-        */
-
-        /*
-        this.views.discTypesList.on( 'itemDblClicked', item => this.onItemSelected( item ) )
-        this.views.discTypesList.on( 'dragStart', type => this.views.collections.showDroppable( type ) )
-        this.views.discTypesList.on( 'dropped', data => {
-            this.views.collections.hideDroppable()
-            this.views.collections.checkDrop( data )
-        } )
-        */
-        
-        //this.views.discTypeJson.els.container.classList.add('hidden')
-    
-        /*     
-        this.views.discTypeJson.on( 'saveClicked', model => {
-            const obj = model.toObj()
-            this.discType.put( obj._id, this.omit( obj, [ '_id' ] ) )
-            .then( () => this.Toast.showMessage( 'success', 'Disc Type updated.' ) )
-            .catch( e => this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) )
-        } )
-        
-        this.views.discTypeJson.on( 'resetClicked', model => this.views.discTypeJson.update( this.discType.toList() ) )
-        
-        this.views.discTypeJson.on( 'goBackClicked', () => this.emit( 'navigate', '/admin/manage-disc-types' ) )
-        */
-
-        /*
-        this.views.collections.on( 'posted', name => this.views.collections.add( posted ) )
-
-        this.views.collections.on( 'deleteClicked', model => {
-            this.views[ this.currentView ].hide()
-            .then( () => Promise.resolve( this.createView( 'deleter', 'deleteCollection', model ) ) )
-            .catch( this.Error )
-        } )
-        */
-
-        /*
-        this.views.discTypesList.on( 'deleteClicked', model =>
-            this.views.discTypesList.hide()
-            .then( () => Promise.resolve( this.createView( 'deleter', 'deleteDiscType', model ) ) )
-            .catch( this.Error )
-        )
-        */
-
+        this.showProperView( true ).catch( this.Error )
 
         return this
     },
@@ -297,14 +274,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     showProperView( isInit ) {
-        this.model.set( 'currentView', this.path.length === 3 ? 'documentView' : 'documentList' )
-        if( this.path.length === 1 ) this.emit( 'navigate', this.model.git('currentCollection'), { append: true, silent: true } )
+        this.model.set( 'currentView', this.path.length === 2 ? 'documentView' : 'documentList' )
+        if( this.path.length === 0 ) this.emit( 'navigate', this.model.git('currentCollection'), { append: true, silent: true } )
 
         return (this.views.documentList ? this.views.documentList.delete() : Promise.resolve() )
-        .then( () => this.createDocumentList( this.model.git('currentCollection'), this.path.length === 3 ? false : true ) )
+        .then( () => this.createDocumentList( this.model.git('currentCollection'), this.path.length === 2 ? false : true ) )
         .then( () =>
-            this.path.length === 3
-                ? this.getDocument( this.path[1], this.path[2] )
+            this.path.length === 2
+                ? this.getDocument()
                   .then( document =>
                   Array.isArray( document )
                       ? Promise.resolve( this.emit( 'navigate', '', { up: true } ) )

@@ -876,6 +876,9 @@ button.submitting {
 }
 .Header.has-typeahead .nav >li:nth-child(2) {
   flex: 10;
+}
+.Header.has-typeahead .nav >li:nth-child(2) .TypeAhead {
+  margin: auto;
   max-width: 35rem;
 }
 .Header.has-typeahead .nav >li:last-child {

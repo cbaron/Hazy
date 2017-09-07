@@ -1,7 +1,7 @@
 module.exports = ( p ) => `<section>
     <div class="left-panel" data-js="leftPanel">
         <section>
-            <div data-js="resource"></div>
+            <button class="link" data-js="resource"></button>
         </section>
         <section>
             <div data-view="list" data-name="collections"></div>

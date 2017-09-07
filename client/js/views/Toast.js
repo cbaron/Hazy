@@ -41,7 +41,7 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
     teardown() {
         if( this.els.container.classList.contains('success') ) this.els.container.classList.remove('success')
         this.els.message.textContent = ''
-        this.els.message.title = ''
+        this.els.title.textContent = ''
         if( this.els.icon.firstChild ) this.els.icon.removeChild( this.els.icon.firstChild )
         this.resolution()
     },

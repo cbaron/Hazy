@@ -2,7 +2,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     attributes: [
         {
-            default: 'key',
+            default: () => `key-${new Date().getTime()}`,
             name: 'key',
             label: 'Key'
         },
