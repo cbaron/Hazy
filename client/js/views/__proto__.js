@@ -77,13 +77,13 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     handleLogin() {
         this.factory.create( 'login', { insertion: { el: document.querySelector('#content') } } )
-            .on( "loggedIn", () => this.onLogin() )
+        .on( "loggedIn", () => this.onLogin() )
 
         return this
     },
 
     hide( isSlow ) {
-        if( this.isHiding ) return Promise.resolve()
+        if( !this.els || this.isHiding ) return Promise.resolve()
 
         this.isHiding = true;
         return this.hideEl( this.els.container, isSlow )
@@ -132,7 +132,18 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     isAllowed( user ) {
         if( !this.requiresRole ) return true
-        return this.requiresRole && user.data.roles.includes( this.requiresRole )
+            
+        const userRoles = new Set( user.data.roles )
+
+        if( typeof this.requiresRole === 'string' ) return userRoles.has( this.requiresRole )
+
+        if( Array.isArray( this.requiresRole ) ) {
+            const result = this.requiresRole.find( role => userRoles.has( role ) )
+
+            return result !== undefined
+        }
+
+        return false
     },
     
     isHidden( el ) { return el ? el.classList.contains('hidden') : this.els.container.classList.contains('hidden') },

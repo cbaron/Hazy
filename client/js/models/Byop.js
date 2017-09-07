@@ -95,6 +95,12 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             label: 'On Waiting List',
             type: 'select',
             range: 'Boolean'
+        },
+
+        removedFromEvent: {
+            label: 'Removed From Event',
+            type: 'select',
+            range: 'Boolean'
         }
     },
 

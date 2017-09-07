@@ -153,8 +153,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.updateByopButtons()
     },
      
-    requiresRole: 'superuser',
-
     removeChange( name ) {
         this.els.changes.removeChild( this.els.changes.querySelector( `div[data-name="${name}"]` ) )
         delete this.changes[ name ]

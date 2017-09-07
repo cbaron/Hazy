@@ -35,6 +35,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     postRender() {
         this.els.email.focus()
         this.els.container.addEventListener( 'keypress', e => { if( e.keyCode === 13 ) this.onSubmitClick() } )
+
         return this
     },
 
