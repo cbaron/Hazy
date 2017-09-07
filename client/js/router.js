@@ -44,7 +44,6 @@ module.exports = Object.create( {
             view = this.Views[ name ] ? name : 'home'
 
         this.Views.Header.disableTypeAhead()
-        this.footer.els.container.classList.toggle( 'hidden', path[0] === 'admin' )
 
         if( view === this.currentView ) return this.views[ view ].onNavigation( path.slice(1) )
 
@@ -65,6 +64,9 @@ module.exports = Object.create( {
             )
         } )
         .catch( this.Error )
+        
+        this.footer.els.container.classList.toggle( 'hidden', view === 'Admin' )
+        this.contentContainer.classList.toggle( 'is-admin', view === 'Admin' )
     },
 
     navigate( location, options={} ) {

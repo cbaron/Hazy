@@ -1,10 +1,10 @@
-module.exports = ( { opts, GetSelectOptions } ) => {
-    const selectCaret = require('./lib/caret-down')( { name: 'caret' } )
-    const byopTeamEdit = opts.byopKeys.map( key => {
-        const meta = opts.byopAttributes[ key ],
+module.exports = p => {
+    const selectCaret = p.GetIcon( 'caret-down', { name: 'caret' } )
+    const byopTeamEdit = p.opts.byopKeys.map( key => {
+        const meta = p.opts.byopAttributes[ key ],
             data = `data-js="${key}" data-name="${key}"`,
             input = meta.type === 'select'
-                ? `<div class="select-wrap"><select ${data}>${GetSelectOptions( opts.byopMeta[ meta.range ] )}</select>${selectCaret}</div>`
+                ? `<div class="select-wrap"><select ${data}>${p.GetSelectOptions( p.opts.byopMeta[ meta.range ] )}</select>${selectCaret}</div>`
                 : `<input ${data} />`
         return `<div><label>${meta.label}</label>${input}</div>`
     } ).join('')

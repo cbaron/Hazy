@@ -41,21 +41,17 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
         return this.Xhr( { method: opts.method || 'get', resource: this.resource, headers: this.headers || {}, qs: opts.query ? JSON.stringify( opts.query ) : undefined } )
         .then( response => {
 
-            if( opts.storeBy ) {
-                this.store = { }
-                opts.storeBy.forEach( attr => this.store[ attr ] = { } )
-                this.storeBy = opts.storeBy
+            if( Array.isArray( this.data ) ) {
+                this.data = this.data.concat( opts.parse ? opts.parse( response, opts.storeBy ) : response )
+            } else {
+                if( opts.storeBy ) this._resetStore( opts.storeBy )
+                this.data = this.parse ? this.parse( response, opts.storeBy ) : response
+                if( opts.storeBy ) this._store()
             }
-
-            this.data = this.parse
-                ? this.parse( response, opts.storeBy )
-                : response
-                
-            if( opts.storeBy ) this._store()
 
             this.emit('got')
 
-            return Promise.resolve(this.data)
+            return Promise.resolve( response )
         } )
     },
 

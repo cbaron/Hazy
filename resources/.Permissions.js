@@ -8,6 +8,10 @@ module.exports = {
         POST: AdminOnly
     },
 
+    Document: {
+        PATCH: AdminOnly
+    },
+
     DiscType: {
         DELETE: AdminOnly,
         PUT: AdminOnly

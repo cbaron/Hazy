@@ -12,7 +12,7 @@ module.exports = function( p ) {
 return `` +
 `<section>
     ${getHeading(p)}
-    <ol data-js="list" class="list ${p.model.draggable ? 'no-select' : '' }"></ol>
+    <ol data-js="list" class="list ${p.model.draggable || p.model.droppable ? 'no-select' : '' }"></ol>
     ${p.model.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
     ${p.model.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
     ${p.model.add ? `<button class="floating" data-js="addBtn">Add</button>` : ``}

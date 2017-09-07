@@ -1379,7 +1379,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-#content {
+#content.is-admin {
   height: 100%;
 }
 a {

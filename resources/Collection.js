@@ -6,7 +6,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .then( () => this.Mongo.getDb() )
         .then( db => db.dropCollection( this.path[1] ) )
         .then( collection => {
-            this.Mongo.collectionNames = this.Mongo.collectionNames.filter( name => name != this.path[1] )
+            this.Mongo.removeCollection( collection.collectionName )
             return Promise.resolve( this.respond( { body: { name: this.path[1] } } ) )
         } )
     },
@@ -20,7 +20,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .then( () => this.Mongo.getDb() )
         .then( db => db.createCollection( this.body.name ) )
         .then( collection => {
-            this.Mongo.collectionNames.push( collection.collectionName )
+            this.Mongo.addCollection( collection.collectionName )
             return Promise.resolve( this.respond( { body: { name: collection.collectionName } } ) )
         } )
     }

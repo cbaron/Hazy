@@ -6,6 +6,8 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     
     Mongo: require('mongodb'),
 
+    ObjectId( id ) { return new ( this.Mongo.ObjectID )( id ) },
+
     DELETE( resource ) {
         return this.getDb()
         .then( db => db.collection( resource.path[0] ).remove( { _id: new ( this.Mongo.ObjectID )( resource.path[1] ) } ) )
@@ -43,6 +45,11 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         .then( result => Promise.resolve( [ Object.assign( { _id: resource.path[1] }, resource.body ) ] ) )
     },
 
+    addCollection( name ) {
+        this.routes[ name ] = '__proto__'
+        this.collectionNames.push( name )
+    },
+
     forEach( cursorFn, callbackFn, thisVar ) {
         return this.getDb()
         .then( db => {
@@ -71,7 +78,6 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         } )
     },
 
-
     cacheCollection( collection ) {
         return Promise.resolve( this.collections[ collection.name ] = { } )
     },
@@ -84,7 +90,8 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         .then( result => Promise.resolve( { result } ) )
     },
 
-    initialize() {
+    initialize( routes ) {
+        this.routes = routes
         return this.forEach( db => db.listCollections( { name: { $ne: 'system.indexes' } } ), this.cacheCollection, this )
         .then( () => {
             this.collectionNames = Object.keys( this.collections ).sort()
@@ -101,5 +108,9 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     },
 
     getDb() { return this.Client.connect(process.env.MONGODB) },
+
+    removeCollection( collectionName ) {
+        this.collectionNames = this.collectionNames.filter( name => name != collectionName )
+    }
     
 } ), { collections: { value: { } } } )

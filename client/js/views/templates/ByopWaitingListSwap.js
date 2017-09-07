@@ -1,5 +1,5 @@
-module.exports = ( p ) => {
-    const selectCaret = require('./lib/caret-down')( { name: 'caret' } )
+module.exports = function( p ) {
+    const selectCaret = p.GetIcon( 'caret-down', { name: 'caret' } )
     return `` +
 `<section>
     <h1 data-js="heading">Waiting List Swap</h1>

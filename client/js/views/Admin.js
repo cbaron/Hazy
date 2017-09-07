@@ -18,8 +18,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     
     onHeaderTypeAheadSelection( item ) { this.currentView.onItemSelected( item ) },
 
-    onManageDiscTypesClick() {
-        this.emit( 'navigate', `manage-disc-types`, { append: true } )
+    onManageByopClick() {
+        this.emit( 'navigate', `manage-byop`, { append: true } )
     },
 
     onCollectionManagerClick() {

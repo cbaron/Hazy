@@ -46,7 +46,7 @@ module.exports = Object.assign( { }, Super, {
     checkDragEnd( e ) {
         if( !this.dragging ) return
 
-        this.emit( 'dropped', { e, type: this.draggable, model: this.dragging.model } )
+        this.emit( 'dropped', { e, type: this.model.git('draggable'), model: this.dragging.model } )
         this.dragging.el.classList.remove('is-dragging')
         this.els.list.classList.remove('is-dragging')
 		this.Dragger.els.container.classList.add('hidden')
@@ -71,15 +71,30 @@ module.exports = Object.assign( { }, Super, {
     },
 
     checkDrop( { e, type, model } ) {
+        if( this.model.git('droppable') !== type ) return
 
+        const el = e.target.closest('.item')
+
+        if( !el ) return
+        
+        const localModel = this.collection.store[ this.key ][ el.parentNode.getAttribute('data-key') ]
+
+        if( !localModel ) return
+
+        this.emit( 'successfulDrop', { dropped: model, droppedOn: localModel } )
     },
 
-    fetch() {
+    fetch( nextPage=false ) {
+        this.fetching = true
+        if( nextPage ) this.model.set( 'skip', this.model.git('skip') + this.model.git('pageSize') )
+
         return this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
-        .then( () => this.populateList() )
-        .then( () => {
+        .then( newData => {
+            this.populateList( newData )
             this.fetched = true
+            this.fetching = false
             this.emit('fetched')
+            if( newData.length == 0 && nextPage ) this.els.list.removeEventListener( 'scroll', this.onScrollPagination )
             return Promise.resolve()
         } )
     },
@@ -126,8 +141,16 @@ module.exports = Object.assign( { }, Super, {
         this.Dragger.listen()
     },
 
-    onDeleted( datum ) { return this.remove( datum ) },
+    initializeScrollPagination() {
+        const listEl = this.els.list
 
+        this.onScrollPagination = e => {
+            if( this.fetching ) return
+            if( ( this.scrollHeight - ( listEl.scrollTop + this.offsetHeight ) ) < 100 ) window.requestAnimationFrame( () => this.fetch( true ).catch(this.Error) )
+        }
+
+        listEl.addEventListener( 'scroll', this.onScrollPagination )
+    },
 
     empty() {
         this.els.list.innerHTML = ''
@@ -211,7 +234,11 @@ module.exports = Object.assign( { }, Super, {
 
     onToggleClick() { this.els.list.classList.contains('hidden') ? this.showList() : this.hideList() },
 
-    populateList() {
+    populateList( data ) {
+        data = data || this.collection.data
+
+        if( !Array.isArray( data ) ) data = [ data ]
+
         this.els.list.classList.toggle( 'no-items', this.collection.data.length === 0 )
 
         if( this.collection.data.length === 0 ) return
@@ -219,7 +246,7 @@ module.exports = Object.assign( { }, Super, {
         if( this.model.git('view') ) {
             let viewName = this.model.git('view')
             const fragment =
-                this.collection.data.reduce(
+                data.reduce(
                     ( fragment, datum ) => {
                         const keyValue = datum[ this.key ]
                             
@@ -240,7 +267,7 @@ module.exports = Object.assign( { }, Super, {
             this.slurpTemplate( {
                 insertion: { el: this.els.list },
                 renderSubviews: true,
-                template: this.collection.data.reduce(
+                template: data.reduce(
                     ( memo, datum ) => {
                         const keyValue = datum[ this.key ]
                         this.collection.store[ this.key ][ keyValue ] = datum
@@ -258,6 +285,8 @@ module.exports = Object.assign( { }, Super, {
                     }
                 } )
             }
+
+            if( this.model.git('scrollPagination') ) { this.scrollHeight = this.els.list.scrollHeight; this.offsetHeight = this.els.list.offsetHeight }
         }
     },
 
@@ -272,6 +301,8 @@ module.exports = Object.assign( { }, Super, {
         if( this.model.git('fetch') ) this.fetch().catch( this.Error )
 
         if( this.model.git('draggable') ) this.initializeDragDrop()
+
+        if( this.model.git('scrollPagination') ) this.initializeScrollPagination()
 
         return this
     },

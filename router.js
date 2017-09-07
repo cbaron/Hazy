@@ -50,8 +50,8 @@ module.exports = Object.create( Object.assign( {}, require('./lib/MyObject'), {
         this.jsonRoutes = {}
 
         return Promise.all( [
-            this.Mongo.initialize(),
-            this.Postgres.initialize(),
+            this.Mongo.initialize( this.jsonRoutes ),
+            this.Postgres.initialize( this.jsonRoutes ),
             this.P( this.Fs.readdir, [ `${__dirname}/resources` ] )
         ] )
         .then( ( [ a, b, [ files ] ] ) => {

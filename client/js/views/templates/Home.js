@@ -52,7 +52,7 @@ return `<div>
             <p>We also sponsor a number of tournaments and outings thoughout the year.  Become a Hazy Shader today to get the scoop on all the latest disc golf action!</p>
         </div>        
     </div>
-    <div class="side-by-side">
+    <!--<div class="side-by-side">
         <div data-js="ezFinder" class="ez-finder">
             <span class="title">E-Z Finder</span>
             <span class="caption">An enlightened search experience awaits you...</span>
@@ -62,17 +62,12 @@ return `<div>
             <span class="title">Featured Item</span>
             <img src="${ImageSrc('hazy-tree.png')}" />
         </div>
-    </div>
+    </div>-->
     <div class="featured-event">
         <img src="${ImageSrc('discs-in-basket.jpg')}"/>
         <div class="content">
             <div class="center">
-                <div>Join us for the 16th Annual</div>
-                <div>BYOP</div>
-                <div>Belmont Park / Dayton / August 11-13, 2017</div>
-                <div>
-                    <button data-js="byopBtn" type="button">Sign Up!</button>
-                </div>
+                <div>Please be patient while we build our online shop</div>
             </div>
         </div>
     </div>

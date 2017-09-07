@@ -56,7 +56,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     draggable: 'document',
                     pageSize: 100,
                     skip: 0,
-                    sort: { 'label': 1 }
+                    sort: { 'label': 1 },
+                    scrollPagination: true
                 } ),
                 events: { list: 'click' },
                 insertion: { el: this.els.mainPanel },
@@ -101,7 +102,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 this.emit( 'navigate', '', { up: true, silent: true } )
                 return Promise.resolve()
             } )
-            .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
+            .catch( this.toastError.bind(this) )
         } else {
             if( !doc.git('name') || !doc.git('label') ) return this.Toast.showMessage( 'error', `'name', 'label' required` )
 
@@ -116,7 +117,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 this.emit( 'navigate', '', { up: true, silent: true } )
                 return Promise.resolve()
             } )
-            .catch( e => { this.Error(e); this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` ) } )
+            .catch( this.toastError.bind(this) )
         }
     },
 
@@ -146,6 +147,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     events: {
         createCollectionBtn: 'click',
+        backBtn: 'click',
         resource: 'click',
 
         views: {
@@ -167,6 +169,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                         return Promise.resolve()
                     } )
                     .catch( this.Error )
+                } ],
+                [ 'successfulDrop', function( data ) {
+                    this.swapDocument( { document: data.dropped, to: data.droppedOn.name, from: this.model.git('currentCollection' ) } )
+                    .catch( this.toastError.bind(this) )
                 } ]
             ],
             createCollection: [
@@ -217,6 +223,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             ]
         }
     },
+
+    onBackBtnClick() { this.emit( 'navigate', '/admin' ) },
 
     onCreateCollectionBtnClick() {
         this.clearCurrentView()
@@ -289,6 +297,16 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                   )
             : this.views.documentList.show()
         )
+    },
+
+    swapDocument( { document, to, from } ) {
+        return this.Xhr( { method: 'PATCH', resource: 'Document', id: document._id, data: JSON.stringify( { to, from } ) } )
+        .then( () => Promise.resolve( this.views.documentList.remove( document ) ) )
+    },
+
+    toastError(e) {
+        this.Error(e);
+        this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` )
     },
 
     updateCount( count ) {
