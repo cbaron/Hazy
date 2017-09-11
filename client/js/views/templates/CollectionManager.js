@@ -14,7 +14,5 @@ module.exports = ( p ) => `<section>
             </button>
         </section>
     </div>
-    <div data-js="mainPanel" class="main-panel">
-        <div class="hidden" data-view="list" data-name="documentView"></div>
-    </div>
+    <div data-js="mainPanel" class="main-panel"></div>
 </section>`

@@ -30,7 +30,7 @@ module.exports = Object.assign( { }, require('../lib/MyObject'), {
                     ? this.slurpBody()
                     : method === 'DELETE'
                         ? Promise.resolve()
-                        : this.respond( { stopChain: true, code: 404 } )
+                        : Promise.resolve( this.respond( { stopChain: true, code: 404 } ) )
         )
         .then( () => this.Db.apply( this ) )
         .then( result => this.Response.apply( this, result ) )

@@ -64,18 +64,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 itemTemplate: this.Templates.Document
             }
         },
-
-        documentView() {
+        documentView( model ) {
             return {
-                model: Object.create( this.Model ).constructor( {
-                    add: true,
-                    collection: Object.create( this.DocumentModel ).constructor( [], { model: this.JsonPropertyModel, meta: { key: 'key' } } ),
-                    reset: true,
-                    save: true,
-                    view: 'jsonProperty'
-                } ),
+                insertion: { el: this.els.mainPanel },
+                model,
+                templateOptions: { heading: model.git('label') }
             }
         }
+
     },
                 
     Templates: {
@@ -123,7 +119,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     clearCurrentView() {
         const currentView = this.model.git('currentView');
-        return ( currentView !== 'documentList' && currentView !== 'documentView'
+        return ( currentView !== 'documentList'
             ? this.views[ currentView ].delete( { silent: true } )
             : this.views[ currentView ].hide()
         )
@@ -139,6 +135,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     createView( type, name, model ) {
+        console.log( name )
+        console.log( Reflect.apply( this.Views[ name ], this, [ model ] ).model.attributes )
         this.views[ name ] = this.factory.create( type, Reflect.apply( this.Views[ name ], this, [ model ] ) )
 
         if( this.events.views[ name ] ) this.events.views[ name ].forEach( arr => this.views[ name ].on( arr[0], eventData => Reflect.apply( arr[1], this, [ eventData ] ) ) )
@@ -195,9 +193,20 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     this.clearCurrentView()
                     .then( () => {
                         this.model.set( 'currentView', 'documentView' )
+                        console.log( this.views.collections.collection.store.name );
+                        console.log( this.model.git('currentCollection') );
                         this.emit( 'navigate', 'new-document', { append: true, silent: true } )
                         this.path.push('new-document')
-                        return this.views.documentView.update( [ this.JsonPropertyModel.CreateDefault() ] ).show()
+                        return Promise.resolve(
+                            this.createView(
+                                'form',
+                                'documentView',
+                                Object.create( this.Model ).constructor(
+                                    { },
+                                    Object.assign( { resource: this.model.git('currentCollection') }, this.views.collections.collection.store.name[ this.model.git('currentCollection') ].schema )
+                                )
+                            )
+                        )
                     } )
                     .catch( this.Error )
                   }
@@ -215,10 +224,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             ],
             documentView: [
                 [ 'saveClicked', function( document ) { this.onDocumentSave( document ) } ],
-                [ 'resetClicked', function() {
-                    if( this.path[1] === 'new-document' ) return this.emit( 'navigate', '', { up: true } )
-                    this.getDocument().then( document => Promise.resolve( this.views.documentView.update( this.DocumentModel.toList( document ) ) ) ).catch(this.Error)
-                } ],
                 [ 'goBackClicked', function( model ) { this.emit( 'navigate', `/admin/${this.model.git('currentCollection')}` ) } ]
             ]
         }
@@ -234,7 +239,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onDocumentSelected( document ) {
         return this.clearCurrentView()
-        .then( () => this.showDocumentView( document ) )
+        .then( () => Promise.resolve( this.showDocumentView( document ) ) )
         .catch( this.Error )
     },
 
@@ -269,31 +274,37 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         this.showProperView( true ).catch( this.Error )
 
+        this.model.on( 'currentCollectionChanged', () =>
+            this.views.documentList.delete( { silent: true } )
+            .then( () => this.createDocumentList( this.model.git( 'currentCollection'), true ) )
+            .catch( this.Error )
+        )
+
         return this
     },
 
     showDocumentView( document, emit=true ) {
-        return this.views.documentView.update( this.DocumentModel.toList( document ) ).show()
-        .then( () => {
-            if( emit ) this.emit( 'navigate', document.name, Object.assign( { silent: true }, this.model.git( 'currentView' ) === 'documentView' ? { replace: true } : { append: true } ) );
-            this.model.set('currentView', 'documentView' );
-            return Promise.resolve()
-        } )
+        this.createView(
+            'form',
+            'documentView',
+            Object.create( this.Model ).constructor( document, Object.assign( { resource: this.model.git('currentCollection') }, this.views.collections.collection.store.name[ this.model.git('currentCollection') ].schema ) )
+        )
+        if( emit ) this.emit( 'navigate', document.name, Object.assign( { silent: true }, this.model.git( 'currentView' ) === 'documentView' ? { replace: true } : { append: true } ) );
+        this.model.set('currentView', 'documentView' );
     },
 
     showProperView( isInit ) {
         this.model.set( 'currentView', this.path.length === 2 ? 'documentView' : 'documentList' )
         if( this.path.length === 0 ) this.emit( 'navigate', this.model.git('currentCollection'), { append: true, silent: true } )
 
-        return (this.views.documentList ? this.views.documentList.delete() : Promise.resolve() )
-        .then( () => this.createDocumentList( this.model.git('currentCollection'), this.path.length === 2 ? false : true ) )
+        return (this.views.documentList ? Promise.resolve() : this.createDocumentList( this.model.git('currentCollection'), this.path.length === 2 ? false : true ) )
         .then( () =>
             this.path.length === 2
                 ? this.getDocument()
                   .then( document =>
                   Array.isArray( document )
                       ? Promise.resolve( this.emit( 'navigate', '', { up: true } ) )
-                      : this.showDocumentView( document, false )
+                      : Promise.resolve( this.showDocumentView( document, false ) )
                   )
             : this.views.documentList.show()
         )

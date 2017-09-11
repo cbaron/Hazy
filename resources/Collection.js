@@ -1,5 +1,7 @@
 module.exports = Object.assign( { }, require('./__proto__'), {
 
+    Fs: require('fs'),
+
     DELETE() {
         return this.getUser()
         .then( () => this.validateUser() )
@@ -11,7 +13,17 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         } )
     },
 
-    GET() { return Promise.resolve( this.respond( { body: this.Mongo.collectionNames.map( name => ( { name } ) ) } ) ) },
+    GET() {
+        return Promise.resolve(
+            this.respond( {
+                body: this.Mongo.collectionNames.map( name =>
+                    ( { name, schema: this.Fs.existsSync( `${__dirname}/../models/${name}.js` ) ? require(`../models/${name}`) : { } } )
+                )
+            } )
+        )
+    },
+
+    PATCH() { return Promise.resolve( this.respond( { stopChain: true, code: 404 } ) ) },
 
     POST() {
         return this.getUser()
@@ -23,5 +35,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             this.Mongo.addCollection( collection.collectionName )
             return Promise.resolve( this.respond( { body: { name: collection.collectionName } } ) )
         } )
-    }
+    },
+
+    PUT() { return Promise.resolve( this.respond( { stopChain: true, code: 404 } ) ) }
 } )

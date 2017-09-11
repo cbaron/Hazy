@@ -8,8 +8,13 @@ module.exports = {
 
     GetFormFields( data ) {
         return data.map( datum => {
-            const icon = datum.metadata.icon ? this.Icons[ datum.metadata.icon ] : ``,
-                options = datum.metadata.options
+            const icon = datum.metadata ?
+                ? datum.metadata.icon
+                    ? this.Icons[ datum.metadata.icon ]
+                    : ``
+
+               
+            const options = datum.metadata.options
 
             if( options ) {
                 if( typeof options === 'function' ) { options(); return this.GetSelect( datum, [ ], icon ) }
