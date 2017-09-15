@@ -33,6 +33,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             search( term, suggest ) {
                 return this.Xhr( { method: 'get', qs: JSON.stringify( { label: { '$regex': term, '$options': 'i' } } ), resource: this.Resource } )
                 .then( documents => {
+                    if( ! Array.isArray( documents ) ) documents = [ documents ]
                     if( documents.length === 0 ) return Promise.resolve( false )
                 
                     this.resource.Model.constructor( documents, { storeBy: [ '_id' ] } )
@@ -58,19 +59,11 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         return JSON.stringify( Object.assign( {}, { [ attr ]: { operation: '~*', value: term } } ) )
     },
 
-    onInputInput() {
-        if( this.els.input.value.trim() === "" ) this.emit('cleared')
-    },
-
-    postRender() {
-        this.Resource = this.Resource || 'Byop'
-        this.Type = this.Type || 'Byop'
-        this.resource = this.Resources[ this.Type ]
-
+    initAutoComplete() {
         new this.AutoComplete( {
             delay: 500,
             selector: this.els.input,
-            minChars: 3,
+            minChars: 1,
             cache: false,
             renderItem: this.resource.renderItem,
             source: ( term, suggest ) => {
@@ -86,7 +79,25 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 )
             }
         } )
+    },
 
+    onInputInput() {
+        if( this.els.input.value.trim() === "" ) this.emit('cleared')
+    },
+
+    postRender() {
+        this.Resource = this.Resource
+        this.Type = this.Type
+        this.resource = this.Resources[ this.Type ]
+        
+        if( this.resource ) this.initAutoComplete()
+        
+        return this
+    },
+
+    setResource( resource ) {
+        this.Resource = resource
+        this.resource = this.Resources[ this.Type ]
         return this
     }
 } )

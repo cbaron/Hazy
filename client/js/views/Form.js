@@ -16,6 +16,22 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
         this.onSubmitEnd()
     },
 
+    initTypeAheads() {
+        this.model.attributes.forEach( attribute => {
+            if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete()
+            else if( typeof attribute.range === "object" ) {
+                this.Views[ attribute.name ] = {
+                    model: Object.create( this.Model ).constructor( this.model.data[ attribute.name ], { attributes: attribute.range } ),
+                    templateOptions: { hideButtonRow: true }
+                }
+                const el = this.els[ attribute.name ]
+                delete this.els[ attribute.name ]
+                this.subviewElements = [ { el, view: 'form', name: attribute.name } ]
+                this.renderSubviews()
+            }
+        } )
+    },
+
     submit() {
         if( ! this.model.validate( this.getFormValues() ) ) return Promise.resolve()
 
@@ -32,13 +48,16 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     postRender() {
         this.inputEls = this.els.container.querySelectorAll('input, select')
 
-        this.els.container.addEventListener( 'keyup', e => { if( e.keyCode === 13 ) this.onSubmitBtnClick() } )
+        if( !this.disallowEnterKeySubmission ) this.els.container.addEventListener( 'keyup', e => { if( e.keyCode === 13 ) this.onSubmitBtnClick() } )
 
         this.inputEls.forEach( el =>
             el.addEventListener( 'focus', () => el.classList.remove('error') )
         )
 
-        this.model.on( 'validationError', attr => this.handleValidationError( attr ) )
+        if( this.model ){
+             this.model.on( 'validationError', attr => this.handleValidationError( attr ) )
+            this.initTypeAheads()
+        }
 
         return this 
     }

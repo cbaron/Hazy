@@ -70,7 +70,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
             if( this.model.attributes ) rv.attributes = this.model.attributes
         }
 
-        if( this.templateOptions ) rv.opts = typeof this.templateOptions === 'function' ? this.templateOptions() : this.templateOptions
+        if( this.templateOptions ) rv.opts = typeof this.templateOptions === 'function' ? this.templateOptions() : this.templateOptions || {}
 
         return rv
     },
@@ -194,6 +194,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
             let opts = { }
 
+            if( this.Views && this.Views[ obj.view ] ) opts = typeof this.Views[ obj.view ] === "object" ? this.Views[ obj.view ] : Reflect.apply( this.Views[ obj.view ], this, [ ] )
             if( this.Views && this.Views[ name ] ) opts = typeof this.Views[ name ] === "object" ? this.Views[ name ] : Reflect.apply( this.Views[ name ], this, [ ] )
             
             this.views[ name ] = this.factory.create( obj.view, Object.assign( { insertion: { el: obj.el, method: 'insertBefore' } }, opts ) )

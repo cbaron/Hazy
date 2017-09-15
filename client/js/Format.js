@@ -6,24 +6,39 @@ module.exports = {
       minimumFractionDigits: 2
     } ),
 
-    GetFormFields( data ) {
+    GetFormFields( data, model={} ) {
+        if( !data ) return
         return data.map( datum => {
-            const icon = datum.metadata ?
+            const icon = datum.metadata
                 ? datum.metadata.icon
                     ? this.Icons[ datum.metadata.icon ]
                     : ``
-
-               
-            const options = datum.metadata.options
+                : ``
+                               
+            const options = datum.metadata ? datum.metadata.options : false
 
             if( options ) {
                 if( typeof options === 'function' ) { options(); return this.GetSelect( datum, [ ], icon ) }
                 else if( Array.isArray( options ) ) return this.GetSelect( datum, options, icon )
             }
+                
+            const label = 
+                datum.fk || datum.label
+                    ? `<label>${datum.fk || datum.label}</label>`
+                    : ``
+
+            const input = datum.fk
+                ? `<div data-view="typeAhead" data-name="${datum.fk}"></div>`
+                : datum.range === 'Text'
+                    ? `<textarea data-js="${datum.name}" rows="3">${model[datum.name] || ''}</textarea>`
+                    : typeof datum.range === 'object'
+                        ? `<div data-js="${datum.name}" data-name="${datum.name}"></div>`
+                        : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label}" value="${model[datum.name] || ''}" />`
 
             return `` +
             `<div class="form-group">
-                <input type="${this.RangeToInputType[ datum.Range ]}" data-js="${datum.name}" placeholder="${datum.label}" />
+                ${label}
+                ${input} 
                 ${icon}
             </div>`
         } ).join('')
@@ -66,8 +81,8 @@ module.exports = {
     },
 
     RangeToInputType: {
-        Text: 'text',
         Email: 'email',
-        Password: 'password'
+        Password: 'password',
+        String: 'text'
     }
 }

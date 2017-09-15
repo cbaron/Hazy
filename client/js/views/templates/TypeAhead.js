@@ -1,5 +1,5 @@
-module.exports = ( { opts={placeholder:''} } ) =>
-`<div>
-    <input data-js="input" placeholder="${opts.placeholder}" "type="text">
-    ${require('./lib/search')()}
+module.exports = p =>
+`<div class="${p.opts.hideSearch ? 'hiding-search' : ''}">
+    <input data-js="input" placeholder="${p.opts.placeholder || ''}" "type="text">
+    ${p.opts.hideSearch ? '' : require('./lib/search')()}
 </div>`

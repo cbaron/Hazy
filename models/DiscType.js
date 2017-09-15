@@ -1,15 +1,13 @@
 module.exports = {
     attributes: [ {
-        fk: true,
-        name: 'Vendor'
+        fk: 'Vendor'
     }, {
-        fk: true,
-        name: 'PlasticType'
+        fk: 'PlasticType'
     }, {
         isNullable: false,
         label: 'HazySerial',
         name: 'hazySerial',
-        range: 'Text'
+        range: 'String'
     }, {
         isNullable: false,
         label: 'Desription',
@@ -38,21 +36,20 @@ module.exports = {
     }, {
         name: 'mold',
         label: 'Mold',
-        range: 'Text'
+        range: 'String'
     }, {
         name: 'runDate',
         label: 'Run Date',
-        range: 'Text'
+        range: 'String'
     }, {
-        fk: true,
-        name: 'Manufacturer'
+        fk: 'Manufacturer'
     }, {
         name: 'manufactureLocation',
         label: 'Manufacturer Location',
-        range: 'Text'
+        range: 'String'
     }, {
         name: 'patent',
         label: 'Patent',
-        range: 'Text'
+        range: 'String'
     } ]
 }
