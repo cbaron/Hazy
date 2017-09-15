@@ -2,12 +2,36 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
 
     clear() { this.inputEls.forEach( el => el.value = '' ) },
 
+    getElementValue( attributes=[], key ) {
+        const attribute = attributes.find( attribute => attribute.name === key )
+
+        if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' ) ) return this.els[ key ].value
+
+        if( attribute.fk ) {
+            let selectedItem = this.views[ key ].selectedItem
+            return selectedItem
+                ? selectedItem._id || selectedItem.id
+                : undefined
+        } else if( typeof attribute.range === 'object' ) {
+            return this.views[key].getFormValues()
+        }
+    },
+
     getFormValues() {
-        return this.reducer( Object.keys( this.els ), key =>
-            /(INPUT|SELECT)/.test( this.els[ key ].tagName )
-                ? { [key]: this.els[ key ].value }
+        const attributes = this.model.attributes
+
+        let data = this.reducer( Object.keys( this.els ), key =>
+            /(INPUT|SELECT|TEXTAREA)/.test( this.els[ key ].tagName )
+                ? { [key]: this.getElementValue( attributes, key ) }
                 : { }
         )
+
+        attributes.forEach( attribute => {
+            if( attribute.fk ) { data[ attribute.fk ] = this.views[ attribute.fk ].getSelectedId() }
+            else if( typeof attribute.range === "object" ) { data[ attribute.name ] = this.views[ attribute.name ].getFormValues() }
+        } )
+
+        return data
     },
 
     handleValidationError( attr ) {
@@ -35,9 +59,11 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     submit() {
         if( ! this.model.validate( this.getFormValues() ) ) return Promise.resolve()
 
-        return this.model.post()
+        const isPost = !Boolean( this.model.data[ this.key ]  )
+
+        return ( isPost ? this.model.post() : this.model.put( this.model.data[ this.key ], this.omit( this.model.data, [ this.key ] ) ) )
         .then( () => {
-            this.emit( 'posted', Object.assign( {}, this.model.data ) )
+            this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) )
             this.model.data = { }
             this.clear()
             this.Toast.showMessage( 'success', this.toastSuccess || `Success` )
@@ -56,7 +82,8 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
 
         if( this.model ){
              this.model.on( 'validationError', attr => this.handleValidationError( attr ) )
-            this.initTypeAheads()
+             this.initTypeAheads()
+             this.key = this.model.metadata ? this.model.metadata.key : '_id'
         }
 
         return this 

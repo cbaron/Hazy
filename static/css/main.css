@@ -516,8 +516,11 @@ button.back-btn:hover {
 .CollectionManager .main-panel .List ol >div {
   line-height: 1.25rem;
   margin-right: 3rem;
-  padding: 1rem;
   text-align: left;
+}
+.CollectionManager .main-panel .List ol >li .item,
+.CollectionManager .main-panel .List ol >div .item {
+  padding: 1rem;
 }
 .CollectionManager .main-panel .Form {
   height: 100%;

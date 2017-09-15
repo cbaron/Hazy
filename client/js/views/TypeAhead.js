@@ -8,8 +8,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             Model: require('../models/Byop'),
             renderItem: ( item, search ) => {
                 const value = `${item.name1}, ${item.name2}`
-                return `<div class="autocomplete-suggestion" data-val="${value}" data-id="${item.id}">${value}</div>`
-            },
+                return `<div class="autocomplete-suggestion" data-val="${value}" data-id="${item.id}">${value}</div>` },
             search( term, suggest ) {
                 return Promise.all( [
                     this.Xhr( { method: 'get', qs: this.getQs( 'name1', term ), resource: 'byop' } ),
@@ -55,6 +54,13 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     
     focus() { this.els.input.focus() },
 
+    getSelectedId() {
+        console.log( this.selectedModel );
+        if( !this.selectedModel ) return undefined
+
+        return this.selectedModel._id || this.selectedModel.id
+    },
+
     getQs( attr, term ) {
         return JSON.stringify( Object.assign( {}, { [ attr ]: { operation: '~*', value: term } } ) )
     },
@@ -73,10 +79,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             },
             onSelect: ( e, term, item ) => {
                 const store = this.resource.Model.store;
-                this.emit(
-                    'itemSelected',
-                    (  store.id ? store.id : store['_id'] )[ e.target.getAttribute( 'data-id' ) ]
-                )
+                
+                this.selectedModel = ( store.id ? store.id : store['_id'] )[ item.getAttribute( 'data-id' ) ]
+
+                this.emit( 'itemSelected', this.selectedModel )
             }
         } )
     },
@@ -89,8 +95,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         this.Resource = this.Resource
         this.Type = this.Type
         this.resource = this.Resources[ this.Type ]
-        
-        if( this.resource ) this.initAutoComplete()
+       
+        if( this.resource && this.Resource ) this.initAutoComplete()
         
         return this
     },

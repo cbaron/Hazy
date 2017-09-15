@@ -66,7 +66,7 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
     git( attr ) { return this.data[ attr ] },
 
     patch( id, data ) {
-        return this.Xhr( { method: 'patch', id, resource: this.resource, headers: this.headers || {}, data: JSON.stringify( data ) } )
+        return this.Xhr( { method: 'patch', id, resource: this.resource, headers: this.headers || {}, data: JSON.stringify( data || this.data ) } )
         .then( response => {
            
             if( Array.isArray( this.data ) ) { 
@@ -133,8 +133,14 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
         Object.keys( data ).forEach( name => { 
             const val = data[ name ],
                 attribute = this.attributes.find( attr => attr.name === name )       
-            
-            if( valid && !this.validateDatum( attribute, val ) ) {
+    
+            if( attribute === undefined || !attribute.validate ) {
+                this.data[ name ] = val
+                    ? typeof val === 'string'
+                         ? val.trim() 
+                         : val
+                    : undefined
+            } else if( valid && !this.validateDatum( attribute, val ) ) {
                 this.emit( 'validationError', attribute )
                 valid = false
             } else if( this.validateDatum( attribute, val ) ) {

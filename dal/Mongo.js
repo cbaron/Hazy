@@ -41,7 +41,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     PUT( resource ) {
         return this.getDb()
-        .then( db => db.collection( resource.path[0] ).update( { _id: new ( this.Mongo.ObjectID )( resource.path[1] ) }, resource.body ) )
+        .then( db => db.collection( resource.path[0] ).replaceOne( { _id: new ( this.Mongo.ObjectID )( resource.path[1] ) }, this.transform( resource.path[0], resource.body ) ) )
         .then( result => Promise.resolve( [ Object.assign( { _id: resource.path[1] }, resource.body ) ] ) )
     },
 
@@ -96,14 +96,16 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         .then( () => {
             this.collectionNames = Object.keys( this.collections ).sort()
             this.model = { }
-            /*
-            return this.P( this.Fs.readdir, [ `${__dirname}../models` ], this.fs )
-            .then( files => {
+            return this.P( this.Fs.readdir, [ `${__dirname}/../models` ], this.Fs )
+            .then( ( [ files ] ) => {
                 files.forEach( filename => {
                     const name = filename.replace('.js','')
-                this.model[ name ] = require( `${__dirname}../models/${name}` ) this.filter( this.collectionNames, name => this.reducer( this.collectionNames, name => ( { name:  } ) )
-            */
-            return Promise.resolve()
+                    if( this.collectionNames.includes( name ) ) {
+                        this.model[ name ] = require( `${__dirname}/../models/${name}` )
+                    }
+                } )
+                return Promise.resolve()
+            } )
         } )
     },
 
@@ -111,6 +113,16 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     removeCollection( collectionName ) {
         this.collectionNames = this.collectionNames.filter( name => name != collectionName )
-    }
+    },
+
+    transform( collectionName, document ) {
+        if( !this.model[ collectionName ] ) return document
+
+        this.model[ collectionName ].attributes.forEach( attribute => {
+            if( attribute.fk && document[ attribute.fk ] ) document[ attribute.fk ] = new ( this.Mongo.ObjectID )( document[ attribute.fk ] )
+        } )
+
+        return document
+    },
     
 } ), { collections: { value: { } } } )
