@@ -1,5 +1,7 @@
+const Super = require('./__proto__')
+
 module.exports = {
-    attributes: [ {
+    attributes: Super.createAttributes( [ {
         fk: 'Vendor'
     }, {
         fk: 'PlasticType'
@@ -51,5 +53,5 @@ module.exports = {
         name: 'patent',
         label: 'Patent',
         range: 'String'
-    } ]
+    } ] )
 }

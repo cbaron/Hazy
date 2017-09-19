@@ -163,7 +163,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                             this.createView(
                                 'form',
                                 'documentView',
-                                this.creaetDocumentModel()
+                                this.createDocumentModel()
                             )
                         )
                     )
@@ -189,7 +189,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
                 } ],
                 [ 'posted', function( model ) {
-                    if( this.views.documentList.fetched ) this.views.documentList.add( model.data, true )
+                    if( this.views.documentList.fetched ) this.views.documentList.add( model, true )
                     this.clearCurrentView().then( () => Promise.resolve( this.model.set('currentView', 'documentList') ) ).catch(this.Catch)
                 } ]
             ]
@@ -242,9 +242,15 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         )
 
         this.model.on( 'currentViewChanged', () => {
-            const currentView = this.model.git('currentView')
-
-            this.emit( 'navigate', `/admin/collection-manager/${this.model.git('currentCollection')}` + ( currentView === 'documentView' ? `/${this.views.documentView.model.git('name')}`: `` ), { silent: true } );
+            const currentView = this.model.git('currentView'),
+                currentCollection = this.model.git('currentCollection'),
+                path = currentView === 'documentView'
+                    ? `/${currentCollection}/${this.views.documentView.model.git('name')}`
+                    : currentView === 'documentList'
+                        ? `/${currentCollection}`
+                        : ``
+            
+            this.emit( 'navigate', `/admin/collection-manager${path}`, { silent: true } );
            
             ( currentView === 'documentList' && this.views.documentList.collection.data.length === 0 ? this.views.documentList.fetch() : Promise.resolve() )
             .then( () => this.views[ currentView ].show() )

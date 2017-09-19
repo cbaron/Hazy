@@ -42,7 +42,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
 
     initTypeAheads() {
         this.model.attributes.forEach( attribute => {
-            if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete()
+            if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
             else if( typeof attribute.range === "object" ) {
                 this.Views[ attribute.name ] = {
                     model: Object.create( this.Model ).constructor( this.model.data[ attribute.name ], { attributes: attribute.range } ),

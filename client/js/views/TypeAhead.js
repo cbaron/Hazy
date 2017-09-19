@@ -55,7 +55,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     focus() { this.els.input.focus() },
 
     getSelectedId() {
-        console.log( this.selectedModel );
         if( !this.selectedModel ) return undefined
 
         return this.selectedModel._id || this.selectedModel.id
@@ -65,7 +64,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         return JSON.stringify( Object.assign( {}, { [ attr ]: { operation: '~*', value: term } } ) )
     },
 
-    initAutoComplete() {
+    initAutoComplete( initialId ) {
+
         new this.AutoComplete( {
             delay: 500,
             selector: this.els.input,
@@ -85,6 +85,16 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 this.emit( 'itemSelected', this.selectedModel )
             }
         } )
+
+        if( initialId ) {
+            this.Xhr( { resource: this.Resource, id: initialId } )
+            .then( document => {
+                this.selectedModel = document
+                this.els.input.value = document.label
+                return Promise.resolve()
+            } )
+            .catch( this.Error )
+        }
     },
 
     onInputInput() {

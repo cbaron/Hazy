@@ -4,7 +4,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         {
             name: 'name',
             label: 'Name',
-            Range: 'Text',
+            range: 'String',
             error: 'Please enter a name with no spaces.',
             validate: val => val.trim() !== '' && !/\s/.test(val),
             metadata: { }

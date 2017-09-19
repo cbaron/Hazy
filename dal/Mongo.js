@@ -8,13 +8,16 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     ObjectId( id ) { return new ( this.Mongo.ObjectID )( id ) },
 
+    SuperModel: require( '../models/__proto__'),
+
     DELETE( resource ) {
         return this.getDb()
-        .then( db => db.collection( resource.path[0] ).remove( { _id: new ( this.Mongo.ObjectID )( resource.path[1] ) } ) )
+        .then( db => db.collection( resource.path[0] ).remove( { _id: this.ObjectId( resource.path[1] ) } ) )
         .then( result => Promise.resolve( [ { } ] ) )
     },
 
     GET( resource ) {
+        if( resource.path.length === 2 ) return this.handleSingleDocument( resource )
         if( resource.query.countOnly ) return this.handleCountOnly( resource )
 
         const cursorMethods = [ 'skip', 'limit', 'sort' ].reduce(
@@ -48,6 +51,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     addCollection( name ) {
         this.routes[ name ] = '__proto__'
         this.collectionNames.push( name )
+        this.model[ name ] = this.SuperModel.create()
     },
 
     forEach( cursorFn, callbackFn, thisVar ) {
@@ -79,7 +83,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     },
 
     cacheCollection( collection ) {
-        return Promise.resolve( this.collections[ collection.name ] = { } )
+        return Promise.resolve( this.model[ collection.name ] = false )
     },
 
     handleCountOnly( resource ) {
@@ -90,11 +94,16 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         .then( result => Promise.resolve( { result } ) )
     },
 
+    handleSingleDocument( resource ) {
+        return this.getDb()
+        .then( db => db.collection( resource.path[0] ).findOne( { _id: this.ObjectId( resource.path[1] ) } ) )
+    },
+
     initialize( routes ) {
         this.routes = routes
         return this.forEach( db => db.listCollections( { name: { $ne: 'system.indexes' } } ), this.cacheCollection, this )
         .then( () => {
-            this.collectionNames = Object.keys( this.collections ).sort()
+            this.collectionNames = Object.keys( this.model ).sort()
             this.model = { }
             return this.P( this.Fs.readdir, [ `${__dirname}/../models` ], this.Fs )
             .then( ( [ files ] ) => {
@@ -103,6 +112,9 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
                     if( this.collectionNames.includes( name ) ) {
                         this.model[ name ] = require( `${__dirname}/../models/${name}` )
                     }
+                } )
+                this.collectionNames.forEach( name => {
+                    if( this.model[ name ] === false ) this.model[ name ] = this.SuperModel.create()
                 } )
                 return Promise.resolve()
             } )
@@ -113,6 +125,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     removeCollection( collectionName ) {
         this.collectionNames = this.collectionNames.filter( name => name != collectionName )
+        delete this.model[ collectionName ]
     },
 
     transform( collectionName, document ) {
@@ -125,4 +138,4 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         return document
     },
     
-} ), { collections: { value: { } } } )
+} ), { model: { value: { } } } )

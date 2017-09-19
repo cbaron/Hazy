@@ -5,13 +5,15 @@ module.exports = Object.assign( { }, Super, {
     add( datum, sort=false ) {
         if( !this.collection ) this.collection = Object.create( this.Model )
 
+        if( this.collection.data.length === 0 ) this.els.list.classList.remove('no-items')
+
         const keyValue = datum[ this.key ]
         let insertion = { el: this.els.list }
 
         this.collection.add( datum )
         this.collection.store[ this.key ][ keyValue ] = datum
 
-        if( sort ) {
+        if( sort && this.collection.data.length !== 1 ) {
             this.collection.sort( this.model.git('sort') )
             let index = this.collection.data.findIndex( datum => datum[this.key] == keyValue )
             if( index !== -1 ) insertion = { method: 'insertBefore', el: this.els.list.children.item(index) }
@@ -277,14 +279,7 @@ module.exports = Object.assign( { }, Super, {
                 )
             } )
 
-            if( this.model.git('delete') ) {
-                this.els.list.addEventListener( 'click', e => {
-                    const target = e.target
-                    if( target.tagName === 'svg' && target.classList.contains('garbage') ) {
-                        this.emit( 'deleteClicked', this.collection.store[ this.key ][ target.closest('LI').getAttribute('data-key') ] )
-                    }
-                } )
-            }
+            
 
             if( this.model.git('scrollPagination') ) { this.scrollHeight = this.els.list.scrollHeight; this.offsetHeight = this.els.list.offsetHeight }
         }
@@ -296,7 +291,15 @@ module.exports = Object.assign( { }, Super, {
 
         if( this.collection ) this.collection.store = { [ this.key ]: { } }
 
-        if( this.model.git('delete') ) this.deleteIcon = this.Format.GetIcon('garbage')
+        if( this.model.git('delete') ) {
+            this.deleteIcon = this.Format.GetIcon('garbage')
+            this.els.list.addEventListener( 'click', e => {
+                const target = e.target
+                if( target.tagName === 'svg' && target.classList.contains('garbage') ) {
+                    this.emit( 'deleteClicked', this.collection.store[ this.key ][ target.closest('LI').getAttribute('data-key') ] )
+                }
+            } )
+        }
 
         if( this.model.git('fetch') ) this.fetch().catch( this.Error )
 

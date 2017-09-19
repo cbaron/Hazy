@@ -5,7 +5,7 @@ module.exports = Object.create( {
     Postgres: require('../../dal/Postgres'),
 
     apply( resource ) {
-        if( this.Mongo.collections[ resource.path[0] ] ) return this.Mongo[ resource.request.method ]( resource )
+        if( this.Mongo.model[ resource.path[0] ] ) return this.Mongo[ resource.request.method ]( resource )
 
         return this[ resource.request.method ]( resource )
     },
