@@ -1,9 +1,11 @@
 module.exports = Object.assign( { }, require('./__proto__'), {
 
     model: require('../models/CollectionManager'),
+
     Collection: require('../models/Collection'),
     DocumentModel: require('../models/Document'),
     JsonPropertyModel: require('../models/JsonProperty'),
+    WebSocket: require('../WebSocket'),
 
     Views: {
 
@@ -255,6 +257,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             ( currentView === 'documentList' && this.views.documentList.collection.data.length === 0 ? this.views.documentList.fetch() : Promise.resolve() )
             .then( () => this.views[ currentView ].show() )
             .catch( this.Error )
+        } )
+
+        this.WebSocket.on( 'createDisc', data => {
+            console.log(this.path);
+            if( this.currentView !== 'DocumentView' && this.model.git('currentCollection') === 'disc' ) { console.log('asd');
         } )
 
         return this

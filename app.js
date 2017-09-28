@@ -10,6 +10,9 @@ module.exports = Router.initialize()
 
     console.log( `HTTP server listening at ${httpPort}` )
 
+    require('./socketApp')
+    console.log( `WebSocket server listening at ${process.env.WEBSOCKET_PORT}` )
+
     return Promise.resolve()
 } )
 .catch( e => console.log( `Error initializing app: ${e.stack ||e}` ) )
