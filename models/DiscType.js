@@ -7,11 +7,6 @@ module.exports = {
         fk: 'PlasticType'
     }, {
         isNullable: false,
-        label: 'HazySerial',
-        name: 'hazySerial',
-        range: 'String'
-    }, {
-        isNullable: false,
         label: 'Desription',
         name: 'description',
         range: 'Text'
@@ -40,15 +35,7 @@ module.exports = {
         label: 'Mold',
         range: 'String'
     }, {
-        name: 'runDate',
-        label: 'Run Date',
-        range: 'String'
-    }, {
         fk: 'Manufacturer'
-    }, {
-        name: 'manufactureLocation',
-        label: 'Manufacturer Location',
-        range: 'String'
     }, {
         name: 'patent',
         label: 'Patent',
