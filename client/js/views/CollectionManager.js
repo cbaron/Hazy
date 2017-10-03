@@ -260,8 +260,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         } )
 
         this.WebSocket.on( 'createDisc', data => {
-            console.log(this.path);
-            if( this.currentView !== 'DocumentView' && this.model.git('currentCollection') === 'disc' ) { console.log('asd'); }
+            if( this.path.join('/') === 'Disc/undefined' ) {
+                console.log('proceed with upload');
+            }
         } )
 
         return this

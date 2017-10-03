@@ -6,42 +6,45 @@ module.exports = {
       minimumFractionDigits: 2
     } ),
 
-    GetFormFields( data, model={} ) {
-        if( !data ) return
-        return data.map( datum => {
-            const icon = datum.metadata
-                ? datum.metadata.icon
-                    ? this.Icons[ datum.metadata.icon ]
-                    : ``
+    GetFormField( datum, value ) {
+        const icon = datum.metadata
+            ? datum.metadata.icon
+                ? this.Icons[ datum.metadata.icon ]
                 : ``
-                               
-            const options = datum.metadata ? datum.metadata.options : false
+            : ``
+                           
+        const options = datum.metadata ? datum.metadata.options : false
 
-            if( options ) {
-                if( typeof options === 'function' ) { options(); return this.GetSelect( datum, [ ], icon ) }
-                else if( Array.isArray( options ) ) return this.GetSelect( datum, options, icon )
-            }
-                
-            const label = 
-                datum.fk || datum.label
-                    ? `<label>${datum.fk || datum.label}</label>`
-                    : ``
+        if( options ) {
+            if( typeof options === 'function' ) { options(); return this.GetSelect( datum, [ ], icon ) }
+            else if( Array.isArray( options ) ) return this.GetSelect( datum, options, icon )
+        }
+            
+        const label = 
+            datum.fk || datum.label
+                ? `<label>${datum.fk || datum.label}</label>`
+                : ``
 
-            const input = datum.fk
-                ? `<div data-view="typeAhead" data-name="${datum.fk}"></div>`
-                : datum.range === 'Text'
-                    ? `<textarea data-js="${datum.name}" rows="3">${model[datum.name] || ''}</textarea>`
-                    : typeof datum.range === 'object'
-                        ? `<div data-js="${datum.name}" data-name="${datum.name}"></div>`
-                        : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label}" value="${model[datum.name] || ''}" />`
+        const input = datum.fk
+            ? `<div data-view="typeAhead" data-name="${datum.fk}"></div>`
+            : datum.range === 'Text'
+                ? `<textarea data-js="${datum.name}" rows="3">${value || ''}</textarea>`
+                : datum.range === 'List' || typeof datum.range === 'object'
+                    ? `<div data-js="${datum.name}" data-name="${datum.name}"></div>`
+                    : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label}" value="${value || ''}" />`
 
-            return `` +
-            `<div class="form-group">
-                ${label}
-                ${input} 
-                ${icon}
-            </div>`
-        } ).join('')
+        return `` +
+        `<div class="form-group">
+            ${label}
+            ${input} 
+            ${icon}
+        </div>`
+    },
+
+    GetFormFields( data, model={} ) {
+        if( !data ) return ``
+
+        return data.map( datum => this.GetFormField( datum, model && model[ datum.name ] ) ).join('')
     },
 
     GetIcon( name, opts ) { return Reflect.apply( this.Icons[ name ], this, [ opts ] ) },

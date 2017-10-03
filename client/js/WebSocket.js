@@ -8,7 +8,11 @@ module.exports = Object.create( Object.assign( {}, require('../../lib/MyObject')
         }
 
         this.socket.onmessage = event => {
-		    if( this.user.id === event.data.userId ) this.emit( event.data.type, event.data )
+            let data = event.data;
+
+            try { data = JSON.parse( data ) } catch( e ) { console.log( data, e ); return }
+
+		    if( this.user.git('id') === data.userId ) this.emit( data.type, data )
 		}
 
        return this

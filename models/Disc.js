@@ -1,14 +1,13 @@
 module.exports = {
 
     attributes: [ {
-        fk: true,
-        name: 'DiscType'
+        fk: 'DiscType'
     }, {
         isNullable: false,
-        itemType: 'Uri',
+        itemRange: 'String',
         label: 'Photo Urls',
         name: 'PhotoUrls',
-        range: 'Array'
+        range: 'List'
     }, {
         isNullable: false,
         label: 'Weight',

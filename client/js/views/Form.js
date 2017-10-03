@@ -52,6 +52,19 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
                 delete this.els[ attribute.name ]
                 this.subviewElements = [ { el, view: 'form', name: attribute.name } ]
                 this.renderSubviews()
+            } else if( attribute.range === "List" ) {
+                this.Views[ attribute.name ] = {
+                    model: Object.create( this.model ).constructor( {
+                        add: true,
+                        collection: Object.create( this.Model ).constructor( this.model.git( attribute.name ) || [ ] ),
+                        delete: true
+                    } ),
+                    itemtemplate: value => Reflect.apply( this.Format.GetFormField, this.Format, [ { range: attribute.itemRange }, value ] )
+                }
+                const el = this.els[ attribute.name ]
+                delete this.els[ attribute.name ]
+                this.subviewElements = [ { el, view: 'list', name: attribute.name } ]
+                this.renderSubviews()
             }
         } )
     },

@@ -18,14 +18,15 @@ module.exports = Object.create( Object.assign( { }, require('./lib/MyObject'), {
         this.server.on( 'connection', client => {
 
           client.on( 'message', data => {
-              if( data.type === 'createDisc' ) {
-                  this.Clients[ data.userId ] = { state: 'creatingDisc' }
+              let parsedData = undefined;
+
+              try { parsedData = JSON.parse( data ) } catch( e ) { console.log( data, e ); return }
+
+              if( parsedData.type === 'createDisc' ) {
+                  this.Clients[ parsedData.userId ] = { state: 'creatingDisc' }
                   this.broadcast( data )
               }
           } )
-         
-          client.send( 'Great Job!' )
-
         } )
     }
 } ), {} ).constructor()

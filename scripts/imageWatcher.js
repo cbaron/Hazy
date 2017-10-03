@@ -13,6 +13,8 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), {
     email: process.argv[2],
 
 	constructor() {
+        this.socketOpen = false;
+        this.state = 'waiting'
         
         return Promise.resolve( ( async () => { 
             const person = await this.Postgres.select( 'person', { email: this.email } )
@@ -30,7 +32,7 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), {
     initSocket() {
         this.socket = new this.WebSocket(`ws://${process.env.DOMAIN}:${process.env.WEBSOCKET_PORT}`)
          
-        this.socket.on( 'open', () => { console.log('Connected to socket: Great Job!'); this.socketOpen = true; } )
+        this.socket.on( 'open', () => { this.socketOpen = true; } )
          
         this.socket.on( 'message', data => {
           console.log(data);
@@ -40,13 +42,19 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), {
     },
 
     watchDirectory() {
-        console.log( this.directory );
+        let newFiles = { }
+
         this.Watch.watchTree(
             this.directory,
             { ignoreDotFiles: true, ignoreNotPermitted: true, ignoreUnreadableDir: true, interval: 5 },
             ( f, curr, prev ) => {
-                if (typeof f == "object" && prev === null && curr === null) {
-                    if( this.socketOpen ) this.socket.send( JSON.stringify( { type: 'createDiscs', userId: this.userId } ) )
+                if( prev === null ) {
+                    newFiles[ f ] = true;
+                    if( this.socketOpen && this.state === 'waiting' ) {
+                        this.state = 'notifying'
+                        this.socket.send( JSON.stringify( { type: 'createDisc', userId: this.userId } ) )
+                        this.state = 'waiting'
+                    }
                 }
             }
         )
