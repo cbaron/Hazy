@@ -2,19 +2,19 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
 
     clear() { this.inputEls.forEach( el => el.value = '' ) },
 
-    getElementValue( attributes=[], key ) {
-        const attribute = attributes.find( attribute => attribute.name === key )
+    getElementValue( el, attribute ) {
+        if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' && attribute.range ) ) return el.value
 
-        if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' ) ) return this.els[ key ].value
-
+        /*
         if( attribute.fk ) {
-            let selectedItem = this.views[ key ].selectedItem
+            let selectedItem = this.views[ attribute.name ].selectedItem
             return selectedItem
                 ? selectedItem._id || selectedItem.id
                 : undefined
         } else if( typeof attribute.range === 'object' ) {
-            return this.views[key].getFormValues()
-        }
+            return el.getFormValues()
+        } else if( attribute.range === "List" ) { return Array.from( this.views[ attribute.name ].els.list.children ).map( item => this.getElementValue( item, { range: attribute.itemRange } ) ) }
+        */
     },
 
     getFormValues() {
@@ -22,13 +22,15 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
 
         let data = this.reducer( Object.keys( this.els ), key =>
             /(INPUT|SELECT|TEXTAREA)/.test( this.els[ key ].tagName )
-                ? { [key]: this.getElementValue( attributes, key ) }
+                ? { [key]: this.getElementValue( this.els[ key ], attributes.find( attribute => attribute.name === key ) ) }
                 : { }
         )
 
         attributes.forEach( attribute => {
             if( attribute.fk ) { data[ attribute.fk ] = this.views[ attribute.fk ].getSelectedId() }
             else if( typeof attribute.range === "object" ) { data[ attribute.name ] = this.views[ attribute.name ].getFormValues() }
+            else if( attribute.range === "List" ) {
+                data[ attribute.name ] = Array.from( this.views[ attribute.name ].els.list.children ).map( itemEl => this.getElementValue( itemEl.querySelector('.item input'), { range: attribute.itemRange } ) ) }
         } )
 
         return data
@@ -53,18 +55,21 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
                 this.subviewElements = [ { el, view: 'form', name: attribute.name } ]
                 this.renderSubviews()
             } else if( attribute.range === "List" ) {
+                const collectionData = this.model.git( attribute.name ) ? this.model.git( attribute.name ).map( datum => ( { value: datum } ) ) : [ ];
                 this.Views[ attribute.name ] = {
                     model: Object.create( this.model ).constructor( {
                         add: true,
-                        collection: Object.create( this.Model ).constructor( this.model.git( attribute.name ) || [ ] ),
+                        collection: Object.create( this.Model ).constructor( collectionData, { meta: { key: 'value' } } ),
                         delete: true
                     } ),
-                    itemtemplate: value => Reflect.apply( this.Format.GetFormField, this.Format, [ { range: attribute.itemRange }, value ] )
+                    itemTemplate: datum => Reflect.apply( this.Format.GetFormField, this.Format, [ { range: attribute.itemRange }, datum.value ] )
                 }
                 const el = this.els[ attribute.name ]
                 delete this.els[ attribute.name ]
                 this.subviewElements = [ { el, view: 'list', name: attribute.name } ]
                 this.renderSubviews()
+                this.views[ attribute.name ].on( 'addClicked', () => this.views[ attribute.name ].add( { value: '' } ) )
+                this.views[ attribute.name ].on( 'deleteClicked', datum => this.views[ attribute.name ].remove( datum ) )
             }
         } )
     },

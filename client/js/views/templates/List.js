@@ -13,8 +13,8 @@ return `` +
 `<section>
     ${getHeading(p)}
     <ol data-js="list" class="list ${p.model.draggable || p.model.droppable ? 'no-select' : '' }"></ol>
-    ${p.model.reset ? `<button class="floating" data-js="resetBtn">Reset</button>` : ``}
-    ${p.model.save ? `<button class="floating" data-js="saveBtn">Save</button>` : ``}
-    ${p.model.add ? `<button class="floating" data-js="addBtn">Add</button>` : ``}
+    ${p.model.reset ? `<button class="floating" data-js="resetBtn" type="button">Reset</button>` : ``}
+    ${p.model.save ? `<button class="floating" data-js="saveBtn" type="button">Save</button>` : ``}
+    ${p.model.add ? `<button class="floating" data-js="addBtn" type="button">Add</button>` : ``}
 </section>`
 }

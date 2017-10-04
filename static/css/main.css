@@ -828,6 +828,21 @@ button {
 button.submitting {
   opacity: 0.3;
 }
+.Form .List .list.no-items {
+  padding: 0rem;
+}
+.Form .List button.floating {
+  bottom: 0rem;
+  height: 2rem;
+  right: 1rem;
+  width: 2rem;
+}
+.Form .form-group .List .list .form-group {
+  margin: 0.5rem 0rem;
+}
+.Form .form-group .List .list .item {
+  padding: 0.5rem 1rem;
+}
 .Header {
   background-color: rgba(0,0,0,0.7);
   font-weight: 300;
@@ -1141,6 +1156,9 @@ button.submitting {
 }
 .JsonProperty.confirm-delete >div:hover {
   background-color: transparent;
+}
+.List {
+  position: relative;
 }
 .List .list.no-items {
   padding-top: 1rem;
@@ -1504,7 +1522,7 @@ button:focus {
   line-height: 2rem;
   height: 3rem;
   padding: 0rem;
-  position: fixed;
+  position: absolute;
   width: 3rem;
 }
 .side-by-side {

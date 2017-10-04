@@ -1,6 +1,7 @@
-module.exports = {
+const Super = require('./__proto__')
 
-    attributes: [ {
+module.exports = {
+    attributes: Super.createAttributes( [ {
         fk: 'DiscType'
     }, {
         isNullable: false,
@@ -66,6 +67,6 @@ module.exports = {
         name: 'rimVAngle',
         label: 'Vertical Rim Angle',
         range: 'String'
-    } ]
+    } ] )
 
 }

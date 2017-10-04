@@ -15,6 +15,8 @@ module.exports = {
                            
         const options = datum.metadata ? datum.metadata.options : false
 
+        value = ( value === undefined ) ? '' : value
+
         if( options ) {
             if( typeof options === 'function' ) { options(); return this.GetSelect( datum, [ ], icon ) }
             else if( Array.isArray( options ) ) return this.GetSelect( datum, options, icon )
@@ -28,10 +30,10 @@ module.exports = {
         const input = datum.fk
             ? `<div data-view="typeAhead" data-name="${datum.fk}"></div>`
             : datum.range === 'Text'
-                ? `<textarea data-js="${datum.name}" rows="3">${value || ''}</textarea>`
+                ? `<textarea data-js="${datum.name}" rows="3">${value}</textarea>`
                 : datum.range === 'List' || typeof datum.range === 'object'
                     ? `<div data-js="${datum.name}" data-name="${datum.name}"></div>`
-                    : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label}" value="${value || ''}" />`
+                    : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label || ''}" value="${value}" />`
 
         return `` +
         `<div class="form-group">

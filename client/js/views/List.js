@@ -5,8 +5,6 @@ module.exports = Object.assign( { }, Super, {
     add( datum, sort=false ) {
         if( !this.collection ) this.collection = Object.create( this.Model )
 
-        if( this.collection.data.length === 0 ) this.els.list.classList.remove('no-items')
-
         const keyValue = datum[ this.key ]
         let insertion = { el: this.els.list }
 
@@ -18,16 +16,21 @@ module.exports = Object.assign( { }, Super, {
             let index = this.collection.data.findIndex( datum => datum[this.key] == keyValue )
             if( index !== -1 ) insertion = { method: 'insertBefore', el: this.els.list.children.item(index) }
         }
+        
+        this.updateStyle()
+
 
         if( this.itemTemplate ) {
 
-            return this.slurpTemplate( {
+            this.slurpTemplate( {
                 insertion,
                 renderSubviews: true,
                 template: this.getItemTemplateResult( keyValue, datum )
              } )
             
-            this.els.list.querySelector(`*[data-key="${keyValue}"]`).scrollIntoView( { behavior: 'smooth' } )
+            //this.els.list.querySelector(`*[data-key="${keyValue}"]`).scrollIntoView( { behavior: 'smooth' } )
+
+            return
         }
 
         this.itemViews[ keyValue ] =
@@ -241,7 +244,7 @@ module.exports = Object.assign( { }, Super, {
 
         if( !Array.isArray( data ) ) data = [ data ]
 
-        this.els.list.classList.toggle( 'no-items', this.collection.data.length === 0 )
+        this.updateStyle()
 
         if( this.collection.data.length === 0 ) return
 
@@ -307,11 +310,17 @@ module.exports = Object.assign( { }, Super, {
 
         if( this.model.git('scrollPagination') ) this.initializeScrollPagination()
 
+        this.updateStyle()
+
+        if( this.collection.data.length ) this.populateList()
+
         return this
     },
 
     remove( datum ) {
         this.collection.remove( datum )
+
+        this.updateStyle()
 
         if( this.model.git('view') ) {
             delete this.itemViews[ datum[ this.key ] ]
@@ -320,6 +329,7 @@ module.exports = Object.assign( { }, Super, {
 
             if( child ) this.els.list.removeChild( child )
         }
+
 
         return this
     },
@@ -381,5 +391,9 @@ module.exports = Object.assign( { }, Super, {
             } )
             this.els.list.removeChild( oldItem )
         }
+    },
+
+    updateStyle() {
+        this.els.list.classList.toggle( 'no-items', this.collection.data.length === 0 )
     }
 } )
