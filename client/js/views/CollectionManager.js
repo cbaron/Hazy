@@ -235,8 +235,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         if( this.path.length > 0 ) this.model.set( 'currentCollection', this.path[0] )
 
-        this.showProperView( true ).catch( this.Error )
-
         this.model.on( 'currentCollectionChanged', () =>
             this.views.documentList.delete( { silent: true } )
             .then( () => this.createDocumentList( this.model.git( 'currentCollection') ) )
@@ -253,6 +251,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                         : ``
             
             this.emit( 'navigate', `/admin/collection-manager${path}`, { silent: true } );
+
+            this.path = path.split('/').slice(0)
            
             ( currentView === 'documentList' && this.views.documentList.collection.data.length === 0 ? this.views.documentList.fetch() : Promise.resolve() )
             .then( () => this.views[ currentView ].show() )
@@ -260,10 +260,40 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         } )
 
         this.WebSocket.on( 'createDisc', data => {
+            console.log(this.path.join('/'));
             if( this.path.join('/') === 'Disc/undefined' ) {
-                console.log('proceed with upload');
+                console.log(this.views.documentView.els.name.textContent)
+                this.WebSocket.send( { type: 'proceedWithUpload', userId: this.user.git('id'), discName: this.views.documentView.els.name.value } )
+                this.status = 'waitingForUpload'
             }
         } )
+        
+        this.WebSocket.on( 'imagesUploaded', data => {
+            if( this.path.join('/') === 'Disc/undefined' && this.status === 'waitingForUpload' ) {
+                
+                data.uris.forEach( uri => this.views.documentView.PhotoUrls.add( { value: uri } ) )
+                
+                this.onPosted = () => {
+                    this.WebSocket.send( { type: 'greatJob', userId: this.user.git('id') } )
+                    this.views.documentView.removeListener( 'posted', this.onPosted )
+                    this.views.documentView.removeListener( 'error', this.onError )
+                }
+
+                this.onError = () => {
+                    this.WebSocket.send( { type: 'error', userId: this.user.git('id') } )
+                    this.views.documentView.removeListener( 'posted', this.onPosted )
+                    this.views.documentView.removeListener( 'error', this.onError )
+                }
+
+                this.views.documentView.once( 'posted', this.onPosted )
+                this.views.documentView.once( 'error', this.onError )
+
+                this.views.documentView.els.submitBtn.click()
+            }
+        } )
+
+        this.showProperView( true ).catch( this.Error )
+
 
         return this
     },

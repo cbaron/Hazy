@@ -18,6 +18,8 @@ module.exports = Object.create( Object.assign( {}, require('../../lib/MyObject')
        return this
     },
 
+    send( data ) { this.socket.send( JSON.stringify( data ) ) },
+
     user: require('./models/User'),
 
 } ), { } ).constructor()
