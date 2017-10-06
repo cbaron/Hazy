@@ -96,7 +96,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
             this.Xhr( { method: 'POST', resource: 'byop-swap', data: JSON.stringify( { out: this.removeTeam.id, in: this.els.waitingList.value, divisionId: this.waitingDivision.id } ) } )
             .then( result => {
-                return this.Toast.showMessage( 'success', 'Swapped!' )
+                return this.Toast.createMessage( 'success', 'Swapped!' )
                 .then( () => {
                     this.els.waitingList.removeChild( this.els.waitingList.querySelector( `option[value="${this.els.waitingList.value}"]` ) )
                     this.clear()
@@ -106,7 +106,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 .catch( this.Error )
             } )
             .catch( e => {
-                this.Toast.showMessage( 'error', e.message ).catch( this.Error )
+                this.Toast.createMessage( 'error', e.message ).catch( this.Error )
                 this.onDoneSubmitting()
             } )
         } )
