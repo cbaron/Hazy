@@ -49,7 +49,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         Object.keys( this.Byop.store.disc1 ).forEach( disc => {
             if( this.discs[ disc ] === undefined ) this.discs[ disc ] = { weightClasses: this.getDiscWeightClasses(), unknowns: [ ] }
-            this.Byop.store.disc1[ disc ].forEach( datum => {
+
+            let store = this.Byop.store.disc1[ disc ]
+            if( !Array.isArray( store ) ) store = [ store ]
+
+            store.forEach( datum => {
                 const klass = this.discs[ disc ].weightClasses.find( klass => klass.min <= parseInt( datum.weight1 ) && klass.max >= parseInt( datum.weight1 ) )
                 klass === undefined
                     ? this.discs[ disc ].unknowns.push( datum.weight1 || `(no value)` )
@@ -58,7 +62,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         } )
         Object.keys( this.Byop.store.disc2 ).forEach( disc => {
             if( this.discs[ disc ] === undefined ) this.discs[ disc ] = { weightClasses: this.getDiscWeightClasses(), unknowns: [ ] }
-            this.Byop.store.disc2[ disc ].forEach( datum => {
+
+            let store = this.Byop.store.disc2[ disc ]
+            if( !Array.isArray( store ) ) store = [ store ]
+
+            store.forEach( datum => {
                 const klass = this.discs[ disc ].weightClasses.find( klass => klass.min <= parseInt( datum.weight2 ) && klass.max >= parseInt( datum.weight2 ) )
                 klass === undefined
                     ? this.discs[ disc ].unknowns.push( datum.weight2 || `(no value)` )

@@ -62,6 +62,6 @@ Object.create( Object.assign( require('../lib/MyObject'), {
             )
         )
         .catch( this.Error )
-    }
+    },
 
 } ) ).constructor( `${__dirname}/../client/js` )

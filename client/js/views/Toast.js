@@ -1,49 +1,24 @@
-module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
+module.exports = Object.create( Object.assign( {}, require('../../../client/js/views/__proto__'), {
 
-    Icons: {
-        error: require('./templates/lib/error')(),
-        success: require('./templates/lib/checkmark')()
-    },
+    ToastMessage: require('./ToastMessage'),
 
     name: 'Toast',
 
     postRender() {
-
-        this.on( 'shown', () => this.status = 'shown' )
-        this.on( 'hidden', () => this.status = 'hidden' )
+        this.messages = { }
 
         return this
     },
 
     requiresLogin: false,
 
-    showMessage( type, message ) {
-        return new Promise( ( resolve, reject )  => {
-            if( /show/.test( this.status ) ) this.teardown()
+    createMessage( type, message ) {
+        if( !this.messages[ message ] ) this.messages[ message ] = Object.create( this.ToastMessage, {
+            insertion: { value: { el: this.els.container } }
+        } ).constructor()
 
-            this.resolution = resolve
+        return this.messages[ message ].showMessage( type, message )
 
-            if( type !== 'error' ) this.els.container.classList.add('success')
-
-            this.els.message.textContent = message
-            this.els.title.textContent = type === 'error' ? 'Error' : 'Success'
-            this.slurpTemplate( { insertion: { el: this.els.icon }, template: type === 'error' ? this.Icons.error : this.Icons.success } )
-            
-            this.status = 'showing'
-
-            this.show( true )
-            .then( () => this.hide( true ) )
-            .then( () => this.teardown() )
-            .catch( reject )
-        } )
-    },
-
-    teardown() {
-        if( this.els.container.classList.contains('success') ) this.els.container.classList.remove('success')
-        this.els.message.textContent = ''
-        this.els.title.textContent = ''
-        if( this.els.icon.firstChild ) this.els.icon.removeChild( this.els.icon.firstChild )
-        this.resolution()
     },
 
     template: require('./templates/Toast')

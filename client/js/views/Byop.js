@@ -117,7 +117,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
             return this.model.post()
             .then( response => {
-                return this.Toast.showMessage( 'success', response.message )
+                return this.Toast.createMessage( 'success', response.message )
                 .then( () => {
                     this.emit( 'navigate', '/byop-players' )
                     this.onSubmitEnd()
@@ -125,7 +125,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 } )
             } )
             .catch( e => {
-                this.Toast.showMessage( 'error', e && e.message ? e.message : `There was a problem.  Please try again or contact us.` );
+                this.Toast.createMessage( 'error', e && e.message ? e.message : `There was a problem.  Please try again or contact us.` );
                 this.onSubmitEnd()
             } )
         } )
@@ -185,7 +185,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             if( ( this.waitList === true || ( this.els.paidCash && this.els.paidCash.checked ) ) && [ 'ccName', 'ccNo', 'ccMonth', 'ccYear', 'cvc'  ].includes( attr ) ) return
 
             if( rv === true && !this.model.validate( attr, el.value ) ) {
-                this.Toast.showMessage( 'error', this.model.meta[ attr ].error || `${attr} required` )
+                this.Toast.createMessage( 'error', this.model.meta[ attr ].error || `${attr} required` )
                 el.scrollIntoView( { behavior: 'smooth' } )
                 el.classList.add( 'error' )
                 rv = false

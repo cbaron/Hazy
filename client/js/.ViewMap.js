@@ -26,5 +26,6 @@ module.exports={
 	ManageByop: require('./views/ManageByop'),
 	Submitter: require('./views/Submitter'),
 	Toast: require('./views/Toast'),
+	ToastMessage: require('./views/ToastMessage'),
 	TypeAhead: require('./views/TypeAhead')
 }

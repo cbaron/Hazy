@@ -90,10 +90,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .then( result => {
             this.reset()
             this.onPatchingByopDone()
-            return this.Toast.showMessage( 'success', 'Record updated.' ).catch( this.Error )
+            return this.Toast.createMessage( 'success', 'Record updated.' ).catch( this.Error )
         } )
         .catch( e => {
-            this.Toast.showMessage( 'error', `Something went wrong.  Try again, or email Mike Baron's brother.` ).catch( this.Error )
+            this.Toast.createMessage( 'error', `Something went wrong.  Try again, or email Mike Baron's brother.` ).catch( this.Error )
             this.onPatchingByopDone()
         } )
     },
