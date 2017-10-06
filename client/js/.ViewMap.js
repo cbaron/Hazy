@@ -16,5 +16,6 @@ module.exports={
 	Login: require('./views/Login'),
 	ManageByop: require('./views/ManageByop'),
 	Toast: require('./views/Toast'),
+	ToastMessage: require('./views/ToastMessage'),
 	TypeAhead: require('./views/TypeAhead')
 }

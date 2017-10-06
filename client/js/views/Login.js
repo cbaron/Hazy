@@ -28,7 +28,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             this.isSubmitting = false
             this.els.submit.classList.remove('submitting')
             this.Error(e);
-            this.Toast.showError( e || 'Unknown server error')
+            this.Toast.createMessage( 'error', e.message || 'Unknown server error')
         } )
     },
 

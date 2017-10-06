@@ -20,6 +20,7 @@ module.exports={
 	Sponsor: require('./views/templates/Sponsor'),
 	Team: require('./views/templates/Team'),
 	Toast: require('./views/templates/Toast'),
+	ToastMessage: require('./views/templates/ToastMessage'),
 	TournamentResult: require('./views/templates/TournamentResult'),
 	TypeAhead: require('./views/templates/TypeAhead')
 }
