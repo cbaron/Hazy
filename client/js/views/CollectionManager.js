@@ -215,6 +215,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onNavigation( path ) {
 
+        console.log(path);
         this.path = path;
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
@@ -250,28 +251,29 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                         ? `/${currentCollection}`
                         : ``
             
+            let splitPath = path.length === 0 ? [ ] : path.split('/').slice(1)
+            this.path = splitPath;
+                    
             this.emit( 'navigate', `/admin/collection-manager${path}`, { silent: true } );
 
-            this.path = path.split('/').slice(0)
-           
             ( currentView === 'documentList' && this.views.documentList.collection.data.length === 0 ? this.views.documentList.fetch() : Promise.resolve() )
             .then( () => this.views[ currentView ].show() )
             .catch( this.Error )
         } )
 
         this.WebSocket.on( 'createDisc', data => {
-            console.log(this.path.join('/'));
             if( this.path.join('/') === 'Disc/undefined' ) {
-                console.log(this.views.documentView.els.name.textContent)
+                console.log('proceedwithupload');
                 this.WebSocket.send( { type: 'proceedWithUpload', userId: this.user.git('id'), discName: this.views.documentView.els.name.value } )
                 this.status = 'waitingForUpload'
             }
         } )
         
         this.WebSocket.on( 'imagesUploaded', data => {
+            console.log(this.status)
             if( this.path.join('/') === 'Disc/undefined' && this.status === 'waitingForUpload' ) {
                 
-                data.uris.forEach( uri => this.views.documentView.PhotoUrls.add( { value: uri } ) )
+                data.uris.forEach( uri => this.views.documentView.views.PhotoUrls.add( { value: uri } ) )
                 
                 this.onPosted = () => {
                     this.WebSocket.send( { type: 'greatJob', userId: this.user.git('id') } )

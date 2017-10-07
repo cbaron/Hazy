@@ -35,8 +35,10 @@ module.exports = Object.create( Object.assign( { }, require('./lib/MyObject'), r
     },
 
     imagesUploaded( parsedData, data, clientSocket ) {
+        console.log('images uploaded')
         if( this.Clients[ parsedData.userId ] && this.Clients[ parsedData.userId ].state === 'waitingForUpload' ) {
-            this.patchClient( parsedData.userId, { adminSocket: clientSocket, state: 'waitingForPost' } )
+            console.log('waiting for post')
+            this.patchClient( parsedData.userId, { state: 'waitingForPost' } )
             this.Clients[ parsedData.userId ].adminSocket.send( data );
         }
     },
@@ -48,8 +50,6 @@ module.exports = Object.create( Object.assign( { }, require('./lib/MyObject'), r
     },
 
     proceedWithUpload( parsedData, data, clientSocket ) {
-       console.log(Object.keys( this.Clients ) )
-       console.log(parsedData);
        if( this.Clients[ parsedData.userId ] && this.Clients[ parsedData.userId ].state === 'creatingDisc' ) {
            this.patchClient( parsedData.userId, { adminSocket: clientSocket, state: 'waitingForUpload' } )
            this.Clients[ parsedData.userId ].watcherSocket.send( data );

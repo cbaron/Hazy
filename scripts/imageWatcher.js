@@ -75,16 +75,16 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
     },
 
     proceedWithUpload( data ) {
-        console.log('uploading')
         console.log(this.state)
         if( data.userId === this.userId && this.state === 'waiting' ) {
             this.state = 'uploading'
-            console.log(Object.keys( this.newFiles ))
+            console.log('uploading')
             Promise.all( Object.keys( this.newFiles ).map( ( filename, i ) =>
                 this.GoogleCloudStorage.POST( `${data.discName}-${i}`, this.Fs.createReadStream( filename ) )
                 .then( () => Promise.resolve( this.GoogleCloudStorage.getUri( `${data.discName}-${i}` ) ) )
             ) )
             .then( uris => {
+                console.log('doneuploading');
                 this.uris = uris
                 this.send( this.socket, { type: 'imagesUploaded', userId: this.userId, uris } )
                 return Promise.resolve()
@@ -100,7 +100,7 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
             this.directory,
             { ignoreDotFiles: true, ignoreNotPermitted: true, ignoreUnreadableDir: true, interval: 5 },
             ( f, curr, prev ) => {
-                if( prev === null && this.state !== 'uploading' ) {
+                if( typeof f !== 'object' && prev === null && this.state !== 'uploading' ) {
                     this.newFiles[ f ] = true;
                     if( this.socketOpen && this.state === 'waiting' ) {
                         this.state = 'notifying'
