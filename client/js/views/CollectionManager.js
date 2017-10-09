@@ -329,7 +329,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     toastError(e) {
         this.Error(e);
-        this.Toast.showMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` )
+        this.Toast.createMessage( 'error', `Something went wrong.  Try again, or bother Mike Baron.` )
     },
 
     updateCount( count ) {

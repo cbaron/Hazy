@@ -13,9 +13,7 @@ module.exports = Object.create( Object.assign( {}, require('../../../client/js/v
     requiresLogin: false,
 
     createMessage( type, message ) {
-        if( !this.messages[ message ] ) this.messages[ message ] = Object.create( this.ToastMessage, {
-            insertion: { value: { el: this.els.container } }
-        } ).constructor()
+        if( !this.messages[ message ] ) this.messages[ message ] = this.factory.create( 'ToastMessage', { insertion: { el: this.els.container } } )
 
         return this.messages[ message ].showMessage( type, message )
 

@@ -37,7 +37,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     },
 
     handleValidationError( attr ) {
-        this.Toast.showMessage( 'error', attr.error )
+        this.Toast.createMessage( 'error', attr.error )
         this.els[ attr.name ].classList.add( 'error' )
         this.onSubmitEnd()
     },
@@ -84,7 +84,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
             this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) )
             this.model.data = { }
             this.clear()
-            this.Toast.showMessage( 'success', this.toastSuccess || `Success` )
+            this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
             return Promise.resolve()
         } )
     },

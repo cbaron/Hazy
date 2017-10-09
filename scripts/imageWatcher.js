@@ -4,24 +4,24 @@ require('node-env-file')( `${__dirname}/../.env` )
 
 Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/Socket'), {
 
-	Fs: require('fs'),
+    Fs: require('fs'),
     GoogleCloudStorage: require('../lib/GoogleCloudStorage'),
-	Postgres: require('../dal/Postgres'),
-	Readline: require('readline'),
+    Postgres: require('../dal/Postgres'),
+    Readline: require('readline'),
     Watch: require('watch'),
     WebSocket: require('ws'),
 
     directory: process.argv[3],
     email: process.argv[2],
 
-	constructor() {
+    constructor() {
         this.socketOpen = false;
         this.state = 'waiting'
 
         this.interface = this.Readline.createInterface( {
-		    input: process.stdin,
-		    output: process.stdout
-		} )
+            input: process.stdin,
+            output: process.stdout
+        } )
         
         this.Postgres.select( 'person', { email: this.email } )
         .then( persons => {
@@ -42,7 +42,7 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
     error( data ) {
         console.log(`Error creating disc.  Retry Y/n?`)
 
-		
+        
          this.interface.question( `Error creating disc.  Retry Y/n?`, answer => {
              if( answer.charAt(0).toLowerCase() === 'n' ) return process.exit(0)
 
@@ -54,7 +54,7 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
         console.log('Disc Created: ------> Great Job')
         this.state = 'waiting'
 
-        Object.keys( this.newFiles ).map( filename => this.P( this.Fs.unlink, [ filename ], this.Fs ) )
+        Promise.all( Object.keys( this.newFiles ).map( filename => this.P( this.Fs.unlink, [ filename ], this.Fs ) ) )
         .then( () => {
             this.newFiles = { }
             this.uris = { }

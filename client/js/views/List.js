@@ -246,7 +246,7 @@ module.exports = Object.assign( { }, Super, {
 
         this.updateStyle()
 
-        if( this.collection.data.length === 0 ) return
+        if( data.length === 0 ) return
 
         if( this.model.git('view') ) {
             let viewName = this.model.git('view')
