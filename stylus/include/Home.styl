@@ -38,9 +38,35 @@
             position: relative
 
     .featured-product
-        img
+        background-color: black
+        padding: 4%
+        
+        >img
             display: block
-            width: 100%
+            width: 62%
+            
+        .center
+            width: 36%
+            text-align: center
+            font-weight: 700
+            color: white
+            
+            >div
+                line-height: 1.1
+                
+                &:first-child
+                    font-size: 4rem
+                &:nth-child(2)
+                    font-size: 3.25rem
+                &:last-child
+                    margin-top: 1.25rem
+                >button
+                    hoverSwap( black, white )
+                    border: none
+                    padding: 1rem 2rem
+                    font-size: 1rem
+                    //font-weight: 700
+                    //padding: 1.5rem 2.25rem
 
     .disc-doctor
         background-image: url(/static/img/fairway-pond-istock.jpg)

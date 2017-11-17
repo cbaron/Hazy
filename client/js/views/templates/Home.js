@@ -63,12 +63,31 @@ return `<div>
             <img src="${ImageSrc('hazy-tree.png')}" />
         </div>
     </div>-->
+    <div class="featured-product side-by-side">        
+        <img src="${ImageSrc('gift-cards.png')}"/>
+        <div class="center">
+            <div>Gift Cards</div>
+            <div>On Sale Now!</div>
+            <div>
+                <button data-js="giftCardBtn" type="button">Shop Here</button>
+            </div>
+        </div>
+    </div>
     <div class="featured-event">
         <img src="${ImageSrc('discs-in-basket.jpg')}"/>
         <div class="content">
             <div class="center">
-                <div>Please be patient while we build our online shop</div>
+                <div>Join us for the 16th Annual</div>
+                <div>BYOP</div>
+                <div>Belmont Park / Dayton / August 11-13, 2017</div>
+                <div>
+                    <button class="hidden" data-js="byopBtn" type="button">Sign Up!</button>
+                    <button data-js="byopResultsBtn" type="button">See Results</button>
+                </div>
             </div>
         </div>
     </div>
 </div>` }
+
+//                <div>Please be patient while we build our online shop</div>
+//<img src="${ImageSrc('gift-cards-bg.jpg')}"/>

@@ -43,6 +43,18 @@
 .Admin .views {
   height: 100%;
 }
+button {
+  background-color: #fff;
+  border: 1px solid #b5b5b5;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.5rem 1rem;
+  text-transform: uppercase;
+  transition: background-color 0.5s, color 0.5s, opacity 0.25s;
+}
+button.submitting {
+  opacity: 0.3;
+}
 button:not(.link) {
   transition: background-color, color 0.5s;
 }
@@ -298,49 +310,6 @@ button.back-btn:hover {
     line-height: 0.9rem;
   }
 }
-.Byop2016 {
-  margin-top: 7rem;
-}
-.Byop2016 h3,
-.Byop2016 h4 {
-  font-size: 2rem;
-  text-align: center;
-}
-.Byop2016 h4 {
-  color: #158115;
-  font-weight: bold;
-}
-.Byop2016 .Division ol li div div {
-  display: flex;
-}
-.Byop2016 .Division ol li span {
-  display: initial;
-  flex: 1;
-}
-.Byop2016 .Division ol li span:first-child {
-  flex: 6;
-}
-.Byop2016 .Division ol.header li {
-  display: flex;
-  border: none;
-  font-weight: bold;
-  font-size: 1.25rem;
-  line-height: 1.5rem;
-  text-align: center;
-}
-@media (max-width: 767px) {
-  .Byop2016 h3,
-  .Byop2016 h4 {
-    font-size: 1rem;
-  }
-  .Byop2016 .Division ol.header li {
-    line-height: 1rem;
-    font-size: 0.6rem;
-  }
-  .Byop2016 .Division span:first-chil {
-    flex: 4;
-  }
-}
 .ByopNumbers label {
   color: #000;
   flex: 1;
@@ -386,29 +355,35 @@ button.back-btn:hover {
 .ByopPlayers .waiting-list {
   color: #acacac;
 }
-.ByopSponsors {
+.ByopSponsors,
+.sponsors {
   padding: 1rem 5rem;
 }
-.ByopSponsors h4 {
+.ByopSponsors h4,
+.sponsors h4 {
   padding-bottom: 1rem;
   text-align: center;
 }
-.ByopSponsors >div {
+.ByopSponsors >div,
+.sponsors >div {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
-.ByopSponsors >div .sponsor {
+.ByopSponsors >div .sponsor,
+.sponsors >div .sponsor {
   font-weight: 700;
   margin: 2rem;
   width: 15rem;
 }
-.ByopSponsors >div .sponsor label {
+.ByopSponsors >div .sponsor label,
+.sponsors >div .sponsor label {
   color: #000;
   display: block;
   text-align: center;
 }
-.ByopSponsors >div .sponsor img {
+.ByopSponsors >div .sponsor img,
+.sponsors >div .sponsor img {
   display: block;
   height: 10rem;
   margin: auto;
@@ -625,6 +600,72 @@ button.back-btn:hover {
     padding: 0.25rem 2rem;
   }
 }
+.DivisionResults .division-result ol li {
+  color: #0f8141;
+  display: flex;
+  line-height: 1.8rem;
+  font-size: 0.9rem;
+  transition: background-color 0.25s;
+}
+.DivisionResults .division-result ol li:not(:last-child) {
+  border-bottom: 1px solid #fff;
+}
+.DivisionResults .division-result ol li:nth-child(odd) {
+  background-color: #9ed3ad;
+}
+.DivisionResults .division-result ol li:nth-child(even) {
+  background-color: #cfe8d3;
+}
+.DivisionResults .division-result ol li >span {
+  text-align: center;
+  padding: 0 1rem;
+}
+.DivisionResults .division-result ol li >span:not(:last-child) {
+  border-right: 1px solid #fff;
+}
+.DivisionResults .division-result ol li >span.place {
+  flex: 1;
+  min-width: 4.75rem;
+  color: #555;
+}
+.DivisionResults .division-result ol li >span.team {
+  flex: 8;
+  text-align: left;
+}
+.DivisionResults .division-result ol li >span.round1,
+.DivisionResults .division-result ol li >span.round2,
+.DivisionResults .division-result ol li >span.total {
+  flex: 2;
+  color: #555;
+}
+.DivisionResults .division-result ol li:hover {
+  background-color: #acacac;
+  color: #158115;
+}
+.DivisionResults .division-result ol li:hover .disc-selection,
+.DivisionResults .division-result ol li:hover .shirt-selection {
+  opacity: 0.5;
+}
+.DivisionResults .division-result ol.header li {
+  font-weight: 700;
+  background-color: #0f8141;
+  color: #fff;
+  text-align: center;
+}
+.DivisionResults .division-result ol.header li >span {
+  color: #fff;
+}
+.DivisionResults .division-result ol.header li >span.team {
+  text-align: center;
+}
+.DivisionResults .division-result .sponsors {
+  padding: 1rem 0;
+}
+@media (max-width: 767px) {
+  .division-result ol li {
+    font-size: 0.75rem;
+  }
+}
 .Dragger {
   background-color: #fff;
   border: 1px solid #000;
@@ -666,20 +707,17 @@ button.back-btn:hover {
   line-height: 6rem;
 }
 .featured-event .content .center button {
-  background-color: #000;
   color: #fff;
-  cursor: pointer;
-  text-transform: uppercase;
+  background-color: #000;
   border: none;
   padding: 1rem 2rem;
   font-size: 1rem;
   margin-top: 1rem;
   font-weight: 700;
-  transition: background-color 0.5s, color 0.5s;
 }
 .featured-event .content .center button:hover {
-  background-color: #fff;
   color: #000;
+  background-color: #fff;
 }
 @media (max-width: 767px) {
   .featured-event .content {
@@ -815,18 +853,6 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-}
-button {
-  background-color: #fff;
-  border: 1px solid #b5b5b5;
-  cursor: pointer;
-  font-size: 1.25rem;
-  padding: 0.5rem 1rem;
-  text-transform: uppercase;
-  transition: background-color 0.5s, color 0.5s, opacity 0.25s;
-}
-button.submitting {
-  opacity: 0.3;
 }
 .Form .List .list.no-items {
   padding: 0rem;
@@ -1011,9 +1037,42 @@ button.submitting {
   flex: 1;
   position: relative;
 }
-.Home .featured-product img {
+.Home .featured-product {
+  background-color: #000;
+  padding: 4%;
+}
+.Home .featured-product >img {
   display: block;
-  width: 100%;
+  width: 62%;
+}
+.Home .featured-product .center {
+  width: 36%;
+  text-align: center;
+  font-weight: 700;
+  color: #fff;
+}
+.Home .featured-product .center >div {
+  line-height: 1.1;
+}
+.Home .featured-product .center >div:first-child {
+  font-size: 4rem;
+}
+.Home .featured-product .center >div:nth-child(2) {
+  font-size: 3.25rem;
+}
+.Home .featured-product .center >div:last-child {
+  margin-top: 1.25rem;
+}
+.Home .featured-product .center >div >button {
+  color: #000;
+  background-color: #fff;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+.Home .featured-product .center >div >button:hover {
+  color: #fff;
+  background-color: #000;
 }
 .Home .disc-doctor {
   background-image: url("/static/img/fairway-pond-istock.jpg");
@@ -1345,6 +1404,50 @@ button.submitting {
 .ManageByop button:not(.disabled):hover {
   background-color: #4ab74a;
   color: #fff;
+}
+.Results {
+  margin-top: 7rem;
+  padding: 0 6rem;
+}
+.Results h3,
+.Results h4 {
+  font-size: 2rem;
+  text-align: center;
+}
+.Results h4 {
+  color: #0f8141;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 2rem 0 1.5rem;
+}
+.Results h4 >span {
+  color: #acacac;
+  margin-left: 0.25rem;
+  font-size: 1.25rem;
+}
+.Results .divisions-list {
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding: 0 6rem;
+  font-weight: bold;
+}
+.Results .divisions-list li {
+  color: #acacac;
+  cursor: pointer;
+}
+.Results .divisions-list li.selected {
+  color: #0f8141;
+}
+.Results .divisions-list li:not(:first-child)::before {
+  content: '|';
+  margin: 0 0.35rem;
+}
+@media (max-width: 767px) {
+  h3,
+  h4 {
+    font-size: 1.5rem;
+  }
 }
 .Toast {
   position: fixed;

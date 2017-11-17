@@ -1,0 +1,43 @@
+.Results
+    margin-top: 7rem
+    padding: 0 6rem
+
+    h3, h4
+        font-size: 2rem
+        text-align: center
+
+    h4
+        color: $DarkerGreen
+        font-weight: 700
+        font-size: 1.5rem
+        margin: 2rem 0 1.5rem
+        
+        >span
+            color: $LightGray
+            margin-left: .25rem
+            font-size: 1.25rem
+        
+    .divisions-list
+        justify-content: center
+        flex-wrap: wrap
+        margin-top: 1rem
+        padding: 0 6rem
+        font-weight: bold
+
+        li
+            color: $LightGray
+            cursor: pointer
+            
+            &.selected
+                color: $DarkerGreen
+            
+            &:not(:first-child)::before
+                content: '|'
+                margin: 0 .35rem            
+
+
+@media (max-width: 767px)
+    padding: 1rem
+
+    h3, h4
+        font-size: 1.5rem

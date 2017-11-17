@@ -54,7 +54,7 @@ module.exports = {
     GetListItems( items=[], opts={} ) {
         return items.map( item => {
             const attr = opts.dataAttr ? `data-${opts.dataAttr}="${item[ opts.dataAttr ]}"` : ``
-            return `<li ${attr}>${item.label}</li>` 
+            return `<li ${attr}>${item.label || item}</li>` 
         } ).join('')
     },
 
