@@ -7,10 +7,17 @@ module.exports = {
     } ),
 
     GetFormField( datum, value ) {
+
+        if( this.Templates[ datum.range ] ) return this.Templates[ datum.range ](this)
+
         const icon = datum.metadata
             ? datum.metadata.icon
                 ? this.Icons[ datum.metadata.icon ]
                 : ``
+            : ``
+
+        const image = datum.range === 'ImageUrl'
+            ? `<div><button class="btn-yellow" data-js="previewBtn" type="button">Preview</button><img data-src="${this.ImageSrc( value )}" /></div>`
             : ``
                            
         const options = datum.metadata ? datum.metadata.options : false
@@ -89,5 +96,9 @@ module.exports = {
         Email: 'email',
         Password: 'password',
         String: 'text'
+    },
+
+    Templates: {
+        GiftCardRecipient: require('./views/templates/GiftCardRecipient')
     }
 }

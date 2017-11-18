@@ -16,7 +16,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     events: {
         byopBtn: 'click',
         byopResultsBtn: 'click',
-        ezFinder: 'click'
+        ezFinder: 'click',
+        giftCardBtn: 'click'
     },
 
     onByopBtnClick() {
@@ -30,6 +31,11 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     
     onEzFinderClick() {
         this.emit( 'navigate', 'shop' )
+    },
+
+    onGiftCardBtnClick() {
+        console.log( 'onGiftCardBtnClick' )
+        this.emit( 'navigate', 'gift-cards' )
     }
 
 } )

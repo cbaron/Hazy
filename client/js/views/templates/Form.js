@@ -1,4 +1,5 @@
 module.exports = p => {
+    console.log( p )
     const heading = p.opts.heading ? `<div class="heading">${p.opts.heading}</div>` : ``,
        prompt  = p.opts.prompt ?  `<div class="prompt">${p.opts.prompt}</div>` : ``,
        fields = p.GetFormFields( p.attributes, p.model ),
