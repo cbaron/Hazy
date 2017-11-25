@@ -254,7 +254,7 @@ module.exports = Object.assign( { }, Super, {
                 data.reduce(
                     ( fragment, datum ) => {
                         const keyValue = datum[ this.key ]
-                            
+
                         this.collection.store[ this.key ][ keyValue ] = datum
 
                         this.itemViews[ keyValue ] =

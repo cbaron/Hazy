@@ -15,7 +15,9 @@ module.exports = {
         }, {
             name: 'recipients',
             label: 'Recipients',
-            range: 'GiftCardRecipient'
+            range: 'List',
+            itemView: 'form',
+            itemRange: require('./GiftCardRecipient').attributes
         }, {
             name: 'payment',
             label: 'Payment Info',

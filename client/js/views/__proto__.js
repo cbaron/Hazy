@@ -189,6 +189,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     renderSubviews() {
+        console.log( 'renderSubviews' )
         this.subviewElements.forEach( obj => {
             const name = obj.name || obj.view
 
@@ -196,7 +197,8 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
             if( this.Views && this.Views[ obj.view ] ) opts = typeof this.Views[ obj.view ] === "object" ? this.Views[ obj.view ] : Reflect.apply( this.Views[ obj.view ], this, [ ] )
             if( this.Views && this.Views[ name ] ) opts = typeof this.Views[ name ] === "object" ? this.Views[ name ] : Reflect.apply( this.Views[ name ], this, [ ] )
-            
+            console.log( opts )
+            console.log( obj )
             this.views[ name ] = this.factory.create( obj.view, Object.assign( { insertion: { el: obj.el, method: 'insertBefore' } }, opts ) )
 
             if( this.events.views ) {

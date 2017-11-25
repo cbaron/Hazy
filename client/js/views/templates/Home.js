@@ -41,7 +41,7 @@ const logos = model.map( item => `<li><img src="/static/img/${item}-logo.jpg"/><
 */
 
 return `<div>
-    <img src="${ImageSrc('saugatuck-basket-on-right.jpg')}"/>
+    <img src="${ImageSrc('header-image.jpg')}"/>
     <div class="intro side-by-side">
         <div>
             ${require('./lib/logoBlack')()}

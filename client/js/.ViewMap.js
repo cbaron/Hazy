@@ -16,6 +16,7 @@ module.exports={
 	Dragger: require('./views/Dragger'),
 	Footer: require('./views/Footer'),
 	Form: require('./views/Form'),
+	FormList: require('./views/FormList'),
 	GiftCards: require('./views/GiftCards'),
 	Header: require('./views/Header'),
 	Home: require('./views/Home'),
@@ -29,5 +30,6 @@ module.exports={
 	Submitter: require('./views/Submitter'),
 	Toast: require('./views/Toast'),
 	ToastMessage: require('./views/ToastMessage'),
-	TypeAhead: require('./views/TypeAhead')
+	TypeAhead: require('./views/TypeAhead'),
+	ViewList: require('./views/ViewList')
 }

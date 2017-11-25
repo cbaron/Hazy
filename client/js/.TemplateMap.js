@@ -19,7 +19,6 @@ module.exports={
 	Dragger: require('./views/templates/Dragger'),
 	Footer: require('./views/templates/Footer'),
 	Form: require('./views/templates/Form'),
-	GiftCardRecipient: require('./views/templates/GiftCardRecipient'),
 	GiftCards: require('./views/templates/GiftCards'),
 	Header: require('./views/templates/Header'),
 	Home: require('./views/templates/Home'),
@@ -35,5 +34,6 @@ module.exports={
 	Team: require('./views/templates/Team'),
 	Toast: require('./views/templates/Toast'),
 	ToastMessage: require('./views/templates/ToastMessage'),
-	TypeAhead: require('./views/templates/TypeAhead')
+	TypeAhead: require('./views/templates/TypeAhead'),
+	ViewList: require('./views/templates/ViewList')
 }

@@ -9,6 +9,10 @@ module.exports = Object.create( {
     create( name, opts ) {
         const lower = name
         name = ( name.charAt(0).toUpperCase() + name.slice(1) ).replace( '-', '' )
+        //console.log( 'create' )
+        //console.log( name )
+        //console.log( opts )
+        //console.log( this.Views[name] )
         return Object.create(
             this.Views[ name ],
             Object.assign( {

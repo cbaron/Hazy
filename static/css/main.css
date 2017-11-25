@@ -837,14 +837,16 @@ input:-ms-input-placeholder {
   color: #999997;
 }
 input,
-select {
+select,
+textarea {
   font-size: 1.25rem;
   font-weight: 100;
   line-height: 1.5rem;
   width: 100%;
 }
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   border-color: #4ab74a;
 }
 select {
@@ -853,6 +855,9 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+.Form {
+  position: relative;
 }
 .Form .List .list.no-items {
   padding: 0rem;
@@ -863,11 +868,31 @@ select {
   right: 1rem;
   width: 2rem;
 }
+.Form .delete {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -2rem;
+  display: flex;
+  align-items: center;
+}
+.Form .delete >svg {
+  height: 2rem;
+}
 .Form .form-group .List .list .form-group {
   margin: 0.5rem 0rem;
 }
 .Form .form-group .List .list .item {
   padding: 0.5rem 1rem;
+}
+.GiftCards {
+  padding: 6rem 3rem 0;
+}
+.GiftCards .Form {
+  padding: 1rem;
+}
+.GiftCards .Form .form-group {
+  margin: 1rem 0;
 }
 .Header {
   background-color: rgba(0,0,0,0.7);
@@ -1216,54 +1241,65 @@ select {
 .JsonProperty.confirm-delete >div:hover {
   background-color: transparent;
 }
-.List {
+.List,
+.ViewList {
   position: relative;
+  text-align: center;
 }
-.List .list.no-items {
+.List .list.no-items,
+.ViewList .list.no-items {
   padding-top: 1rem;
 }
-.List .list.no-items::before {
+.List .list.no-items::before,
+.ViewList .list.no-items::before {
   content: 'No Items';
 }
-.List .list li {
+.List .list li,
+.ViewList .list li {
   align-items: center;
   display: flex;
   cursor: pointer;
   position: relative;
 }
-.List .list li >.selection {
+.List .list li >.selection,
+.ViewList .list li >.selection {
   align-items: center;
   display: flex;
   flex: 1;
   justify-content: center;
 }
-.List .list li >.selection input {
+.List .list li >.selection input,
+.ViewList .list li >.selection input {
   display: none;
   width: initial;
   transform: scale(2);
   -ms-transform: scale(2);
   -webkit-transform: scale(2);
 }
-.List .list li >.item {
+.List .list li >.item,
+.ViewList .list li >.item {
   flex: 10;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.List .list li >.buttons {
+.List .list li >.buttons,
+.ViewList .list li >.buttons {
   align-items: center;
   display: flex;
   justify-content: center;
   flex: 1;
 }
-.List .list li >.buttons svg {
+.List .list li >.buttons svg,
+.ViewList .list li >.buttons svg {
   display: none;
   width: 1.25rem;
   height: 1.25rem;
   margin: 0rem 0.5rem;
 }
-.List .list li .drag {
+.List .list li .drag,
+.ViewList .list li .drag {
   bottom: 0px;
   color: #acacac;
   font-size: 0.5rem;
@@ -1271,47 +1307,61 @@ select {
   flex: none;
   line-height: 0.25rem;
 }
-.List .list li:hover {
+.List .list li:hover,
+.ViewList .list li:hover {
   background-color: rgba(172,172,172,0.1);
 }
-.List .list li:hover >.buttons svg {
+.List .list li:hover >.buttons svg,
+.ViewList .list li:hover >.buttons svg {
   display: inline-block;
 }
-.List .list li:hover >.selection input {
+.List .list li:hover >.selection input,
+.ViewList .list li:hover >.selection input {
   display: inherit;
 }
-.List .list li.checked {
+.List .list li.checked,
+.ViewList .list li.checked {
   background-color: rgba(172,172,172,0.1);
 }
-.List .list li.checked >.selection input {
+.List .list li.checked >.selection input,
+.ViewList .list li.checked >.selection input {
   display: inherit;
 }
-.List .list li.is-dragging {
+.List .list li.is-dragging,
+.ViewList .list li.is-dragging {
   background-color: rgba(172,172,172,0.1);
 }
-.List .list.is-dragging li >.buttons svg {
+.List .list.is-dragging li >.buttons svg,
+.ViewList .list.is-dragging li >.buttons svg {
   display: none;
 }
-.List .list.is-dragging li >.selection input {
+.List .list.is-dragging li >.selection input,
+.ViewList .list.is-dragging li >.selection input {
   display: none;
 }
-.List .list.is-dragging li:not(.is-dragging):hover {
+.List .list.is-dragging li:not(.is-dragging):hover,
+.ViewList .list.is-dragging li:not(.is-dragging):hover {
   background-color: initial;
 }
-.List .list.is-droppable li.mouseover {
+.List .list.is-droppable li.mouseover,
+.ViewList .list.is-droppable li.mouseover {
   background-color: rgba(172,172,172,0.1);
 }
-.List >button {
+.List >button,
+.ViewList >button {
   bottom: 2rem;
   right: 2rem;
 }
-.List >button+button {
+.List >button+button,
+.ViewList >button+button {
   bottom: 8rem;
 }
-.List >button+button+button {
+.List >button+button+button,
+.ViewList >button+button+button {
   bottom: 14rem;
 }
-.List .heading {
+.List .heading,
+.ViewList .heading {
   border-bottom: 1px solid #acacac;
   color: #000;
   font-size: 1.5rem;
@@ -1320,21 +1370,25 @@ select {
   padding: 0.75rem 0.25rem;
   position: relative;
 }
-.List .heading button {
+.List .heading button,
+.ViewList .heading button {
   left: 1rem;
   position: absolute;
   top: 0.25rem;
 }
-.List .heading.side-by-side {
+.List .heading.side-by-side,
+.ViewList .heading.side-by-side {
   border-bottom: none;
   font-size: 1rem;
   font-weight: 400;
   padding: 0;
 }
-.List .heading.is-hidden .caret-down {
+.List .heading.is-hidden .caret-down,
+.ViewList .heading.is-hidden .caret-down {
   transform: rotate(180deg);
 }
-.List .heading.toggle:hover {
+.List .heading.toggle:hover,
+.ViewList .heading.toggle:hover {
   background-color: rgba(172,172,172,0.1);
   cursor: pointer;
 }
@@ -1591,8 +1645,9 @@ textarea {
   border-radius: 0;
 }
 input:focus,
+button:focus,
 select:focus,
-button:focus {
+textarea:focus {
   outline: 0;
 }
 .hidden {

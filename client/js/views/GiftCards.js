@@ -5,26 +5,16 @@ module.exports = Object.assign( {}, require('./Form'), {
         purchaseGiftCard() {
             return {
                 model: Object.create( this.Model ).constructor( { }, {
-                    attributes: require('../../../models/GiftCard').attributes
+                    attributes: require('../../../models/GiftCardTransaction').attributes,
+                    heading: 'Contact Info',
+                    meta: { noLabel: true },
+                    resource: 'GiftCardTransaction'
                 } ),
                 templateOptions() {
                     return {
                         disallowEnterKeySubmission: true
                     }
                 }
-                /*Views: {
-                    creditCard() {
-                        return {
-                            model: require('../models/CreditCard'),
-                            templateOptions() {
-                                return {
-                                    disallowEnterKeySubmission: true,
-                                    hideButtonRow: true
-                                }
-                            }
-                        }
-                    }
-                }*/
             }
         }
 

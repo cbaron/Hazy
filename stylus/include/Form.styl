@@ -19,12 +19,12 @@
 input
     background-color: #eff1f0
     border: 1px solid #b5b5b5
-    padding: .25rem 
+    padding: .25rem
 
     +placeholder()
         color: #999997
 
-input, select
+input, select, textarea
     font-size: 1.25rem
     font-weight: 100
     line-height: 1.5rem
@@ -41,15 +41,27 @@ select
     appearance: none
 
 .Form
+    position: relative
     .List
-       .list.no-items 
-           padding: 0rem
+        .list.no-items 
+            padding: 0rem
 
-       button.floating
-           bottom: 0rem
-           height: 2rem
-           right: 1rem
-           width: 2rem
+        button.floating
+            bottom: 0rem
+            height: 2rem
+            right: 1rem
+            width: 2rem
+           
+    .delete
+        height: 100%
+        position: absolute
+        top: 0
+        right: -2rem
+        display: flex
+        align-items: center
+        >svg
+            height: 2rem
+        
 
 .Form .form-group .List .list .form-group
    margin: .5rem 0rem

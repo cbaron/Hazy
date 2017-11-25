@@ -26,29 +26,3 @@ module.exports = {
         error: 'A credit card cvc is required'
     } ]
 }
-
-/*
-        ccName: {
-            type: 'text',
-            error: 'A credit card name is required'
-        },
-        
-        ccNo: {
-            type: 'text',
-            error: 'A credit card number is required'
-        },
-
-        ccMonth: {
-            type: 'select',
-            error: 'A credit card month expiration is required'
-        },
-        
-        ccYear: {
-            type: 'select',
-            error: 'A credit card year expiration is required'
-        },
-
-        'cvc': {
-            type: 'text',
-            error: 'A credit card cvc is required'
-        }*/
