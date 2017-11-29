@@ -15,7 +15,6 @@ module.exports={
 	Dragger: require('./views/Dragger'),
 	Footer: require('./views/Footer'),
 	Form: require('./views/Form'),
-	FormList: require('./views/FormList'),
 	GiftCards: require('./views/GiftCards'),
 	Header: require('./views/Header'),
 	Home: require('./views/Home'),
