@@ -56,6 +56,15 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     events: {},
 
+    fadeInImage( el ) {
+        el.onload = () => {
+            this.emit( 'imgLoaded', el )
+            el.removeAttribute('data-src')
+        }
+
+        el.setAttribute( 'src', el.getAttribute('data-src') )
+    },
+
     getEventMethodName( key, event ) { return `on${this.capitalizeFirstLetter(key)}${this.capitalizeFirstLetter(event)}` },
 
     getContainer() { return this.els.container },
@@ -83,7 +92,8 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     hide( isSlow ) {
-        if( !this.els || this.isHiding ) return Promise.resolve()
+        //views not hiding properly with this
+        //if( !this.els || this.isHiding ) return Promise.resolve()
 
         this.isHiding = true;
         return this.hideEl( this.els.container, isSlow )
@@ -119,7 +129,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     initialize() {
-        return Object.assign( this, { els: { }, slurp: { attr: 'data-js', view: 'data-view', name: 'data-name' }, views: { } } )
+        return Object.assign( this, { els: { }, slurp: { attr: 'data-js', view: 'data-view', name: 'data-name', img: 'data-src' }, views: { } } )
     },
 
     insertToDom( fragment, options ) {
@@ -189,7 +199,6 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     renderSubviews() {
-        console.log( 'renderSubviews' )
         this.subviewElements.forEach( obj => {
             const name = obj.name || obj.view
 
@@ -197,8 +206,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
             if( this.Views && this.Views[ obj.view ] ) opts = typeof this.Views[ obj.view ] === "object" ? this.Views[ obj.view ] : Reflect.apply( this.Views[ obj.view ], this, [ ] )
             if( this.Views && this.Views[ name ] ) opts = typeof this.Views[ name ] === "object" ? this.Views[ name ] : Reflect.apply( this.Views[ name ], this, [ ] )
-            console.log( opts )
-            console.log( obj )
+
             this.views[ name ] = this.factory.create( obj.view, Object.assign( { insertion: { el: obj.el, method: 'insertBefore' } }, opts ) )
 
             if( this.events.views ) {
@@ -249,9 +257,12 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     slurpEl( el ) {
-        var key = el.getAttribute( this.slurp.attr ) || 'container'
+        const key = el.getAttribute( this.slurp.attr ) || 'container'
 
-        if( key === 'container' ) el.classList.add( this.name )
+        if( key === 'container' ) {
+            el.classList.add( this.name )
+            if( this.klass ) el.classList.add( this.klass )
+        }
 
         this.els[ key ] = Array.isArray( this.els[ key ] )
             ? this.els[ key ].concat( el )
@@ -268,11 +279,13 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         var fragment = this.htmlToFragment( options.template ),
             selector = `[${this.slurp.attr}]`,
             viewSelector = `[${this.slurp.view}]`,
+            imgSelector = `[${this.slurp.img}]`,
             firstEl = fragment.querySelector('*')
 
         if( options.isView || firstEl.getAttribute( this.slurp.attr ) ) this.slurpEl( firstEl )
-        Array.from( fragment.querySelectorAll( `${selector}, ${viewSelector}` ) ).forEach( el => {
+        Array.from( fragment.querySelectorAll( `${selector}, ${viewSelector}, ${imgSelector}` ) ).forEach( el => {
             if( el.hasAttribute( this.slurp.attr ) ) { this.slurpEl( el ) }
+            else if( el.hasAttribute( this.slurp.img ) ) this.fadeInImage( el )
             else if( el.hasAttribute( this.slurp.view ) ) {
                 this.subviewElements.push( { el, view: el.getAttribute(this.slurp.view), name: el.getAttribute(this.slurp.name) } )
             }

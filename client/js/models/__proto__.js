@@ -132,7 +132,7 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
        
         Object.keys( data ).forEach( name => { 
             const val = data[ name ],
-                attribute = this.attributes.find( attr => attr.name === name )       
+                attribute = this.attributes.find( attr => attr.name === name )   
     
             if( attribute === undefined || !attribute.validate ) {
                 this.data[ name ] = val

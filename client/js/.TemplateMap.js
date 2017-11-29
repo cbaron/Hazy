@@ -14,7 +14,6 @@ module.exports={
 	Division: require('./views/templates/Division'),
 	DivisionDropdown: require('./views/templates/DivisionDropdown'),
 	DivisionResult: require('./views/templates/DivisionResult'),
-	DivisionResults: require('./views/templates/DivisionResults'),
 	Document: require('./views/templates/Document'),
 	Dragger: require('./views/templates/Dragger'),
 	Footer: require('./views/templates/Footer'),

@@ -24,6 +24,7 @@ module.exports = Object.assign( { }, Super, {
                         .on( 'deleted', () => this.onItemViewDeleted( view ) )
 
                     this.itemViews.push( view )
+                    this.emit( 'itemAdded', view )
 
                     while( view.fragment.firstChild ) fragment.appendChild( view.fragment.firstChild )
                     return fragment
@@ -46,6 +47,8 @@ module.exports = Object.assign( { }, Super, {
         this.itemViews.splice( viewIndex, 1 )
         this.itemViews[ viewIndex - 1 ].els.container.scrollIntoView( { behavior: 'smooth' } )
         this.updateStyle()
+
+        this.emit( 'itemDeleted', view )
     },
 
     populateList() {
@@ -58,13 +61,9 @@ module.exports = Object.assign( { }, Super, {
     },
 
     postRender() {
-        console.log( 'postRender viewlist' )
-        console.log( this.model )
         this.viewName = this.model.git('view')
         this.itemViews = [ ]
         this.collection = this.model.git('collection') || Object.create( this.Model )
-
-        console.log( this.collection )
 
         this.populateList()
         this.updateStyle()

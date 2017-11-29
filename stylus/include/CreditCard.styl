@@ -1,0 +1,12 @@
+.CreditCard
+    .form-box form >.form-group
+        &:nth-child(3)
+            &::before
+                content: 'Expiration'
+                position: absolute
+                top: -1.6rem
+                
+        &:nth-child(3), &:nth-child(4), &:nth-child(5)
+            width: 33%
+            display: inline-block
+            margin-top: 1.5rem

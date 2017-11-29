@@ -1,60 +1,55 @@
 .Footer
+    position: relative
     color: white
-    display: flex
-    background-color: black
-    padding: 2rem
-
-    >div
-        flex: 1
-
-        &:nth-child(2)
-            background-image: url($CDN/hazy-tree.svg)
-            background-repeat: no-repeat
-            background-size: 100% 100%
-
-        .logo-white
-            display: block
-            margin: auto
-            width: 50%
-
-        .contact
-            font-weight: 300
-            margin: auto
-            padding-top: 3rem
-            text-align: center
-            width: 50%
-
-            a
-                display: block
-                height: 2rem
-                margin: .5rem auto
-                width: 2rem
-
-                svg
-                    fill: white
-
-@media (max-width: 767px)
-    .Footer
-        display: inherit
-        font-size: .75rem
-        line-height: 1rem
+    
+    .overlay
+        position: absolute
+        top: 0
+        left: 0
+        height: 100%
+        width: 100%
+        padding-top: 7%
+        padding-left: 10%
         
         >div
-            flex: inherit
+            width: 33%
+            text-align: center
 
-            &:nth-child(2)
-                height: 15rem
-
+            >img
+                margin-bottom: 2rem
+             
             .contact
-                padding: 0
-
+                color: white
+                line-height: 1.25rem
+                
+                >div:first-child
+                    text-transform: uppercase
                 a
-                    height: 1rem
-                    width: 1rem
+                    color: white
+                    
+                    svg
+                        fill: white
+                        height: 2rem
+                        margin-top: .5rem
+
+@media (max-width: 767px)
+    .Footer .overlay >div
+        .contact
+            font-size: .8rem
+            line-height: 1rem
+
+@media (max-width: 900px)
+    .Footer .overlay >div
+        >img
+            margin-bottom: 1rem
+        .contact
+            font-size .9rem
+            
+            a svg
+                height: 1.5rem
 
 @media (min-width: 1400px)
-    .Footer
+    .Footer .overlay >div
         .contact
             font-size: 1.5rem
             line-height: 2rem
-            

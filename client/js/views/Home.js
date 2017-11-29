@@ -25,7 +25,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     onByopResultsBtnClick() {
-        console.log( 'onByopResultsBtnClick' )
         this.emit( 'navigate', 'results' )
     },
     
@@ -34,8 +33,13 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     onGiftCardBtnClick() {
-        console.log( 'onGiftCardBtnClick' )
         this.emit( 'navigate', 'gift-cards' )
+    },
+
+    postRender() {
+        this.on( 'imgLoaded', el => el.nextElementSibling.classList.remove('hidden') )
+
+        return this
     }
 
 } )

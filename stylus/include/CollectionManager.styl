@@ -58,11 +58,21 @@
                     
                     .item
                         padding: 1rem
-
+            
         .Form
             height: 100%
             display: flex
             flex-direction: column
+            
+            .heading
+                font-weight: bold
+                font-size: 1.5rem
+            
+            &.CreditCard
+                display: none
+            
+            .prompt
+                display: none
             
 	        .form-box
                 display: flex;
@@ -80,6 +90,16 @@
                             flex: 1
                         >*:nth-child(2)
                             flex: 4
+                            
+                        &.nested
+                            flex-direction: column
+                            align-items: center
+                            margin: 2rem 0
+                            
+                            >label
+                                margin-right: 0
+                                width: 100%
+
             .btn-row
                 margin-top: 1rem   
 

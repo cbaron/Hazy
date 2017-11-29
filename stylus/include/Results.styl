@@ -7,7 +7,7 @@
         text-align: center
 
     h4
-        color: $DarkerGreen
+        color: $DarkResultsGreen
         font-weight: 700
         font-size: 1.5rem
         margin: 2rem 0 1.5rem
@@ -29,15 +29,89 @@
             cursor: pointer
             
             &.selected
-                color: $DarkerGreen
+                color: $DarkResultsGreen
             
             &:not(:first-child)::before
                 content: '|'
-                margin: 0 .35rem            
+                margin: 0 .35rem
+                
+    .division-result
+        min-width: 500px
+
+        ol
+            li
+                color: $DarkResultsGreen
+                display: flex
+                line-height: 1.8rem
+                font-size: .9rem
+                transition: background-color .25s
+                
+                &:not(:last-child)
+                    border-bottom: 1px solid white
+                
+                &:nth-child(odd)
+                    background-color: $LightResultsGreen
+                &:nth-child(even)
+                    background-color: $CreamResultsGreen
+                
+                >span
+                    text-align: center
+                    padding: 0 1rem
+                    
+                    &:not(:last-child)
+                        border-right: 1px solid white
+                    &.place
+                        flex: 1
+                        min-width: 4.75rem
+                        color: #555
+                    &.team
+                        flex: 8
+                        text-align: left
+                    &.round1, &.round2, &.total
+                        flex: 2
+                        color: #555
+                            
+
+                &:hover
+                    background-color: $LightGray
+                    color: $DarkGreen
+
+                    .disc-selection, .shirt-selection
+                        opacity: .5
+                        
+            &.header
+                li
+                    font-weight: 700
+                    background-color: $DarkResultsGreen
+                    color: white
+                    text-align: center
+                    
+                    >span
+                        color: white
+                    
+                        &.team
+                            text-align: center
+                            
+        .sponsors
+            padding: 1rem 0          
 
 
 @media (max-width: 767px)
-    padding: 1rem
+    .Results
+        padding: 1rem
+        overflow-x: auto
 
-    h3, h4
-        font-size: 1.5rem
+        h3, h4
+            font-size: 1.5rem
+            line-height: 1.5rem
+            
+        .divisions-list
+            padding: 0 1rem
+            
+        .division-result
+            ol li
+                font-size: .75rem
+                
+@media (min-width: 1400px)
+    .Results
+        margin-top: 9rem

@@ -1,8 +1,10 @@
-module.exports = Object.assign( { }, require('./__proto__'), require('./Submitter'), {
+const Submitter = require('./Submitter')
 
-    events: {
+module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
+
+    events: Object.assign( Submitter.events, {
         deleteBtn: 'click'
-    },
+    } ),
 
     clear() { this.inputEls.forEach( el => el.value = '' ) },
 
@@ -22,10 +24,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     },
 
     getFormValues() {
-        console.log( 'getFormValues' )
         const attributes = this.model.attributes
-        console.log( attributes )
-        console.log( this.els )
 
         let data = this.reducer( Object.keys( this.els ), key =>
             /(INPUT|SELECT|TEXTAREA)/.test( this.els[ key ].tagName )
@@ -42,53 +41,42 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
                     : Array.from( this.views[ attribute.name ].els.list.children ).map( itemEl => this.getElementValue( itemEl.querySelector('.item input'), { range: attribute.itemRange } ) )
             }
         } )
-        console.log( data )
+
         return data
     },
 
     handleValidationError( attr ) {
         this.Toast.createMessage( 'error', attr.error )
         this.els[ attr.name ].classList.add( 'error' )
-        this.onSubmitEnd()
-    },
-
-    createForm( attribute ) {
-        if( !this.Views ) this.Views = { }
-            
-        this.Views[ attribute.name ] = {
-            model: Object.create( this.Model ).constructor( this.model.data[ attribute.name ], {
-                attributes: attribute.range,
-                meta: this.model.meta
-            } ),
-            templateOptions: { hideButtonRow: true }
-        }
-        const el = this.els[ attribute.name ]
-        delete this.els[ attribute.name ]
-        this.subviewElements = [ { el, view: 'form', name: attribute.name } ]
-        this.renderSubviews()
-
     },
 
     initTypeAheads() {
         this.model.attributes.forEach( attribute => {
             if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
-            else if( typeof attribute.range === "object" ) { this.createForm( attribute ) }
-            else if( attribute.range === "List" ) {
+            else if( typeof attribute.range === "object" ) {
                 if( !this.Views ) this.Views = { }
-                console.log( 'list' )
-                console.log( this.model )
-                console.log( attribute )
+                    
+                this.Views[ attribute.name ] = {
+                    model: Object.create( this.Model ).constructor( this.model.data[ attribute.name ], {
+                        attributes: attribute.range,
+                        meta: this.model.meta
+                    } ),
+                    klass: attribute.klass,
+                    templateOptions: { hideButtonRow: true }
+                }
+                const el = this.els[ attribute.name ]
+                delete this.els[ attribute.name ]
+                this.subviewElements = [ { el, view: 'form', name: attribute.name } ]
+                this.renderSubviews()
+            } else if( attribute.range === "List" ) {
+                if( !this.Views ) this.Views = { }
+
                 const view = attribute.itemView ? 'viewList' : 'list',
                     collectionData = this.model.git( attribute.name )
                         ? view === 'viewList'
                             ? this.model.git( attribute.name )
                             : this.model.git( attribute.name ).map( datum => ( { value: datum } ) )
                         : [ ];
-
-                console.log( 'viewType' )
-                console.log( view )
-                console.log( collectionData )
-                console.log( this.model )
                 
                 this.Views[ attribute.name ] = attribute.itemView
                   ?
@@ -98,8 +86,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
                             collection: Object.create( this.Model ).constructor( collectionData, { meta: this.model.meta } ),
                             delete: true,
                             view: attribute.itemView,
-                            range: attribute.itemRange,
-                            heading: attribute.itemLabel
+                            range: attribute.itemRange
                         } )
                     }
                   :
@@ -117,7 +104,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
                 this.subviewElements = [ { el, view, name: attribute.name } ]
                 this.renderSubviews()
                 this.views[ attribute.name ].on( 'addClicked', () => this.views[ attribute.name ].add( { value: '' } ) )
-                this.views[ attribute.name ].on( 'deleteClicked', datum => this.views[ attribute.name ].remove( datum ) )
+                if( view === 'list' ) this.views[ attribute.name ].on( 'deleteClicked', datum => this.views[ attribute.name ].remove( datum ) )
             }
         } )
     },
@@ -125,7 +112,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     onDeleteBtnClick() { this.delete().catch( this.Error ) },
 
     submit() {
-        if( ! this.model.validate( this.getFormValues() ) ) return Promise.resolve()
+        if( !this.validate( this.getFormValues() ) ) return Promise.resolve( this.onSubmitEnd() )
 
         const isPost = !Boolean( this.model.data[ this.key ]  )
 
@@ -155,5 +142,27 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
         }
 
         return this 
+    },
+
+    validate( data ) {
+        let valid = true
+
+        if( !this.model.validate( data ) ) valid = false
+
+        if( this.views ) {
+            Object.keys( this.views ).forEach( key => {
+                const view = this.views[ key ]
+
+                if( view.itemViews ) {
+                    view.itemViews.forEach( itemView => {
+                        if( itemView.name !== 'Form' ) return
+                        if( !itemView.validate( itemView.getFormValues() ) ) valid = false
+                    } )
+                } else if( !view.validate( view.getFormValues() ) ) valid = false
+            } )
+        }
+
+        return valid
     }
+
 } )

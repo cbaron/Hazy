@@ -1,5 +1,5 @@
 module.exports = ( p ) =>  {
-    const selectCaret = p.GetIcon( 'caret-down' )
+    const selectCaret = p.GetIcon('caret-down')
     const shirts = p.meta.shirtSizes.map( ss => `<option value="${ss.value}">${ss.label}</option>` ).join('')
     const ace = p.meta.aceOptions.map( option => `<option value="${option.value}">${option.label}</option>` ).join('')
     const discs = p.meta.discs.map( option => `<option value="${option.value}">${option.label}</option>` ).join('')

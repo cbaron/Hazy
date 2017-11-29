@@ -373,7 +373,7 @@ button.back-btn:hover {
 .ByopSponsors >div .sponsor,
 .sponsors >div .sponsor {
   font-weight: 700;
-  margin: 2rem;
+  margin: 1rem;
   width: 15rem;
 }
 .ByopSponsors >div .sponsor label,
@@ -502,6 +502,16 @@ button.back-btn:hover {
   display: flex;
   flex-direction: column;
 }
+.CollectionManager .main-panel .Form .heading {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.CollectionManager .main-panel .Form.CreditCard {
+  display: none;
+}
+.CollectionManager .main-panel .Form .prompt {
+  display: none;
+}
 .CollectionManager .main-panel .form-box {
   display: flex;
   flex-direction: column;
@@ -520,6 +530,15 @@ button.back-btn:hover {
 .CollectionManager .main-panel .form-box form .form-group >*:nth-child(2) {
   flex: 4;
 }
+.CollectionManager .main-panel .form-box form .form-group.nested {
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 0;
+}
+.CollectionManager .main-panel .form-box form .form-group.nested >label {
+  margin-right: 0;
+  width: 100%;
+}
 .CollectionManager .main-panel .btn-row {
   margin-top: 1rem;
 }
@@ -534,6 +553,18 @@ button.back-btn:hover {
 .CollectionManager .main-panel .Form form form,
 .CollectionManager .main-panel .Deleter form form {
   padding: 1rem 2rem;
+}
+.CreditCard .form-box form >.form-group:nth-child(3)::before {
+  content: 'Expiration';
+  position: absolute;
+  top: -1.6rem;
+}
+.CreditCard .form-box form >.form-group:nth-child(3),
+.CreditCard .form-box form >.form-group:nth-child(4),
+.CreditCard .form-box form >.form-group:nth-child(5) {
+  width: 33%;
+  display: inline-block;
+  margin-top: 1.5rem;
 }
 .Deleter .side-by-side {
   justify-content: center;
@@ -598,72 +629,6 @@ button.back-btn:hover {
     font-size: 0.6rem;
     margin: 0.25rem 1rem;
     padding: 0.25rem 2rem;
-  }
-}
-.DivisionResults .division-result ol li {
-  color: #0f8141;
-  display: flex;
-  line-height: 1.8rem;
-  font-size: 0.9rem;
-  transition: background-color 0.25s;
-}
-.DivisionResults .division-result ol li:not(:last-child) {
-  border-bottom: 1px solid #fff;
-}
-.DivisionResults .division-result ol li:nth-child(odd) {
-  background-color: #9ed3ad;
-}
-.DivisionResults .division-result ol li:nth-child(even) {
-  background-color: #cfe8d3;
-}
-.DivisionResults .division-result ol li >span {
-  text-align: center;
-  padding: 0 1rem;
-}
-.DivisionResults .division-result ol li >span:not(:last-child) {
-  border-right: 1px solid #fff;
-}
-.DivisionResults .division-result ol li >span.place {
-  flex: 1;
-  min-width: 4.75rem;
-  color: #555;
-}
-.DivisionResults .division-result ol li >span.team {
-  flex: 8;
-  text-align: left;
-}
-.DivisionResults .division-result ol li >span.round1,
-.DivisionResults .division-result ol li >span.round2,
-.DivisionResults .division-result ol li >span.total {
-  flex: 2;
-  color: #555;
-}
-.DivisionResults .division-result ol li:hover {
-  background-color: #acacac;
-  color: #158115;
-}
-.DivisionResults .division-result ol li:hover .disc-selection,
-.DivisionResults .division-result ol li:hover .shirt-selection {
-  opacity: 0.5;
-}
-.DivisionResults .division-result ol.header li {
-  font-weight: 700;
-  background-color: #0f8141;
-  color: #fff;
-  text-align: center;
-}
-.DivisionResults .division-result ol.header li >span {
-  color: #fff;
-}
-.DivisionResults .division-result ol.header li >span.team {
-  text-align: center;
-}
-.DivisionResults .division-result .sponsors {
-  padding: 1rem 0;
-}
-@media (max-width: 767px) {
-  .division-result ol li {
-    font-size: 0.75rem;
   }
 }
 .Dragger {
@@ -741,62 +706,59 @@ button.back-btn:hover {
   }
 }
 .Footer {
+  position: relative;
   color: #fff;
-  display: flex;
-  background-color: #000;
-  padding: 2rem;
 }
-.Footer >div {
-  flex: 1;
+.Footer .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  padding-top: 7%;
+  padding-left: 10%;
 }
-.Footer >div:nth-child(2) {
-  background-image: url("https://storage.googleapis.com/mega-poetry-9665/hazy-tree.svg");
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-.Footer >div .logo-white {
-  display: block;
-  margin: auto;
-  width: 50%;
-}
-.Footer >div .contact {
-  font-weight: 300;
-  margin: auto;
-  padding-top: 3rem;
+.Footer .overlay >div {
+  width: 33%;
   text-align: center;
-  width: 50%;
 }
-.Footer >div .contact a {
-  display: block;
-  height: 2rem;
-  margin: 0.5rem auto;
-  width: 2rem;
+.Footer .overlay >div >img {
+  margin-bottom: 2rem;
 }
-.Footer >div .contact a svg {
+.Footer .overlay >div .contact {
+  color: #fff;
+  line-height: 1.25rem;
+}
+.Footer .overlay >div .contact >div:first-child {
+  text-transform: uppercase;
+}
+.Footer .overlay >div .contact a {
+  color: #fff;
+}
+.Footer .overlay >div .contact a svg {
   fill: #fff;
+  height: 2rem;
+  margin-top: 0.5rem;
 }
 @media (max-width: 767px) {
-  .Footer {
-    display: inherit;
-    font-size: 0.75rem;
+  .Footer .overlay >div .contact {
+    font-size: 0.8rem;
     line-height: 1rem;
   }
-  .Footer >div {
-    flex: inherit;
+}
+@media (max-width: 900px) {
+  .Footer .overlay >div >img {
+    margin-bottom: 1rem;
   }
-  .Footer >div:nth-child(2) {
-    height: 15rem;
+  .Footer .overlay >div .contact {
+    font-size: 0.9rem;
   }
-  .Footer >div .contact {
-    padding: 0;
-  }
-  .Footer >div .contact a {
-    height: 1rem;
-    width: 1rem;
+  .Footer .overlay >div .contact a svg {
+    height: 1.5rem;
   }
 }
 @media (min-width: 1400px) {
-  .Footer .contact {
+  .Footer .overlay >div .contact {
     font-size: 1.5rem;
     line-height: 2rem;
   }
@@ -856,8 +818,33 @@ select {
   -moz-appearance: none;
   appearance: none;
 }
-.Form {
+.Form .form-box {
   position: relative;
+}
+.Form .form-box .delete {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: -2.5rem;
+  display: flex;
+  align-items: center;
+}
+.Form .form-box .delete >svg {
+  height: 1.75rem;
+  cursor: pointer;
+}
+.Form .form-box .form-group {
+  position: relative;
+}
+.Form .form-box .form-group .caret-down {
+  fill: #a3a3a3;
+  stroke: #8b8b8b;
+  height: 1rem;
+  position: absolute;
+  right: 0.6rem;
+  top: 0.6rem;
+  width: 1rem;
+  z-index: 1;
 }
 .Form .List .list.no-items {
   padding: 0rem;
@@ -868,16 +855,12 @@ select {
   right: 1rem;
   width: 2rem;
 }
-.Form .delete {
-  height: 100%;
-  position: absolute;
-  top: 0;
-  right: -2rem;
-  display: flex;
-  align-items: center;
-}
-.Form .delete >svg {
-  height: 2rem;
+.Form .prompt {
+  color: #acacac;
+  font-size: 0.9rem;
+  line-height: 1.05rem;
+  text-align: left;
+  margin-top: 1rem;
 }
 .Form .form-group .List .list .form-group {
   margin: 0.5rem 0rem;
@@ -886,18 +869,74 @@ select {
   padding: 0.5rem 1rem;
 }
 .GiftCards {
-  padding: 6rem 3rem 0;
+  padding-top: 8rem;
 }
-.GiftCards .Form {
-  padding: 1rem;
+.GiftCards >div:first-child {
+  width: 100%;
+  padding-left: 32.5%;
 }
-.GiftCards .Form .form-group {
+.GiftCards >div:first-child >img {
+  width: 50%;
+}
+.GiftCards .content {
+  padding: 3rem 30% 3rem;
+  text-align: center;
+}
+.GiftCards .content >div:first-child {
+  margin-bottom: 3rem;
+  text-align: left;
+}
+.GiftCards .content h4 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.GiftCards .content .heading,
+.GiftCards .content .form-group.nested {
+  font-size: 1.25rem;
+}
+.GiftCards .content .Form .form-group {
   margin: 1rem 0;
+}
+.GiftCards .content .Form .form-group.nested {
+  margin-top: 3rem;
+}
+.GiftCards .content .ViewList .Form {
+  padding: 2rem 1.5rem 0;
+}
+.GiftCards .content .ViewList .Form:first-child {
+  padding-top: 0;
+}
+.GiftCards .content .total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 2rem 0;
+}
+@media (max-width: 950px) {
+  .GiftCards >div:first-child {
+    padding-left: 25%;
+  }
+  .GiftCards >div:first-child >img {
+    width: 60%;
+  }
+  .GiftCards .content {
+    padding: 3rem 15% 3rem;
+  }
+}
+@media (max-width: 600px) {
+  .GiftCards >div:first-child {
+    padding-left: 20%;
+  }
+  .GiftCards >div:first-child >img {
+    width: 70%;
+  }
+  .GiftCards .content {
+    padding: 3rem 1.5rem 3rem;
+  }
 }
 .Header {
   background-color: rgba(0,0,0,0.7);
   font-weight: 300;
-  height: 2rem;
+  height: 3rem;
   left: 0;
   position: absolute;
   text-align: center;
@@ -907,7 +946,7 @@ select {
 }
 .Header .logo-white {
   cursor: pointer;
-  height: 1.5rem;
+  height: 2.75rem;
   margin: 0.25rem;
 }
 .Header .nav {
@@ -920,7 +959,6 @@ select {
 .Header .nav >li:last-child {
   cursor: pointer;
   height: 100%;
-  margin-right: 1rem;
   text-align: right;
   transition: background-color 0.5s;
 }
@@ -986,7 +1024,7 @@ select {
 }
 @media (min-width: 1200px) {
   .Header {
-    height: 5rem;
+    height: 4rem;
   }
   .Header .spans li {
     display: inline-block;
@@ -1007,7 +1045,7 @@ select {
 }
 @media (min-width: 1400px) {
   .Header {
-    height: 7rem;
+    height: 6rem;
   }
   .Header .spans li {
     display: inline-block;
@@ -1026,168 +1064,124 @@ select {
     margin: 0rem 4rem;
   }
 }
-.Home .title {
-  color: #fff;
-  font-size: 1.5rem;
-  left: 2rem;
-  position: absolute;
-  top: 1rem;
-  text-transform: uppercase;
-}
-.Home > img {
-  display: block;
-  width: 100%;
-}
-.Home .intro {
-  padding: 1rem;
-}
-.Home .intro >div:nth-child(2) {
-  padding: 4rem 6rem;
-}
-.Home .intro svg {
-  height: 100%;
-  padding: 4rem;
-  margin-left: 2rem;
-  width: 100%;
-}
-.Home .intro h3 {
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-}
-.Home .intro p {
-  font-size: 0.85rem;
-  font-weight: 300;
-}
-.Home .side-by-side >* {
-  flex: 1;
-  position: relative;
-}
-.Home .featured-product {
-  background-color: #000;
-  padding: 4%;
-}
-.Home .featured-product >img {
-  display: block;
-  width: 62%;
-}
-.Home .featured-product .center {
-  width: 36%;
+.Home {
   text-align: center;
-  font-weight: 700;
-  color: #fff;
-}
-.Home .featured-product .center >div {
-  line-height: 1.1;
-}
-.Home .featured-product .center >div:first-child {
-  font-size: 4rem;
-}
-.Home .featured-product .center >div:nth-child(2) {
-  font-size: 3.25rem;
-}
-.Home .featured-product .center >div:last-child {
-  margin-top: 1.25rem;
-}
-.Home .featured-product .center >div >button {
   color: #000;
-  background-color: #fff;
-  border: none;
-  padding: 1rem 2rem;
+}
+.Home button {
+  border: 1px solid transparent;
   font-size: 1rem;
 }
-.Home .featured-product .center >div >button:hover {
-  color: #fff;
-  background-color: #000;
+.Home .featured {
+  font-weight: bold;
+  font-size: 3rem;
+  line-height: 3rem;
 }
-.Home .disc-doctor {
-  background-image: url("/static/img/fairway-pond-istock.jpg");
-  background-size: 100% 100%;
-  color: #000;
-  padding: 3rem;
+.Home >div {
+  position: relative;
 }
-.Home .disc-doctor .main {
-  display: flex;
+.Home >div >img {
+  width: 100%;
 }
-.Home .disc-doctor .main div {
-  flex: 1;
-  margin: 0rem 1rem;
-  text-align: center;
-}
-.Home .disc-doctor .main .logo-white {
-  display: block;
-  height: 6rem;
-  margin: 0rem auto 1rem auto;
-}
-.Home .disc-doctor .main .heading {
-  font-size: 4rem;
-  line-height: 4rem;
-}
-.Home .disc-doctor .main .subtitle {
-  font-weight: 300;
-}
-.Home .ez-finder .title {
+.Home >div .overlay {
   position: absolute;
-  left: 1rem;
-  top: 1rem;
+  width: 100%;
 }
-.Home .ez-finder .caption {
-  position: absolute;
-  width: 33%;
-  text-align: center;
-  left: 33%;
-  bottom: 1rem;
+.Home >div:first-child {
   color: #fff;
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
-.Home .suppliers {
-  font-size: 1.25rem;
-  font-weight: 300;
-  padding: 2rem;
-  text-align: center;
+.Home >div:first-child .overlay {
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.7);
+  color: #fff;
+  height: 33%;
 }
-.Home .suppliers .logos {
+.Home >div:first-child .overlay >div {
+  width: 50%;
+}
+.Home >div:first-child .overlay >div:first-child {
   display: flex;
-  flex-wrap: wrap;
-  padding: 2rem;
+  justify-content: center;
 }
-.Home .suppliers .logos li {
-  flex: 1;
+.Home >div:first-child .overlay >div:first-child >img {
+  width: 60%;
+  height: 100%;
 }
-@media (max-width: 767px) {
-  .Home .side-by-side {
-    display: inherit;
-  }
-  .Home .intro svg {
-    margin: 0;
-    padding: 2rem;
-  }
-  .Home .intro >div:nth-child(2) {
-    padding: 2rem;
-  }
-  .Home .intro h3 {
-    font-size: 0.75rem;
-    text-align: center;
-  }
+.Home >div:first-child .overlay >div:last-child {
+  text-align: center;
+  padding: 0 2rem;
 }
-@media (min-width: 1200px) {
-  .Home .intro p {
-    font-size: 0.85rem;
-  }
+.Home >div:nth-child(2) button {
+  color: #fff;
+  background-color: #ed1f24;
 }
-@media (min-width: 1400px) {
-  .Home .intro h3 {
-    font-size: 1.5rem;
-    line-height: 1.5rem;
+.Home >div:nth-child(2) button:hover {
+  background-color: #f04145;
+}
+.Home >div:nth-child(2) .overlay {
+  top: 0;
+  height: 100%;
+}
+.Home >div:nth-child(2) .overlay >div {
+  width: 50%;
+}
+.Home >div:nth-child(2) .overlay >div:first-child {
+  padding-left: 5%;
+}
+.Home >div:nth-child(2) .overlay >div:last-child {
+  padding-left: 8%;
+}
+.Home >div:nth-child(2) .overlay >div:last-child >img {
+  width: 80%;
+  height: 100%;
+}
+.Home >div:last-child button {
+  background-color: #f36f21;
+  color: #fff;
+}
+.Home >div:last-child button:hover {
+  background-color: #f58542;
+}
+.Home >div:last-child .overlay {
+  top: 0;
+  height: 100%;
+  justify-content: center;
+  padding-top: 6%;
+}
+.Home >div:last-child .overlay >div >div:nth-child(2) {
+  font-size: 1.35rem;
+  font-weight: bold;
+}
+.Home >div:last-child .overlay >div >div:last-child {
+  margin-top: 0.75rem;
+}
+@media (max-width: 950px) {
+  .Home button {
+    font-size: 0.9rem;
   }
-  .Home .intro p {
+  .Home .featured {
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+  }
+  .Home >div:last-child .overlay >div >div:nth-child(2) {
     font-size: 1.25rem;
-    line-height: 1.25rem;
   }
-  .Home .disc-doctor .subtitle {
+}
+@media (min-width: 1500px) {
+  .Home button {
+    font-size: 1.25rem;
+  }
+  .Home .featured {
+    font-size: 4rem;
+    line-height: 4rem;
+  }
+  .Home >div:first-child {
+    font-size: 1.25rem;
+    line-height: 1.9rem;
+  }
+  .Home >div:last-child .overlay >div >div:nth-child(2) {
     font-size: 1.5rem;
-    line-height: 1.5rem;
-    padding-top: 1rem;
   }
 }
 .JsonProperty {
@@ -1244,7 +1238,6 @@ select {
 .List,
 .ViewList {
   position: relative;
-  text-align: center;
 }
 .List .list.no-items,
 .ViewList .list.no-items {
@@ -1497,10 +1490,90 @@ select {
   content: '|';
   margin: 0 0.35rem;
 }
+.Results .division-result {
+  min-width: 500px;
+}
+.Results .division-result ol li {
+  color: #0f8141;
+  display: flex;
+  line-height: 1.8rem;
+  font-size: 0.9rem;
+  transition: background-color 0.25s;
+}
+.Results .division-result ol li:not(:last-child) {
+  border-bottom: 1px solid #fff;
+}
+.Results .division-result ol li:nth-child(odd) {
+  background-color: #9ed3ad;
+}
+.Results .division-result ol li:nth-child(even) {
+  background-color: #cfe8d3;
+}
+.Results .division-result ol li >span {
+  text-align: center;
+  padding: 0 1rem;
+}
+.Results .division-result ol li >span:not(:last-child) {
+  border-right: 1px solid #fff;
+}
+.Results .division-result ol li >span.place {
+  flex: 1;
+  min-width: 4.75rem;
+  color: #555;
+}
+.Results .division-result ol li >span.team {
+  flex: 8;
+  text-align: left;
+}
+.Results .division-result ol li >span.round1,
+.Results .division-result ol li >span.round2,
+.Results .division-result ol li >span.total {
+  flex: 2;
+  color: #555;
+}
+.Results .division-result ol li:hover {
+  background-color: #acacac;
+  color: #158115;
+}
+.Results .division-result ol li:hover .disc-selection,
+.Results .division-result ol li:hover .shirt-selection {
+  opacity: 0.5;
+}
+.Results .division-result ol.header li {
+  font-weight: 700;
+  background-color: #0f8141;
+  color: #fff;
+  text-align: center;
+}
+.Results .division-result ol.header li >span {
+  color: #fff;
+}
+.Results .division-result ol.header li >span.team {
+  text-align: center;
+}
+.Results .division-result .sponsors {
+  padding: 1rem 0;
+}
 @media (max-width: 767px) {
-  h3,
-  h4 {
+  .Results {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  .Results h3,
+  .Results h4 {
     font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+  .Results .divisions-list {
+    padding: 0 1rem;
+  }
+  .Results .division-result ol li {
+    font-size: 0.75rem;
+  }
+}
+@media (min-width: 1400px) {
+  .Results {
+    margin-top: 9rem;
   }
 }
 .Toast {
@@ -1609,6 +1682,11 @@ a:hover {
 img {
   display: block;
   width: 100%;
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+img[data-src] {
+  opacity: 0;
 }
 h1,
 h2,
