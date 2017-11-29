@@ -19,12 +19,12 @@
 input
     background-color: #eff1f0
     border: 1px solid #b5b5b5
-    padding: .25rem 
+    padding: .25rem
 
     +placeholder()
         color: #999997
 
-input, select
+input, select, textarea
     font-size: 1.25rem
     font-weight: 100
     line-height: 1.5rem
@@ -40,28 +40,52 @@ select
     -moz-appearance: none
     appearance: none
 
-button
-    background-color: white
-    border: 1px solid #b5b5b5
-    cursor: pointer
-    font-size: 1.25rem
-    padding: .5rem 1rem
-    text-transform: uppercase
-    transition: background-color .5s, color .5s, opacity .25s
-
-    &.submitting
-        opacity: .3
-
 .Form
-    .List
-       .list.no-items 
-           padding: 0rem
+    .form-box
+        position: relative
+        
+        .delete
+            height: 100%
+            position: absolute
+            top: 0
+            right: -2.5rem
+            display: flex
+            align-items: center
 
-       button.floating
-           bottom: 0rem
-           height: 2rem
-           right: 1rem
-           width: 2rem
+            >svg
+                height: 1.75rem
+                cursor: pointer
+            
+        .form-group
+            position: relative
+            
+            .caret-down
+                fill: #a3a3a3
+                stroke: #8b8b8b
+                height: 1rem
+                position: absolute
+                right: .6rem
+                top: .6rem
+                width: 1rem
+                z-index: 1
+
+    .List
+        .list.no-items 
+            padding: 0rem
+
+        button.floating
+            bottom: 0rem
+            height: 2rem
+            right: 1rem
+            width: 2rem
+            
+    .prompt
+        color: $LightGray
+        font-size: .9rem
+        line-height: 1.05rem
+        text-align: left
+        margin-top: 1rem
+        
 
 .Form .form-group .List .list .form-group
    margin: .5rem 0rem

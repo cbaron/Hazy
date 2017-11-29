@@ -48,7 +48,11 @@ a
 
 img
     display: block
-    width: 100%    
+    width: 100%
+    opacity: 1
+    transition: opacity .5s
+    &[data-src]
+        opacity: 0  
     
 h1, h2, h3, h4, h5, h6
     margin-top: 0
@@ -76,8 +80,7 @@ select,
 textarea
     margin: 0
     border-radius: 0
-    
-input, select, button
+
     &:focus
         outline: 0
 

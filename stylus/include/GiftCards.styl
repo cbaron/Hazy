@@ -1,0 +1,61 @@
+.GiftCards
+    padding-top: 8rem
+
+    >div:first-child
+        width: 100%
+        padding-left: 32.5%
+        
+        >img
+            width: 50%
+
+    .content
+        padding: 3rem 30% 3rem
+        text-align: center
+    
+        >div:first-child
+            margin-bottom: 3rem
+            text-align: left
+
+        h4
+            font-size: 1.5rem
+            line-height: 2rem
+            
+        .heading, .form-group.nested
+            font-size: 1.25rem
+        
+        .Form
+            .form-group
+                margin: 1rem 0
+                &.nested
+                    margin-top: 3rem
+                
+        .ViewList .Form
+            padding: 2rem 1.5rem 0
+            &:first-child
+                padding-top: 0
+                
+        .total
+            font-size: 1.5rem
+            font-weight: bold
+            margin: 2rem 0
+        
+
+@media (max-width: 950px)
+    .GiftCards
+        >div:first-child
+            padding-left: 25%
+            >img
+                width: 60%
+
+        .content
+            padding: 3rem 15% 3rem
+        
+@media (max-width: 600px)
+    .GiftCards
+        >div:first-child
+            padding-left: 20%
+            >img
+                width: 70%
+
+        .content
+            padding: 3rem 1.5rem 3rem

@@ -71,7 +71,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 disallowEnterKeySubmission: true,
                 insertion: { el: this.els.mainPanel },
                 model,
-                templateOptions: { heading: model.git('label') },
+                templateOptions: { heading: model.git('label') || model.git('name') },
                 Views: {
                     typeAhead: {
                         Type: 'Document',
@@ -214,8 +214,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     onNavigation( path ) {
-
-        console.log(path);
         this.path = path;
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
@@ -263,14 +261,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         this.WebSocket.on( 'createDisc', data => {
             if( this.path.join('/') === 'Disc/undefined' ) {
-                console.log('proceedwithupload');
                 this.WebSocket.send( { type: 'proceedWithUpload', userId: this.user.git('id'), discName: this.views.documentView.els.name.value } )
                 this.status = 'waitingForUpload'
             }
         } )
         
         this.WebSocket.on( 'imagesUploaded', data => {
-            console.log(this.status)
             if( this.path.join('/') === 'Disc/undefined' && this.status === 'waitingForUpload' ) {
                 
                 data.uris.forEach( uri => this.views.documentView.views.PhotoUrls.add( { value: uri } ) )

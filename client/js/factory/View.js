@@ -9,6 +9,7 @@ module.exports = Object.create( {
     create( name, opts ) {
         const lower = name
         name = ( name.charAt(0).toUpperCase() + name.slice(1) ).replace( '-', '' )
+
         return Object.create(
             this.Views[ name ],
             Object.assign( {
@@ -18,7 +19,7 @@ module.exports = Object.create( {
                 name: { value: name },
                 factory: { value: this },
                 range: { value: this.range },
-                template: { value: this.Templates[ name ] },
+                template: { value: this.Templates[ name ], writable: true },
                 user: { value: this.User }
             } )
         ).constructor( opts )

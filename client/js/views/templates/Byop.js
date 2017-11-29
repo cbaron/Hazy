@@ -1,8 +1,8 @@
-module.exports = ( { meta, model, Currency, Range, ImageSrc } ) =>  {
-    const selectCaret = require('./lib/caret-down')( { name: 'caret' } )
-    const shirts = meta.shirtSizes.map( ss => `<option value="${ss.value}">${ss.label}</option>` ).join('')
-    const ace = meta.aceOptions.map( option => `<option value="${option.value}">${option.label}</option>` ).join('')
-    const discs = meta.discs.map( option => `<option value="${option.value}">${option.label}</option>` ).join('')
+module.exports = ( p ) =>  {
+    const selectCaret = p.GetIcon('caret-down')
+    const shirts = p.meta.shirtSizes.map( ss => `<option value="${ss.value}">${ss.label}</option>` ).join('')
+    const ace = p.meta.aceOptions.map( option => `<option value="${option.value}">${option.label}</option>` ).join('')
+    const discs = p.meta.discs.map( option => `<option value="${option.value}">${option.label}</option>` ).join('')
     const playerFields = no =>
         `<div class="player">` +
             `<div>Player ${no}</div>` +
@@ -28,7 +28,7 @@ module.exports = ( { meta, model, Currency, Range, ImageSrc } ) =>  {
     return `` +
 `<section>
   <div class="featured-event">
-    <img src="${ImageSrc('discs-in-basket.jpg')}"/>
+    <img src="${p.ImageSrc('discs-in-basket.jpg')}"/>
     <div class="content">
         <div class="center">BYOP</div>
     </div>
@@ -45,7 +45,7 @@ module.exports = ( { meta, model, Currency, Range, ImageSrc } ) =>  {
           </div>
           <div>
               <span>Belmont Park and Belmont Park West, August 11th-13th, 2017</span>
-              <a href="${ImageSrc('byop-map.pdf')}" target="_blank">Map</a>
+              <a href="${p.ImageSrc('byop-map.pdf')}" target="_blank">Map</a>
           </div>
       </section>
       <ol class="dates">
@@ -164,7 +164,7 @@ module.exports = ( { meta, model, Currency, Range, ImageSrc } ) =>  {
       </div>
       <div data-js="totalWrap" class="total side-by-side">
           <span>Total:</span>
-          <span data-js="total">${Currency.format(model.total)}</span>
+          <span data-js="total">${p.Currency.format(p.model.total)}</span>
       </div>
       <div>
           <button data-js="submitBtn" type="button">Submit</button>

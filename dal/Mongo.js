@@ -10,9 +10,9 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     SuperModel: require( '../models/__proto__'),
 
-    DELETE( resource ) {
+    DELETE( resource, id ) {
         return this.getDb()
-        .then( db => db.collection( resource.path[0] ).remove( { _id: this.ObjectId( resource.path[1] ) } ) )
+        .then( db => db.collection( resource.path[0] ).remove( { _id: this.ObjectId( id || resource.path[1] ) } ) )
         .then( result => Promise.resolve( [ { } ] ) )
     },
 
@@ -42,10 +42,10 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         .then( result => Promise.resolve( [ Object.assign( { _id: result.insertedIds[0] }, resource.body ) ] ) )
     },
 
-    PUT( resource ) {
+    PUT( resource, id ) {
         return this.getDb()
-        .then( db => db.collection( resource.path[0] ).replaceOne( { _id: new ( this.Mongo.ObjectID )( resource.path[1] ) }, this.transform( resource.path[0], resource.body ) ) )
-        .then( result => Promise.resolve( [ Object.assign( { _id: resource.path[1] }, resource.body ) ] ) )
+        .then( db => db.collection( resource.path[0] ).replaceOne( { _id: new ( this.Mongo.ObjectID )( id || resource.path[1] ) }, this.transform( resource.path[0], resource.body ) ) )
+        .then( result => Promise.resolve( [ Object.assign( { _id: id || resource.path[1] }, resource.body ) ] ) )
     },
 
     addCollection( name ) {

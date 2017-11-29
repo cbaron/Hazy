@@ -7,3 +7,11 @@ placeholder()
         {block}
     &:-ms-input-placeholder
         {block}
+        
+hoverSwap( $color, $bg-color )
+    color: $color
+    background-color: $bg-color
+    
+    &:hover
+        color: $bg-color
+        background-color: $color

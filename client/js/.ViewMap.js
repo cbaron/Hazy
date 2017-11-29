@@ -3,7 +3,6 @@ module.exports={
 	Array: require('./views/Array'),
 	ButtonFlow: require('./views/ButtonFlow'),
 	Byop: require('./views/Byop'),
-	Byop2016: require('./views/Byop2016'),
 	ByopNumbers: require('./views/ByopNumbers'),
 	ByopPlayers: require('./views/ByopPlayers'),
 	ByopSponsors: require('./views/ByopSponsors'),
@@ -16,6 +15,7 @@ module.exports={
 	Dragger: require('./views/Dragger'),
 	Footer: require('./views/Footer'),
 	Form: require('./views/Form'),
+	GiftCards: require('./views/GiftCards'),
 	Header: require('./views/Header'),
 	Home: require('./views/Home'),
 	Json: require('./views/Json'),
@@ -24,8 +24,10 @@ module.exports={
 	Literal: require('./views/Literal'),
 	Login: require('./views/Login'),
 	ManageByop: require('./views/ManageByop'),
+	Results: require('./views/Results'),
 	Submitter: require('./views/Submitter'),
 	Toast: require('./views/Toast'),
 	ToastMessage: require('./views/ToastMessage'),
-	TypeAhead: require('./views/TypeAhead')
+	TypeAhead: require('./views/TypeAhead'),
+	ViewList: require('./views/ViewList')
 }
