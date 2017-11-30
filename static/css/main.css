@@ -355,6 +355,130 @@ button.back-btn:hover {
 .ByopPlayers .waiting-list {
   color: #acacac;
 }
+.ByopResults {
+  margin-top: 7rem;
+  padding: 0 6rem;
+}
+.ByopResults h3,
+.ByopResults h4 {
+  font-size: 2rem;
+  text-align: center;
+}
+.ByopResults h4 {
+  color: #0f8141;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 2rem 0 1.5rem;
+}
+.ByopResults h4 >span {
+  color: #acacac;
+  margin-left: 0.25rem;
+  font-size: 1.25rem;
+}
+.ByopResults .divisions-list {
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding: 0 6rem;
+  font-weight: bold;
+}
+.ByopResults .divisions-list li {
+  color: #acacac;
+  cursor: pointer;
+}
+.ByopResults .divisions-list li.selected {
+  color: #0f8141;
+}
+.ByopResults .divisions-list li:not(:first-child)::before {
+  content: '|';
+  margin: 0 0.35rem;
+}
+.ByopResults .division-result {
+  min-width: 500px;
+}
+.ByopResults .division-result ol li {
+  color: #0f8141;
+  display: flex;
+  line-height: 1.8rem;
+  font-size: 0.9rem;
+  transition: background-color 0.25s;
+}
+.ByopResults .division-result ol li:not(:last-child) {
+  border-bottom: 1px solid #fff;
+}
+.ByopResults .division-result ol li:nth-child(odd) {
+  background-color: #9ed3ad;
+}
+.ByopResults .division-result ol li:nth-child(even) {
+  background-color: #cfe8d3;
+}
+.ByopResults .division-result ol li >span {
+  text-align: center;
+  padding: 0 1rem;
+}
+.ByopResults .division-result ol li >span:not(:last-child) {
+  border-right: 1px solid #fff;
+}
+.ByopResults .division-result ol li >span.place {
+  flex: 1;
+  min-width: 4.75rem;
+  color: #555;
+}
+.ByopResults .division-result ol li >span.team {
+  flex: 8;
+  text-align: left;
+}
+.ByopResults .division-result ol li >span.round1,
+.ByopResults .division-result ol li >span.round2,
+.ByopResults .division-result ol li >span.total {
+  flex: 2;
+  color: #555;
+}
+.ByopResults .division-result ol li:hover {
+  background-color: #acacac;
+  color: #158115;
+}
+.ByopResults .division-result ol li:hover .disc-selection,
+.ByopResults .division-result ol li:hover .shirt-selection {
+  opacity: 0.5;
+}
+.ByopResults .division-result ol.header li {
+  font-weight: 700;
+  background-color: #0f8141;
+  color: #fff;
+  text-align: center;
+}
+.ByopResults .division-result ol.header li >span {
+  color: #fff;
+}
+.ByopResults .division-result ol.header li >span.team {
+  text-align: center;
+}
+.ByopResults .division-result .sponsors {
+  padding: 1rem 0;
+}
+@media (max-width: 767px) {
+  .Results {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  .Results h3,
+  .Results h4 {
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+  .Results .divisions-list {
+    padding: 0 1rem;
+  }
+  .Results .division-result ol li {
+    font-size: 0.75rem;
+  }
+}
+@media (min-width: 1400px) {
+  .Results {
+    margin-top: 9rem;
+  }
+}
 .ByopSponsors,
 .sponsors {
   padding: 1rem 5rem;
@@ -1523,130 +1647,6 @@ select {
 .ManageByop button:not(.disabled):hover {
   background-color: #4ab74a;
   color: #fff;
-}
-.Results {
-  margin-top: 7rem;
-  padding: 0 6rem;
-}
-.Results h3,
-.Results h4 {
-  font-size: 2rem;
-  text-align: center;
-}
-.Results h4 {
-  color: #0f8141;
-  font-weight: 700;
-  font-size: 1.5rem;
-  margin: 2rem 0 1.5rem;
-}
-.Results h4 >span {
-  color: #acacac;
-  margin-left: 0.25rem;
-  font-size: 1.25rem;
-}
-.Results .divisions-list {
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  padding: 0 6rem;
-  font-weight: bold;
-}
-.Results .divisions-list li {
-  color: #acacac;
-  cursor: pointer;
-}
-.Results .divisions-list li.selected {
-  color: #0f8141;
-}
-.Results .divisions-list li:not(:first-child)::before {
-  content: '|';
-  margin: 0 0.35rem;
-}
-.Results .division-result {
-  min-width: 500px;
-}
-.Results .division-result ol li {
-  color: #0f8141;
-  display: flex;
-  line-height: 1.8rem;
-  font-size: 0.9rem;
-  transition: background-color 0.25s;
-}
-.Results .division-result ol li:not(:last-child) {
-  border-bottom: 1px solid #fff;
-}
-.Results .division-result ol li:nth-child(odd) {
-  background-color: #9ed3ad;
-}
-.Results .division-result ol li:nth-child(even) {
-  background-color: #cfe8d3;
-}
-.Results .division-result ol li >span {
-  text-align: center;
-  padding: 0 1rem;
-}
-.Results .division-result ol li >span:not(:last-child) {
-  border-right: 1px solid #fff;
-}
-.Results .division-result ol li >span.place {
-  flex: 1;
-  min-width: 4.75rem;
-  color: #555;
-}
-.Results .division-result ol li >span.team {
-  flex: 8;
-  text-align: left;
-}
-.Results .division-result ol li >span.round1,
-.Results .division-result ol li >span.round2,
-.Results .division-result ol li >span.total {
-  flex: 2;
-  color: #555;
-}
-.Results .division-result ol li:hover {
-  background-color: #acacac;
-  color: #158115;
-}
-.Results .division-result ol li:hover .disc-selection,
-.Results .division-result ol li:hover .shirt-selection {
-  opacity: 0.5;
-}
-.Results .division-result ol.header li {
-  font-weight: 700;
-  background-color: #0f8141;
-  color: #fff;
-  text-align: center;
-}
-.Results .division-result ol.header li >span {
-  color: #fff;
-}
-.Results .division-result ol.header li >span.team {
-  text-align: center;
-}
-.Results .division-result .sponsors {
-  padding: 1rem 0;
-}
-@media (max-width: 767px) {
-  .Results {
-    padding: 1rem;
-    overflow-x: auto;
-  }
-  .Results h3,
-  .Results h4 {
-    font-size: 1.5rem;
-    line-height: 1.5rem;
-  }
-  .Results .divisions-list {
-    padding: 0 1rem;
-  }
-  .Results .division-result ol li {
-    font-size: 0.75rem;
-  }
-}
-@media (min-width: 1400px) {
-  .Results {
-    margin-top: 9rem;
-  }
 }
 .Toast {
   position: fixed;
