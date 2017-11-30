@@ -6,11 +6,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             return {
                 model: Object.create( this.Model ).constructor( { }, {
                     attributes: require('../../../models/GiftCardTransaction').attributes,
-                    data: {
-                        total: 3.5,
-                        delivery: 'inStore',
-                        isProcessed: false
-                    },
+                    data: { isProcessed: false },
                     meta: { noLabel: true },
                     resource: 'GiftCardTransaction'
                 } ),

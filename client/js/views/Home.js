@@ -25,7 +25,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     onByopResultsBtnClick() {
-        this.emit( 'navigate', 'results' )
+        this.emit( 'navigate', 'byop-results' )
     },
     
     onEzFinderClick() {

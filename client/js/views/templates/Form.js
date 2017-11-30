@@ -4,7 +4,7 @@ module.exports = p => {
         prompt  = p.opts.prompt ?  `<div class="prompt">${p.opts.prompt}</div>` : ``,
         fields = p.GetFormFields( p.attributes, p.model, p.meta ),
         total = p.opts.displayTotal
-            ? `<div class="total"><span>Total: </span><span data-js="total">${p.Currency.format( p.model.total )}</span></div>`
+            ? `<div class="total"><span>Total: </span><span data-js="total">${p.Currency.format( 0 )}</span></div>`
             : ``,
         buttonRow = p.opts.hideButtonRow
             ? ``
