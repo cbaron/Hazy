@@ -6,7 +6,22 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
         deleteBtn: 'click'
     } ),
 
-    clear() { this.inputEls.forEach( el => el.value = '' ) },
+    clear() {
+        this.inputEls.forEach( el => el.value = '' )
+
+        if( this.views ) {
+            Object.keys( this.views ).forEach( key => {
+                const view = this.views[ key ]
+
+                if( view.itemViews ) {
+                    view.itemViews.forEach( itemView => {
+                        if( itemView.name !== 'Form' ) return
+                        itemView.clear()
+                    } )
+                } else view.clear()
+            } )
+        }
+    },
 
     getElementValue( el, attribute ) {
         if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' && attribute.range ) ) return el.value

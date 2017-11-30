@@ -18,7 +18,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     pay( giftCardTransactionId ) {
         return this.Stripe.charge( {
             amount: Math.floor( this.body.total * 100 ),
-            metadata: { giftCardTransactionId, name: this.body.name },
+            metadata: { giftCardTransactionId: giftCardTransactionId.toString(), name: this.body.name },
             receipt_email: this.body.email,
             source: {
                 exp_month: this.payment.ccMonth,
@@ -64,4 +64,5 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         if( price !== this.total ) return this.respond( { stopChain: true, code: 500, body: { message: `Doesn't add up.` } } )
     }
+
 } )

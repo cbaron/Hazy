@@ -21,7 +21,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                         heading: 'Contact',
                         prompt: 'Enter your information below.'
                     }
-                }
+                },
+                toastSuccess: 'Gift card successfully purchased!'
             }
         }
 

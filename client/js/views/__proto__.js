@@ -92,7 +92,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     hide( isSlow ) {
-        //views not hiding properly with this
+        //views not hiding consistently with this
         //if( !this.els || this.isHiding ) return Promise.resolve()
 
         this.isHiding = true;

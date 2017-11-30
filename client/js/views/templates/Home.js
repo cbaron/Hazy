@@ -42,7 +42,7 @@ const logos = model.map( item => `<li><img src="/static/img/${item}-logo.jpg"/><
 return `` +
 `<div>
     <div>
-        <img data-src="${ImageSrc('header-image.jpg')}"/>
+        <div data-js="headerImage"></div>
         <div class="overlay hidden side-by-side">
             <div><img src="${ImageSrc('logo-white-discgolf.png')}"/></div>
             <div>
@@ -52,7 +52,7 @@ return `` +
         </div>
     </div>
     <div>
-        <img data-src="${ImageSrc('homepage-giftcard-bg.jpg')}"/>
+        <div data-js="giftCardBgImage"></div>
         <div class="overlay hidden side-by-side">  
             <div class="featured">
                 <div>Holiday</div>
@@ -65,7 +65,7 @@ return `` +
         </div>
     </div>
     <div>
-        <img data-src="${ImageSrc('homepage-byop.jpg')}"/>
+        <div data-js="byopImage"></div>
         <div class="overlay hidden side-by-side">
             <div>
                 <div class="featured">2017 Results</div>
