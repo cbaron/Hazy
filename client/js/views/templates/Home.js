@@ -47,7 +47,7 @@ return `` +
             <div><img src="${ImageSrc('logo-white-discgolf.png')}"/></div>
             <div>
                 <p>Proud to be the Miami Valley's premiere supplier of disc golf gear and accessories since 2002.</p>
-                <button type="button">Visit Our Stores</button>
+                <!--<button type="button">Visit Our Stores</button>-->
             </div>
         </div>
     </div>

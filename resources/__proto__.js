@@ -111,12 +111,11 @@ module.exports = Object.assign( { }, require('../lib/MyObject'), {
     validateUser() {
         const permissions = this.Permissions[ this.path[0] ] && this.Permissions[ this.path[0] ][ this.request.method ]
 
-        if( permissions && ( this.user.id === undefined || this.user.roles.find( role => permissions.has( role ) ) === undefined ) ) {
-            return this.respond( { stopChain: true, code: 401, body: { } } )
-        }
+        if( ( this.user.id === undefined && this.request.method !== 'GET' ) ||
+            permissions && this.user.roles.find( role => permissions.has( role ) ) === undefined
+          ) { return this.respond( { stopChain: true, code: 401, body: { } } ) }
 
         return Promise.resolve()
     }
     
 } )
-
