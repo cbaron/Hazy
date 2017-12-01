@@ -2,6 +2,29 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     Stripe: require('./lib/Stripe'),
 
+    email: require('../lib/Email'),
+
+    notifySales() {
+        const giftCards = this.body.recipients.map( recipient =>
+            `Amount: $${Number.parseFloat( recipient.amount ).toFixed(2)}\n` +
+            `Recipient Name: ${recipient.name}`
+        ).join('\n\n')
+
+        return this.email.send( {
+            to: 'sales@hazyshade',
+            from: 'no-reply@hazyshade.com',
+            subject: `Gift Card(s) Purchased`,
+            body:
+                `A customer has made a gift card purchase with the following details:\n\n` +
+                `Name: ${this.body.name}\n` +
+                `Email: ${this.body.email}\n` +
+                `Phone: ${this.body.phone}\n\n` +
+                `Gift Card(s):\n\n` +
+                `${giftCards}`
+        } )
+        .catch( e => Promise.resolve( console.log( 'Failed to send purchase details to sales.' ) ) )
+    },
+
     POST() {
         return this.getUser()
         .then( () => this.slurpBody() )
@@ -40,7 +63,9 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
             return this.Mongo.PUT( this, giftCardTransactionId )
         } )
+        .then( () => this.notifySales() )
         .then( () => this.respond( { body: { message: 'Great Job!' } } ) )
+
     },
 
     validate() {
@@ -57,8 +82,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     validateTotal() {
         let price = 0
-
-        if( this.hasCCInfo ) price += 3.5
 
         this.body.recipients.forEach( recipient => price += Number.parseFloat( recipient.amount ) )
 

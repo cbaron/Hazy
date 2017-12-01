@@ -37,9 +37,11 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     postRender() {
-        this.ccFee = 3.5
-
         this.views.purchaseGiftCard.on( 'cancel', () => this.reset() )
+
+        this.views.purchaseGiftCard.model.on( 'totalChanged', () =>
+            this.views.purchaseGiftCard.els.total.textContent = this.Format.Currency.format( this.views.purchaseGiftCard.model.git('total') )
+        )
 
         this.recipients = this.views.purchaseGiftCard.views.recipients
 
@@ -58,7 +60,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     reset() {
         this.views.purchaseGiftCard.clear()
-        this.views.purchaseGiftCard.els.total.textContent = this.Format.Currency.format( 0 )
+        this.views.purchaseGiftCard.model.set( 'total', 0 )
 
         return this.recipients.reduceToOne()
         .then( () => this.els.container.scrollIntoView( { behavior: 'smooth' } ) )
@@ -73,11 +75,9 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             return memo + window.parseFloat( val )
         }, 0 )
 
-        total = ( !Number.isNaN( total ) && total > 0 ) ? total += this.ccFee : 0
+        if( Number.isNaN( total ) || total < 0 ) total = 0
 
         this.views.purchaseGiftCard.model.set( 'total', total )
-        this.views.purchaseGiftCard.els.total.textContent = this.Format.Currency.format( total )
-
     }
 
 } )

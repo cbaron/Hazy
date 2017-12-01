@@ -14,7 +14,7 @@ module.exports = {
             name: 'payment',
             label: 'Payment Info',
             klass: 'CreditCard',
-            prompt: 'We currently only accept credit and debit cards. A $3.50 fee will be added to the cost.',
+            prompt: 'We accept credit and debit cards.',
             range: require('./CreditCard').attributes
         }
     ]
