@@ -8,6 +8,7 @@ module.exports = {
             label: 'Recipients',
             range: 'List',
             itemView: 'form',
+            addText: 'Add Recipient',
             prompt: 'You may purchase a gift card (maximum $1000) for one or more people. Enter the info for each recipient and leave a note if you please! Amounts should be entered without dollar sign.',
             itemRange: require('./GiftCardRecipient').attributes
         }, {

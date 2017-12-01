@@ -102,7 +102,8 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
                             delete: true,
                             view: attribute.itemView,
                             range: attribute.itemRange
-                        } )
+                        } ),
+                        templateOptions: { addText: attribute.addText }
                     }
                   :
                     {
