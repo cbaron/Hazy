@@ -1,6 +1,6 @@
 .ByopResults
     margin-top: 7rem
-    padding: 0 6rem
+    padding: 0 2rem
 
     h3, h4
         font-size: 2rem
@@ -16,102 +16,121 @@
             color: $LightGray
             margin-left: .25rem
             font-size: 1.25rem
+            
+    .division-results
+        padding: 0 13%
         
-    .divisions-list
-        justify-content: center
-        flex-wrap: wrap
-        margin-top: 1rem
-        padding: 0 6rem
-        font-weight: bold
+        .divisions-list
+            justify-content: center
+            flex-wrap: wrap
+            margin-top: 1rem
+            padding: 0 6rem
+            font-weight: bold
 
-        li
-            color: $LightGray
-            cursor: pointer
-            
-            &.selected
-                color: $DarkResultsGreen
-            
-            &:not(:first-child)::before
-                content: '|'
-                margin: 0 .35rem
-                
-    .division-result
-        min-width: 500px
-
-        ol
             li
-                color: $DarkResultsGreen
-                display: flex
-                line-height: 1.8rem
-                font-size: .9rem
-                transition: background-color .25s
+                color: $LightGray
+                cursor: pointer
                 
-                &:not(:last-child)
-                    border-bottom: 1px solid white
+                &.selected
+                    color: $DarkResultsGreen
                 
-                &:nth-child(odd)
-                    background-color: $LightResultsGreen
-                &:nth-child(even)
-                    background-color: $CreamResultsGreen
-                
-                >span
-                    text-align: center
-                    padding: 0 1rem
+                &:not(:first-child)::before
+                    content: '|'
+                    margin: 0 .35rem
+            
+        .division-result
+
+            ol
+                li
+                    color: $DarkResultsGreen
+                    display: flex
+                    line-height: 1.8rem
+                    font-size: .9rem
+                    transition: background-color .25s
                     
                     &:not(:last-child)
-                        border-right: 1px solid white
-                    &.place
-                        flex: 1
-                        min-width: 4.75rem
-                        color: #555
-                    &.team
-                        flex: 8
-                        text-align: left
-                    &.round1, &.round2, &.total
-                        flex: 2
-                        color: #555
-                            
-
-                &:hover
-                    background-color: $LightGray
-                    color: $DarkGreen
-
-                    .disc-selection, .shirt-selection
-                        opacity: .5
-                        
-            &.header
-                li
-                    font-weight: 700
-                    background-color: $DarkResultsGreen
-                    color: white
-                    text-align: center
+                        border-bottom: 1px solid white
+                    
+                    &:nth-child(odd)
+                        background-color: $LightResultsGreen
+                    &:nth-child(even)
+                        background-color: $CreamResultsGreen
                     
                     >span
-                        color: white
-                    
+                        text-align: center
+                        padding: 0 1rem
+                        max-width: 10rem
+                        min-width: 2.75rem
+                        
+                        &:not(:last-child)
+                            border-right: 1px solid white
+                        &:not(.team)
+                            flex: 1
+                            color: #555
                         &.team
-                            text-align: center
+                            flex: 3
+                            text-align: left
+                            max-width: 19rem
+
+                    &:hover
+                        background-color: $LightGray
+                        color: $DarkGreen
+
+                        .disc-selection, .shirt-selection
+                            opacity: .5
                             
-        .sponsors
-            padding: 1rem 0          
+                &.header
+                    li
+                        font-weight: 700
+                        background-color: $DarkResultsGreen
+                        color: white
+                        text-align: center
+                        
+                        >span
+                            color: white
+                        
+                            &.team
+                                text-align: center
+                                
+    .ByopSponsors
+        padding: 3rem 0 0      
 
 
 @media (max-width: 767px)
-    .Results
+    .ByopResults
         padding: 1rem
-        overflow-x: auto
 
         h3, h4
             font-size: 1.5rem
             line-height: 1.5rem
-            
-        .divisions-list
-            padding: 0 1rem
-            
-        .division-result
+        .division-results
+            padding: 0
+
+            .divisions-list
+                padding: 0 1rem
+                
+            .division-result
+                ol li
+                    font-size: .75rem
+                
+@media (max-width: 500px)
+    .ByopResults
+        padding: .5rem
+         
+        .division-results .division-result
             ol li
-                font-size: .75rem
+                >span
+                    padding: 0 .25rem
+                    
+                    &.team
+                        max-width: 8rem
                 
 @media (min-width: 1400px)
-    .Results
+    .ByopResults
         margin-top: 9rem
+        .division-results
+            padding: 0 25%
+        
+@media (min-width: 1750px)
+    .ByopResults .division-results
+        padding: 0 30%

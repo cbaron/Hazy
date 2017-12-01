@@ -1,4 +1,4 @@
-module.exports = ( { name, data, sponsors, message } ) => {
+module.exports = ( { name, data } ) => {
     const tableRows = data ? data.map( ( team, i ) =>
         `<li>
             <span class="place">${i + 1}</span>
@@ -22,9 +22,5 @@ return `` +
         </li>
     </ol>
     <ol>${tableRows}</ol>
-    <div data-js="sponsors" class="sponsors">
-        ${message ? `<h4>Give a click to all of our BYOP sponsors</h4>` : ``}
-        <div>${sponsors}</div>
-    </div>
 </div>`
 }

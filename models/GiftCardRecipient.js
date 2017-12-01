@@ -4,15 +4,11 @@ module.exports = {
             name: 'amount',
             label: 'Gift Card Amount',
             range: 'String',
-            metadata: {
-                options: [
-                    { name: '25', label: '$25' },
-                    { name: '50', label: '$50' },
-                    { name: '100', label: '$100' }
-                ]
+            validate: val => {
+                val = Number.parseFloat( val )
+                return val && val > 0 && val <= 1000
             },
-            validate: val => val !== '',
-            error: 'Please choose a gift card amount.'
+            error: 'Please choose a valid gift card amount.'
         }, {
             name: 'name',
             label: 'Recipient Name',

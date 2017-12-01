@@ -45,7 +45,7 @@ module.exports = Object.assign( { }, Super, {
         const viewIndex = this.itemViews.indexOf( view )
 
         this.itemViews.splice( viewIndex, 1 )
-        this.itemViews[ viewIndex - 1 ].els.container.scrollIntoView( { behavior: 'smooth' } )
+        this.els.container.scrollIntoView( { behavior: 'smooth' } )
         this.updateStyle()
 
         this.emit( 'itemDeleted', view )
@@ -69,6 +69,12 @@ module.exports = Object.assign( { }, Super, {
         this.updateStyle()
 
         return this
+    },
+
+    reduceToOne() {
+        return this.itemViews.length > 1
+            ? Promise.all( this.itemViews.slice(1).map( itemView => itemView.delete() ) ).catch( this.Error )
+            : Promise.resolve()
     },
 
     updateStyle() {

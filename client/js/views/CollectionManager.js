@@ -68,7 +68,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         },
         documentView( model ) {
             return {
-                disallowEnterKeySubmission: true,
                 insertion: { el: this.els.mainPanel },
                 model,
                 templateOptions: { heading: model.git('label') || model.git('name') },

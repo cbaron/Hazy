@@ -24,7 +24,7 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
     },
 
     getElementValue( el, attribute ) {
-        if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' && attribute.range ) ) return el.value
+        if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' && attribute.range ) ) return el.value.trim()
 
         /*
         if( attribute.fk ) {
@@ -133,18 +133,18 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
 
         return ( isPost ? this.model.post() : this.model.put( this.model.data[ this.key ], this.omit( this.model.data, [ this.key ] ) ) )
         .then( () => {
-            this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) )
             this.model.data = { }
             this.clear()
-            this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
-            return Promise.resolve()
+            this.onSubmitEnd()
+            return this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
         } )
+        .then( () => Promise.resolve( this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) ) ) )
     },
 
     postRender() {
-        this.inputEls = this.els.container.querySelectorAll('input, select')
+        this.inputEls = this.els.container.querySelectorAll('input, select, textarea')
 
-        if( !this.disallowEnterKeySubmission ) this.els.container.addEventListener( 'keyup', e => { if( e.keyCode === 13 ) this.onSubmitBtnClick() } )
+        if( this.allowEnterKeySubmission ) this.els.container.addEventListener( 'keyup', e => { if( e.keyCode === 13 ) this.onSubmitBtnClick() } )
 
         this.inputEls.forEach( el =>
             el.addEventListener( 'focus', () => el.classList.remove('error') )

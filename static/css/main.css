@@ -357,7 +357,7 @@ button.back-btn:hover {
 }
 .ByopResults {
   margin-top: 7rem;
-  padding: 0 6rem;
+  padding: 0 2rem;
 }
 .ByopResults h3,
 .ByopResults h4 {
@@ -375,139 +375,150 @@ button.back-btn:hover {
   margin-left: 0.25rem;
   font-size: 1.25rem;
 }
-.ByopResults .divisions-list {
+.ByopResults .division-results {
+  padding: 0 13%;
+}
+.ByopResults .division-results .divisions-list {
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 1rem;
   padding: 0 6rem;
   font-weight: bold;
 }
-.ByopResults .divisions-list li {
+.ByopResults .division-results .divisions-list li {
   color: #acacac;
   cursor: pointer;
 }
-.ByopResults .divisions-list li.selected {
+.ByopResults .division-results .divisions-list li.selected {
   color: #0f8141;
 }
-.ByopResults .divisions-list li:not(:first-child)::before {
+.ByopResults .division-results .divisions-list li:not(:first-child)::before {
   content: '|';
   margin: 0 0.35rem;
 }
-.ByopResults .division-result {
-  min-width: 500px;
-}
-.ByopResults .division-result ol li {
+.ByopResults .division-results .division-result ol li {
   color: #0f8141;
   display: flex;
   line-height: 1.8rem;
   font-size: 0.9rem;
   transition: background-color 0.25s;
 }
-.ByopResults .division-result ol li:not(:last-child) {
+.ByopResults .division-results .division-result ol li:not(:last-child) {
   border-bottom: 1px solid #fff;
 }
-.ByopResults .division-result ol li:nth-child(odd) {
+.ByopResults .division-results .division-result ol li:nth-child(odd) {
   background-color: #9ed3ad;
 }
-.ByopResults .division-result ol li:nth-child(even) {
+.ByopResults .division-results .division-result ol li:nth-child(even) {
   background-color: #cfe8d3;
 }
-.ByopResults .division-result ol li >span {
+.ByopResults .division-results .division-result ol li >span {
   text-align: center;
   padding: 0 1rem;
+  max-width: 10rem;
+  min-width: 2.75rem;
 }
-.ByopResults .division-result ol li >span:not(:last-child) {
+.ByopResults .division-results .division-result ol li >span:not(:last-child) {
   border-right: 1px solid #fff;
 }
-.ByopResults .division-result ol li >span.place {
+.ByopResults .division-results .division-result ol li >span:not(.team) {
   flex: 1;
-  min-width: 4.75rem;
   color: #555;
 }
-.ByopResults .division-result ol li >span.team {
-  flex: 8;
+.ByopResults .division-results .division-result ol li >span.team {
+  flex: 3;
   text-align: left;
+  max-width: 19rem;
 }
-.ByopResults .division-result ol li >span.round1,
-.ByopResults .division-result ol li >span.round2,
-.ByopResults .division-result ol li >span.total {
-  flex: 2;
-  color: #555;
-}
-.ByopResults .division-result ol li:hover {
+.ByopResults .division-results .division-result ol li:hover {
   background-color: #acacac;
   color: #158115;
 }
-.ByopResults .division-result ol li:hover .disc-selection,
-.ByopResults .division-result ol li:hover .shirt-selection {
+.ByopResults .division-results .division-result ol li:hover .disc-selection,
+.ByopResults .division-results .division-result ol li:hover .shirt-selection {
   opacity: 0.5;
 }
-.ByopResults .division-result ol.header li {
+.ByopResults .division-results .division-result ol.header li {
   font-weight: 700;
   background-color: #0f8141;
   color: #fff;
   text-align: center;
 }
-.ByopResults .division-result ol.header li >span {
+.ByopResults .division-results .division-result ol.header li >span {
   color: #fff;
 }
-.ByopResults .division-result ol.header li >span.team {
+.ByopResults .division-results .division-result ol.header li >span.team {
   text-align: center;
 }
-.ByopResults .division-result .sponsors {
-  padding: 1rem 0;
+.ByopResults .ByopSponsors {
+  padding: 3rem 0 0;
 }
 @media (max-width: 767px) {
-  .Results {
+  .ByopResults {
     padding: 1rem;
-    overflow-x: auto;
   }
-  .Results h3,
-  .Results h4 {
+  .ByopResults h3,
+  .ByopResults h4 {
     font-size: 1.5rem;
     line-height: 1.5rem;
   }
-  .Results .divisions-list {
+  .ByopResults .division-results {
+    padding: 0;
+  }
+  .ByopResults .division-results .divisions-list {
     padding: 0 1rem;
   }
-  .Results .division-result ol li {
+  .ByopResults .division-results .division-result ol li {
     font-size: 0.75rem;
   }
 }
-@media (min-width: 1400px) {
-  .Results {
-    margin-top: 9rem;
+@media (max-width: 500px) {
+  .ByopResults {
+    padding: 0.5rem;
+  }
+  .ByopResults .division-results .division-result ol li >span {
+    padding: 0 0.25rem;
+  }
+  .ByopResults .division-results .division-result ol li >span.team {
+    max-width: 8rem;
   }
 }
-.ByopSponsors,
-.sponsors {
+@media (min-width: 1400px) {
+  .ByopResults {
+    margin-top: 9rem;
+  }
+  .ByopResults .division-results {
+    padding: 0 25%;
+  }
+}
+@media (min-width: 1750px) {
+  .ByopResults .division-results {
+    padding: 0 30%;
+  }
+}
+.ByopSponsors {
   padding: 1rem 5rem;
 }
-.ByopSponsors h4,
-.sponsors h4 {
+.ByopSponsors h4 {
   padding-bottom: 1rem;
   text-align: center;
 }
-.ByopSponsors >div,
-.sponsors >div {
+.ByopSponsors >div {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
-.ByopSponsors >div .sponsor,
-.sponsors >div .sponsor {
+.ByopSponsors >div .sponsor {
   font-weight: 700;
   margin: 1rem;
   width: 15rem;
 }
-.ByopSponsors >div .sponsor label,
-.sponsors >div .sponsor label {
+.ByopSponsors >div .sponsor label {
   color: #000;
   display: block;
   text-align: center;
 }
-.ByopSponsors >div .sponsor img,
-.sponsors >div .sponsor img {
+.ByopSponsors >div .sponsor img {
   display: block;
   height: 10rem;
   margin: auto;
@@ -941,6 +952,11 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: #4ab74a;
+}
+input.error,
+select.error,
+textarea.error {
+  border-color: #b13325;
 }
 select {
   background-color: #fff;

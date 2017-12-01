@@ -36,7 +36,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             .then( () => this.respond( { stopChain: true, code: 500, body: { message: 'Error processing payment. Please try again.' } } ) )
         } )
         .then( charge => {
-            Object.assign( this.body, { stripeChargeId: charge.id } )
+            Object.assign( this.body, { stripeChargeId: charge.id, isProcessed: false } )
 
             return this.Mongo.PUT( this, giftCardTransactionId )
         } )
