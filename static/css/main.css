@@ -858,7 +858,7 @@ button.back-btn:hover {
   text-align: center;
 }
 .Footer .overlay >div >img {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 .Footer .overlay >div .contact {
   color: #fff;
@@ -875,12 +875,16 @@ button.back-btn:hover {
   height: 2rem;
   margin-top: 0.5rem;
 }
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
+  .Footer .overlay {
+    padding-top: 4%;
+  }
   .Footer .overlay >div >img {
     margin-bottom: 1rem;
   }
   .Footer .overlay >div .contact {
     font-size: 0.9rem;
+    line-height: 1.15rem;
   }
   .Footer .overlay >div .contact a svg {
     height: 1.5rem;
@@ -896,7 +900,10 @@ button.back-btn:hover {
 }
 @media (max-width: 425px) {
   .Footer .overlay {
-    padding: 5% 20%;
+    padding: 3% 25%;
+  }
+  .Footer .overlay >div .contact {
+    font-size: 0.8rem;
   }
 }
 @media (min-width: 1400px) {

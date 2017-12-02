@@ -16,7 +16,7 @@
             text-align: center
 
             >img
-                margin-bottom: 2rem
+                margin-bottom: 1.5rem
              
             .contact
                 color: white
@@ -33,15 +33,18 @@
                         margin-top: .5rem
 
 
-@media (max-width: 900px)
-    .Footer .overlay >div
-        >img
-            margin-bottom: 1rem
-        .contact
-            font-size .9rem
-            
-            a svg
-                height: 1.5rem
+@media (max-width: 1000px)
+    .Footer .overlay
+        padding-top: 4%
+        >div
+            >img
+                margin-bottom: 1rem
+            .contact
+                font-size .9rem
+                line-height: 1.15rem
+                
+                a svg
+                    height: 1.5rem
 
 @media (max-width: 767px)
     .Footer .overlay
@@ -51,7 +54,11 @@
             
 @media (max-width: 425px)
     .Footer .overlay
-        padding: 5% 20%
+        padding: 3% 25%
+        
+        >div
+            .contact
+                font-size: .8rem
 
 @media (min-width: 1400px)
     .Footer .overlay >div
