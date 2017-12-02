@@ -1,7 +1,7 @@
 module.exports = Object.create( Object.assign( {}, require('../../lib/MyObject'), require('events').EventEmitter.prototype, {
 
     constructor() {
-       this.socket = new WebSocket(`ws://${window.location.hostname}:1340` );
+       this.socket = new WebSocket(`wss://${window.location.hostname}:1340` );
 
         this.socket.onopen = event => {
             this.isOpen = true
