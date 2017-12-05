@@ -28,7 +28,7 @@ module.exports = {
             ? `<label>${datum.fk || datum.label}</label>`
             : ``
 
-        value = ( value === undefined ) ? '' : value.toString()
+        value = ( value === undefined ) ? '' : value
 
         if( options ) {
             if( typeof options === 'function' ) { options(); return this.GetSelect( datum, value, [ ], icon, label ) }
@@ -72,6 +72,8 @@ module.exports = {
     },
 
     GetSelect( datum, selectedValue, optionsData, icon, label=`` ) {
+        if( typeof selectedValue === 'boolean' || typeof selectedValue === 'number' ) selectedValue = selectedValue.toString()
+
         const options = optionsData.length ? this.GetSelectOptions( optionsData, selectedValue, { valueAttr: 'name' } ) : ``
 
         return `` +
