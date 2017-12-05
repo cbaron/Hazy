@@ -4,6 +4,10 @@ module.exports = {
         require('./Email'),
         require('./Phone'),
         {
+            name: 'isProcessed',
+            label: 'Is Processed',
+            range: 'Boolean'
+        }, {
             name: 'recipients',
             label: 'Recipients',
             range: 'List',

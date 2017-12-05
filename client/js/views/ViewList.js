@@ -80,6 +80,8 @@ module.exports = Object.assign( { }, Super, {
     updateStyle() {
         if( !this.model.git('delete') ) return
 
+        this.els.container.classList.toggle( 'can-delete', this.itemViews.length > 1 )
+
         this.itemViews.forEach( view =>
             view.els.deleteBtn.classList.toggle( 'hidden', this.itemViews.length === 1 )
         )

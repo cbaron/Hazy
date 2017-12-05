@@ -48,7 +48,8 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
         )
 
         attributes.forEach( attribute => {
-            if( attribute.fk ) { data[ attribute.fk ] = this.views[ attribute.fk ].getSelectedId() }
+            if( this.model.meta[ attribute.name ] && this.model.meta[ attribute.name ].hide ) return
+            else if( attribute.fk ) { data[ attribute.fk ] = this.views[ attribute.fk ].getSelectedId() }
             else if( typeof attribute.range === "object" ) { data[ attribute.name ] = this.views[ attribute.name ].getFormValues() }
             else if( attribute.range === "List" ) {
                 data[ attribute.name ] = attribute.itemView
@@ -67,7 +68,8 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
 
     initTypeAheads() {
         this.model.attributes.forEach( attribute => {
-            if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
+            if( this.model.meta[ attribute.name ] && this.model.meta[ attribute.name ].hide ) return
+            else if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
             else if( typeof attribute.range === "object" ) {
                 if( !this.Views ) this.Views = { }
                     
@@ -127,21 +129,6 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
 
     onDeleteBtnClick() { this.delete().catch( this.Error ) },
 
-    submit() {
-        if( !this.validate( this.getFormValues() ) ) return Promise.resolve( this.onSubmitEnd() )
-
-        const isPost = !Boolean( this.model.data[ this.key ]  )
-
-        return ( isPost ? this.model.post() : this.model.put( this.model.data[ this.key ], this.omit( this.model.data, [ this.key ] ) ) )
-        .then( () => {
-            this.model.data = { }
-            this.clear()
-            this.onSubmitEnd()
-            return this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
-        } )
-        .then( () => Promise.resolve( this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) ) ) )
-    },
-
     postRender() {
         this.inputEls = this.els.container.querySelectorAll('input, select, textarea')
 
@@ -160,6 +147,21 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
         return this 
     },
 
+    submit() {
+        if( !this.validate( this.getFormValues() ) ) return Promise.resolve( this.onSubmitEnd() )
+
+        const isPost = !Boolean( this.model.data[ this.key ]  )
+
+        return ( isPost ? this.model.post() : this.model.put( this.model.data[ this.key ], this.omit( this.model.data, [ this.key ] ) ) )
+        .then( () => {
+            this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) )
+            this.model.data = { }
+            this.clear()
+            this.onSubmitEnd()
+            return this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
+        } )
+    },
+
     validate( data ) {
         let valid = true
 
@@ -174,7 +176,10 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
                         if( itemView.name !== 'Form' ) return
                         if( !itemView.validate( itemView.getFormValues() ) ) valid = false
                     } )
-                } else if( !view.validate( view.getFormValues() ) ) valid = false
+                } else {
+                    if( view.name !== 'Form' ) return
+                    if( !view.validate( view.getFormValues() ) ) valid = false
+                }
             } )
         }
 
