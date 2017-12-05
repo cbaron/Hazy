@@ -25,6 +25,7 @@ module.exports={
 	Literal: require('./views/Literal'),
 	Login: require('./views/Login'),
 	ManageByop: require('./views/ManageByop'),
+	Shop: require('./views/Shop'),
 	Submitter: require('./views/Submitter'),
 	Toast: require('./views/Toast'),
 	ToastMessage: require('./views/ToastMessage'),

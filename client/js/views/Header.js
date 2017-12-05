@@ -34,7 +34,8 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
 
     events: {
         logo: 'click',
-        logout: 'click'
+        logout: 'click',
+        shopBtn: 'click'
     },
 
     insertion() { return { el: document.querySelector('#content'), method: 'insertBefore' } },
@@ -46,6 +47,8 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
     onLogoutClick() {
         this.user.logout()
     },
+
+    onShopBtnClick() { this.emit( 'navigate', 'shop' ) },
 
     onUserLogin() {
         this.els.profileBtn.classList.remove('hidden')        

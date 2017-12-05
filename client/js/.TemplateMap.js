@@ -29,6 +29,7 @@ module.exports={
 	Login: require('./views/templates/Login'),
 	ManageByop: require('./views/templates/ManageByop'),
 	PaidCash: require('./views/templates/PaidCash'),
+	Shop: require('./views/templates/Shop'),
 	Sponsor: require('./views/templates/Sponsor'),
 	Team: require('./views/templates/Team'),
 	Toast: require('./views/templates/Toast'),

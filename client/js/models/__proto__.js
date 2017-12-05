@@ -33,7 +33,7 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
         } )
     },
 
-    git( attr ) { return this.data[ attr ] },
+    git( attr ) { console.log( attr ); console.log( this.data[ attr ] );return this.data[ attr ] },
 
     get( opts={ query:{} } ) {
         if( opts.query || this.pagination ) Object.assign( opts.query, this.pagination )

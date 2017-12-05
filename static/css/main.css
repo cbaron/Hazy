@@ -1106,9 +1106,16 @@ select {
 .Header .nav {
   align-items: center;
   display: flex;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0 1rem;
+  color: #fff;
 }
 .Header .nav >li:first-child {
   flex: 1;
+}
+.Header .nav >li:nth-child(3) {
+  cursor: pointer;
 }
 .Header .nav >li:last-child {
   cursor: pointer;
@@ -1670,6 +1677,10 @@ select {
 .ManageByop button:not(.disabled):hover {
   background-color: #4ab74a;
   color: #fff;
+}
+.Shop {
+  text-align: center;
+  padding: 6rem 2rem 2rem;
 }
 .Toast {
   position: fixed;
