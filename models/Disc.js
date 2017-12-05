@@ -35,11 +35,6 @@ module.exports = {
         name: 'mfgfs',
         range: 'String'
     }, {
-        isNullable: false,
-        label: 'MFGFS',
-        name: 'mfgfs',
-        range: 'String'
-    }, {
         name: 'runDate',
         label: 'Run Date',
         range: 'String'
