@@ -640,9 +640,7 @@ button.back-btn:hover {
 .CollectionManager .main-panel .Form .heading {
   font-weight: bold;
   font-size: 1.5rem;
-}
-.CollectionManager .main-panel .Form.CreditCard {
-  display: none;
+  padding-bottom: 1rem;
 }
 .CollectionManager .main-panel .Form .prompt {
   display: none;
@@ -654,21 +652,22 @@ button.back-btn:hover {
 .CollectionManager .main-panel .form-box form {
   overflow-y: auto;
 }
-.CollectionManager .main-panel .form-box form .form-group {
+.CollectionManager .main-panel .form-box form .form-group:not(.nested) {
   align-items: center;
   display: flex;
   margin: 1rem 0rem;
 }
-.CollectionManager .main-panel .form-box form .form-group >*:first-child {
+.CollectionManager .main-panel .form-box form .form-group:not(.nested) >*:first-child {
   flex: 1;
 }
-.CollectionManager .main-panel .form-box form .form-group >*:nth-child(2) {
-  flex: 4;
+.CollectionManager .main-panel .form-box form .form-group:not(.nested) >*:nth-child(2) {
+  flex: 5;
 }
 .CollectionManager .main-panel .form-box form .form-group.nested {
   flex-direction: column;
   align-items: center;
-  margin: 2rem 0;
+  margin: 3rem 0;
+  padding: 0 3rem;
 }
 .CollectionManager .main-panel .form-box form .form-group.nested >label {
   margin-right: 0;
@@ -677,17 +676,13 @@ button.back-btn:hover {
 .CollectionManager .main-panel .btn-row {
   margin-top: 1rem;
 }
-.CollectionManager .main-panel .Form,
-.CollectionManager .main-panel .Deleter {
+.CollectionManager .main-panel >.Form,
+.CollectionManager .main-panel >.Deleter {
   padding: 1rem 0rem;
 }
-.CollectionManager .main-panel .Form form,
-.CollectionManager .main-panel .Deleter form {
+.CollectionManager .main-panel >.Form >.form-box >form,
+.CollectionManager .main-panel >.Deleter >.form-box >form {
   padding: 2rem 3rem;
-}
-.CollectionManager .main-panel .Form form form,
-.CollectionManager .main-panel .Deleter form form {
-  padding: 1rem 2rem;
 }
 .CreditCard .form-box form >.form-group:nth-child(3)::before {
   content: 'Expiration';
@@ -972,6 +967,9 @@ select {
   -moz-appearance: none;
   appearance: none;
 }
+label {
+  margin-right: 1rem;
+}
 .Form .form-box {
   position: relative;
 }
@@ -1052,13 +1050,7 @@ select {
   margin: 1rem 0;
 }
 .GiftCards .content .Form .form-group.nested {
-  margin-top: 3rem;
-}
-.GiftCards .content .ViewList .Form {
-  padding: 2rem 1.5rem 0;
-}
-.GiftCards .content .ViewList .Form:first-child {
-  padding-top: 0;
+  margin-top: 4rem;
 }
 .GiftCards .content .total {
   font-size: 1.5rem;
@@ -1085,6 +1077,9 @@ select {
   }
   .GiftCards .content {
     padding: 3rem 1.5rem 3rem;
+  }
+  .GiftCards .content .ViewList.can-delete .Form {
+    padding-right: 1.5rem;
   }
 }
 .Header {
@@ -1728,6 +1723,12 @@ select {
 }
 .TypeAhead.hiding-search input {
   padding-left: 0.25rem;
+}
+.ViewList .Form:not(:last-child) {
+  padding: 1rem 0;
+}
+.ViewList .Form:not(:last-child):first-child {
+  padding-top: 0;
 }
 @font-face {
   font-family: 'Roboto';

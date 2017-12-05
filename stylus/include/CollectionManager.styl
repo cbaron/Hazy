@@ -67,9 +67,7 @@
             .heading
                 font-weight: bold
                 font-size: 1.5rem
-            
-            &.CreditCard
-                display: none //todo: exclude credit card fields from cms schema
+                padding-bottom: 1rem
             
             .prompt
                 display: none
@@ -82,19 +80,21 @@
                     overflow-y: auto
 
                     .form-group
-                        align-items: center
-                        display: flex
-                        margin: 1rem 0rem
-                            
-                        >*:first-child
-                            flex: 1
-                        >*:nth-child(2)
-                            flex: 4
+                        &:not(.nested)
+                            align-items: center
+                            display: flex
+                            margin: 1rem 0rem
+                                
+                            >*:first-child
+                                flex: 1
+                            >*:nth-child(2)
+                                flex: 5
                             
                         &.nested
                             flex-direction: column
                             align-items: center
-                            margin: 2rem 0
+                            margin: 3rem 0
+                            padding: 0 3rem
                             
                             >label
                                 margin-right: 0
@@ -103,11 +103,11 @@
             .btn-row
                 margin-top: 1rem   
 
-        .Form, .Deleter
+        >.Form, >.Deleter
             padding: 1rem 0rem
 
-            form
+            >.form-box >form
                 padding: 2rem 3rem
 
-                form
-                    padding: 1rem 2rem
+                //form
+                    //padding: 1rem 2rem*/

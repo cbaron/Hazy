@@ -9,7 +9,7 @@ module.exports = p =>
             <p>Share your disc golf joy by purchasing a Hazy Shade gift card for your friends, family, and loved ones!</p>
         </div>
         <div>
-            <div data-view="form" data-name="purchaseGiftCard"></div>
+            <div data-view="form" data-name="giftCardTransaction"></div>
         </div>
     </div>
 </div>`
