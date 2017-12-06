@@ -14,7 +14,10 @@ module.exports = Object.assign( { }, Super, {
         if( sort && this.collection.data.length !== 1 ) {
             this.collection.sort( this.model.git('sort') )
             let index = this.collection.data.findIndex( datum => datum[this.key] == keyValue )
-            if( index !== -1 ) insertion = { method: 'insertBefore', el: this.els.list.children.item(index) }
+
+            if( index !== -1 ) insertion = this.els.list.children.item(index)
+                ? { method: 'insertBefore', el: this.els.list.children.item( index ) }
+                : { el: this.els.list }
         }
         
         this.updateStyle()

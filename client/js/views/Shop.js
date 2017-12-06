@@ -7,11 +7,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     insertCategories() {
-        console.log( this.model )
-        console.log( this.model.git )
-        console.log( this.model.data )
-        console.log( this.model.git('collections') )
-        console.log( this.Format.GetListItems( this.model.git('collections'), { dataAttr: 'name' } ) )
         this.slurpTemplate( {
             insertion: { el: this.els.categories },
             template: this.Format.GetListItems( this.model.git('collections'), { dataAttr: 'name' } )

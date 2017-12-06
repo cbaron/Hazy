@@ -313,7 +313,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                       ? Promise.resolve( this.model.set( 'currentView', 'documentList' ) )
                       : this.clearCurrentView().then( () => Promise.resolve( this.showDocumentView( document, false ) ) ).catch( this.Catch )
                   )
-            : Promise.resolve( this.model.set( 'currentView', 'documentList' ) )
+                : Promise.resolve( this.model.git('currentView') === 'documentList' ? `` : this.model.set( 'currentView', 'documentList' ) )
         )
     },
 

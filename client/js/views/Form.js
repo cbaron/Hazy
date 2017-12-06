@@ -18,7 +18,10 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
                         if( itemView.name !== 'Form' ) return
                         itemView.clear()
                     } )
-                } else view.clear()
+                } else {
+                    if( view.name !== 'Form' ) return
+                    view.clear()
+                }
             } )
         }
     },
@@ -134,12 +137,12 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
 
         return ( isPost ? this.model.post() : this.model.put( this.model.data[ this.key ], this.omit( this.model.data, [ this.key ] ) ) )
         .then( () => {
+            this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) )
             this.model.data = { }
             this.clear()
             this.onSubmitEnd()
             return this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
         } )
-        .then( () => Promise.resolve( this.emit( isPost ? 'posted' : 'put', Object.assign( {}, this.model.data ) ) ) )
     },
 
     postRender() {
@@ -174,7 +177,10 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
                         if( itemView.name !== 'Form' ) return
                         if( !itemView.validate( itemView.getFormValues() ) ) valid = false
                     } )
-                } else if( !view.validate( view.getFormValues() ) ) valid = false
+                } else {
+                    if( view.name !== 'Form' ) return
+                    if( !view.validate( view.getFormValues() ) ) valid = false
+                }
             } )
         }
 
