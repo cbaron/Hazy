@@ -31,7 +31,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .then( () => this.validate() )
         .then( () => {
             this.payment = this.body.payment
-            this.body = this.omit( this.body, [ 'payment' ] )
+            this.body = this.omit( this.body, [ 'payment', 'total' ] )
 
             return this.Mongo.POST( this )
         } )
@@ -40,7 +40,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     pay( giftCardTransactionId ) {
         return this.Stripe.charge( {
-            amount: Math.floor( this.body.total * 100 ),
+            amount: Math.floor( this.total * 100 ),
             metadata: { giftCardTransactionId: giftCardTransactionId.toString(), name: this.body.name },
             receipt_email: this.body.email,
             source: {

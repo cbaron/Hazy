@@ -13,26 +13,27 @@ module.exports = {
             ? `<div><button class="btn" data-js="previewBtn" type="button">Preview</button><img data-src="${this.ImageSrc( value )}" /></div>`
             : ``
                            
-        const options = datum.metadata ? datum.metadata.options : false
+        const options = datum.range === 'Boolean'
+            ? [ { label: 'True', name: 'true' }, { label: 'False', name: 'false' } ]
+            : datum.metadata
+                ? datum.metadata.options : false
 
-        const icon = datum.metadata
-            ? datum.metadata.icon
-                ? this.GetIcon( datum.metadata.icon )
-                : options
-                    ? this.GetIcon('caret-down')
-                    : ``
+        const icon = datum.metadata && datum.metadata.icon
+            ? this.GetIcon( datum.metadata.icon )
+            : options
+                ? this.GetIcon('caret-down')
+                : ``
+
+        const label = isNested || ( datum.fk || datum.label && !meta.noLabel )
+            ? `<label>${datum.fk || datum.label}</label>`
             : ``
 
         value = ( value === undefined ) ? '' : value
 
         if( options ) {
-            if( typeof options === 'function' ) { options(); return this.GetSelect( datum, value, [ ], icon ) }
-            else if( Array.isArray( options ) ) return this.GetSelect( datum, value, options, icon )
+            if( typeof options === 'function' ) { options(); return this.GetSelect( datum, value, [ ], icon, label ) }
+            else if( Array.isArray( options ) ) return this.GetSelect( datum, value, options, icon, label )
         }
-            
-        const label = isNested || ( datum.fk || datum.label && !meta.noLabel )
-            ? `<label>${datum.fk || datum.label}</label>`
-            : ``
 
         const prompt = datum.prompt ? `<div class="prompt">${datum.prompt}</div>` : ``
 
@@ -56,7 +57,9 @@ module.exports = {
     GetFormFields( data, model={}, meta ) {
         if( !data ) return ``
 
-        return data.map( datum => this.GetFormField( datum, model && model[ datum.name ], meta ) ).join('')
+        return data
+            .filter( datum => meta[ datum.name ] && meta[ datum.name ].hide ? false : true )
+            .map( datum => this.GetFormField( datum, model && model[ datum.name ], meta ) ).join('')
     },
 
     GetIcon( name, opts={ IconDataJs: this.IconDataJs } ) { return Reflect.apply( this.Icons[ name ], this, [ opts ] ) },
@@ -68,13 +71,16 @@ module.exports = {
         } ).join('')
     },
 
-    GetSelect( datum, selectedValue, optionsData, icon ) {
+    GetSelect( datum, selectedValue, optionsData, icon, label=`` ) {
+        if( typeof selectedValue === 'boolean' || typeof selectedValue === 'number' ) selectedValue = selectedValue.toString()
+
         const options = optionsData.length ? this.GetSelectOptions( optionsData, selectedValue, { valueAttr: 'name' } ) : ``
 
         return `` +
         `<div class="form-group">
+            ${label}
             <select data-js="${datum.name}">
-                <option ${!selectedValue ? `selected` : ``} value>${datum.label}</option>
+                <option disabled ${!selectedValue ? `selected` : ``} value>${datum.label}</option>
                 ${options}
             </select>
             ${icon}
