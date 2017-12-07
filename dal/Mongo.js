@@ -17,6 +17,9 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     },
 
     GET( resource ) {
+        console.log( 'GET' )
+        console.log( resource.path )
+        console.log( resource.query )
         if( resource.path.length === 2 ) return this.handleSingleDocument( resource )
         if( resource.query.countOnly ) return this.handleCountOnly( resource )
 

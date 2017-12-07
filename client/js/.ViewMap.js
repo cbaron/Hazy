@@ -11,6 +11,7 @@ module.exports={
 	ByopWaitingListSwap: require('./views/ByopWaitingListSwap'),
 	CollectionManager: require('./views/CollectionManager'),
 	Deleter: require('./views/Deleter'),
+	Discs: require('./views/Discs'),
 	Division: require('./views/Division'),
 	DivisionDropdown: require('./views/DivisionDropdown'),
 	Dragger: require('./views/Dragger'),

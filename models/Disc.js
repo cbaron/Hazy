@@ -4,6 +4,8 @@ module.exports = {
     attributes: Super.createAttributes( [ {
         fk: 'DiscType'
     }, {
+        fk: 'DiscClass'
+    }, {
         isNullable: false,
         itemRange: 'String',
         label: 'Photo Urls',

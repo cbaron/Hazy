@@ -7,7 +7,7 @@ module.exports = {
         fk: 'PlasticType'
     }, {
         isNullable: false,
-        label: 'Desription',
+        label: 'Description',
         name: 'description',
         range: 'Text'
     }, {
