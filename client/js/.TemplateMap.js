@@ -9,6 +9,8 @@ module.exports={
 	ByopSponsors: require('./views/templates/ByopSponsors'),
 	ByopTeamEditor: require('./views/templates/ByopTeamEditor'),
 	ByopWaitingListSwap: require('./views/templates/ByopWaitingListSwap'),
+	Cart: require('./views/templates/Cart'),
+	CartItem: require('./views/templates/CartItem'),
 	CollectionManager: require('./views/templates/CollectionManager'),
 	Deleter: require('./views/templates/Deleter'),
 	Disc: require('./views/templates/Disc'),

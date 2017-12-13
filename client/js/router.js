@@ -13,7 +13,6 @@ module.exports = Object.create( {
     capitalizeFirstLetter: string => string.charAt(0).toUpperCase() + string.slice(1),
 
     initialize() {
-
         this.contentContainer = document.querySelector('#content')
 
         this.ViewFactory.constructor();

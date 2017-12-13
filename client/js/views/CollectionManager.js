@@ -295,6 +295,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         return this
     },
 
+    requiresLogin: true,
+
+    requiresRole: 'admin',
+
     showDocumentView( document ) {
         this.createView(
             'form',

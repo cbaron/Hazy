@@ -59,7 +59,10 @@ module.exports = {
         return data.map( datum => this.GetFormField( datum, model && model[ datum.name ], meta ) ).join('')
     },
 
-    GetIcon( name, opts={ IconDataJs: this.IconDataJs } ) { return Reflect.apply( this.Icons[ name ], this, [ opts ] ) },
+    GetIcon( name, opts={ } ) { 
+        opts = Object.assign( { IconDataJs: this.IconDataJs, name }, opts )
+        return Reflect.apply( this.Icons[ name ], this, [ opts ] )
+    },
 
     GetListItems( items=[], opts={} ) {
         return items.map( item => {

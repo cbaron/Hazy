@@ -8,32 +8,55 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     events: {
-        filters: 'click'
+        filters: 'click',
     },
 
-    insertDiscs() {
-        this.model.get()
-        .then( () => {
-            console.log( this.model.data )
-            this.model.data.forEach( datum =>
-                this.slurpTemplate( {
-                    template: this.Templates.Disc( Object.assign( datum, { ImageSrc: this.Format.ImageSrc } ) ),
-                    insertion: { el: this.els.inventory }
-                } )
-            )
-        })
-        .catch( this.Error )
+    Views: {
+        productResults() {
+            return {
+                events: { addToCartBtn: 'click' },
+                model: Object.create( this.Model ).constructor( {
+                    collection: Object.create( this.Model ).constructor( [ ], { meta: { key: '_id' } } ),
+
+                } ),
+                itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( datum, format ) ),
+                onAddToCartBtnClick( e ) {
+                    const listEl = e.target.closest('li')
+                    if( !listEl ) return
+                    this.emit( 'addToCart', listEl.getAttribute('data-key') )
+                }
+            }
+        }
+    },
+
+    insertDiscs( data ) {
+        data.forEach( datum =>
+            this.Xhr( { resource: 'DiscType', id: datum.DiscType } )
+            .then( doc => {
+                datum.DiscType = doc.label
+
+                const discClass = this.DiscClasses.data.find( klass => klass._id === datum.DiscClass )
+                datum.DiscClass = discClass ? discClass.label : ``
+                datum.price = 5
+                datum.quantity = 1
+                datum.collectionName = 'Disc'
+
+                this.views.productResults.add( datum )
+
+            } )
+            .catch( this.Error )
+        )
     },
 
     insertFilters() {
-        this.model.git('filters').forEach( filter => {
+        this.model.meta.filterCategories.forEach( filter => {
+            this.filters[ filter.name ] = [ ]
             const model = Object.create( this.Model ).constructor( { }, { resource: filter.name } )
 
-            console.log( model )
             model.get()
             .then( () =>
                 this.slurpTemplate( {
-                    template: this.Templates.Filter( { label: filter.label, data: model.data } ),
+                    template: this.Templates.Filter( { name: filter.name, label: filter.label, fk: filter.fk, data: model.data } ),
                     insertion: { el: this.els.filters }
                 } )
             )
@@ -42,25 +65,66 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     onFiltersClick( e ) {
-        console.log( 'onCategoriesClick' )
         if( e.target.tagName !== "INPUT" ) return
 
         const inputEl = e.target,
-              categoryId = inputEl.value
+            filter = inputEl.getAttribute('data-name') || inputEl.getAttribute('data-id'),
+            filterCategory = inputEl.closest('.filter').getAttribute('data-name')
 
-        console.log( inputEl )
-        console.log( categoryId )
-        console.log( inputEl.checked )
+        if( inputEl.checked ) this.filters[ filterCategory ].push( filter )
+        else {
+            const index = this.filters[ filterCategory ].indexOf( filter )
+            this.filters[ filterCategory ].splice( index, 1 )
+        }
 
-        //if( this.markers[ categoryId ] ) this.markers[ categoryId ].forEach( marker => marker.setMap( inputEl.checked ? this.map : null ) )
+        this.update()
+    },
+
+    onNavigation( path ) {
+        this.path = path;
+
+        ( this.isHidden() ? this.show() : Promise.resolve() )
+        .catch( this.Error )
     },
 
     postRender() {
-        console.log( this.model )
-        this.insertFilters()
-        this.insertDiscs()
+        this.filters = { }
+        this.DiscClasses = Object.create( this.Model ).constructor( {}, { resource: 'DiscClass' } )
+
+        Promise.all( [ this.DiscClasses.get(), this.model.get( { storeBy: ['_id'] } ) ] )
+        .then( () => {
+            this.insertFilters()
+            this.insertDiscs( this.model.data )
+        } )
+        .catch( this.Error )
+
+        this.views.productResults.on( 'addToCart', id => {
+            this.user.addToCart( this.model.store['_id'][id] )
+            this.emit( 'navigate', '/shop/cart' )
+        } )
 
         return this
+    },
+
+    update() {
+        this.model.data = [ ]
+        this.els.inventory.innerHTML = ''
+
+        let query = { }
+
+        const queries = Object.keys( this.filters ).reduce( ( memo, key ) => {
+            if( this.filters[ key ].length ) {
+                this.filters[ key ].forEach( filter => memo.push( { [key]: filter } ) )
+            }
+            return memo
+        }, [ ] )
+
+        if( queries.length === 1 ) query = queries[0]
+        else if( queries.length > 1 ) query[ '$or' ] = queries
+ 
+        this.model.get( { query } )
+        .then( () => this.insertDiscs( this.model.data ) )
+        .catch( this.Error )
     }
 
 } )

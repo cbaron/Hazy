@@ -2,12 +2,14 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     attributes: require('../../../models/Disc').attributes,
 
-    data: {
-        filters: [
-            { name: 'DiscClass', label: 'Class' }
-        ]
+    meta: {
+        filterCategories: [
+            { name: 'DiscClass', label: 'Class', fk: true }
+        ] 
     },
 
-    resource: 'Disc'
+    resource: 'Disc',
+
+    storeBy: [ '_id' ]
 
 } )

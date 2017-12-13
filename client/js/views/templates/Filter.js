@@ -1,9 +1,10 @@
 module.exports = p => {
+    const dataAttr = p.fk ? 'id' : 'name'
 
     const checkboxes = p.data.map( datum =>
-        `<li class="${datum.name}">
+        `<li>
             <label>
-                <input data-id="${datum._id}" type="checkbox" value="${datum._id}" />
+                <input data-${dataAttr}="${datum[ dataAttr === 'id' ? '_id' : dataAttr ]}" type="checkbox" />
                 <span>${datum.label}</span>
             </label>
         </li>`

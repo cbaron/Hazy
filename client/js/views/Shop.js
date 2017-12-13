@@ -20,11 +20,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     onNavigation( path ) {
         this.path = path
-        console.log( 'onNavigation' )
-        console.log( path )
 
-        //const key = this.keys.find( key => this.model[ key ].url === path[0] )
-        if( this.model.git('collections').find( collection => collection.name === path[0] ) ) return this.showView( path[0] )
+        if( this.model.git('collections').find( collection => collection.name === path[0] ) || path[0] === 'cart' ) return this.showView( path[0] )
 
         Promise.all( Object.keys( this.views ).map( key => {
             const view = this.views[ key ]
@@ -35,8 +32,9 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     postRender() {
-        this.views = { }
         this.insertCategories()
+
+        this.currentEl = this.els.nav
 
         if( this.path.length > 1 ) this.onNavigation( this.path.slice( 1 ) )
 
@@ -44,9 +42,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     showView( name ) {
-        console.log( 'showView' )
-        console.log( name )
-        return this.hideEl( this.els.nav )
+        return this.hideEl( this.currentEl )
         .then( () => {
             this.views[ name ]
                 ? this.views[ name ].onNavigation( this.path.slice( 1 ) )
@@ -55,6 +51,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         
             this.currentView = this.views[ name ]
             this.currentEl = this.views[ name ].getContainer()
+
             return Promise.resolve()
         } )
         .catch( this.Error )

@@ -17,9 +17,8 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     },
 
     GET( resource ) {
-        console.log( 'GET' )
-        console.log( resource.path )
-        console.log( resource.query )
+        this.checkQueries( resource.query )
+
         if( resource.path.length === 2 ) return this.handleSingleDocument( resource )
         if( resource.query.countOnly ) return this.handleCountOnly( resource )
 
@@ -55,6 +54,15 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         this.routes[ name ] = '__proto__'
         this.collectionNames.push( name )
         this.model[ name ] = this.SuperModel.create()
+    },
+
+    checkQueries( queries ) {
+        Object.keys( queries ).forEach( key => {
+            if( this.collectionNames.includes( key ) ) return queries[ key ] = this.ObjectId( queries[ key ] )
+            else if( Array.isArray( queries[ key ] ) ) {
+                queries[ key ].forEach( query => this.checkQueries( query ) )
+            }
+        } )
     },
 
     forEach( cursorFn, callbackFn, thisVar ) {

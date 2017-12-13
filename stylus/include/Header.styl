@@ -11,25 +11,34 @@ $background = rgba( 0, 0, 0, .7 )
     width: 100%
     z-index: 100
     
-    .logo-white        
+    .logo-white       
         cursor: pointer
         height: 2.75rem
         margin: .25rem
+        
+    .cart
+        cursor: pointer
+        height: 2rem
+        margin: .4rem 1rem 0
 
     .nav 
         align-items: center
         display: flex
         text-transform: uppercase
         font-weight: 700
-        padding: 0 1rem
+        padding: 0 2rem
         color: white
 
         >li
             &:first-child
                 flex: 1
+                text-align: left
                 
             &:nth-child(3)
                 cursor: pointer
+                
+            &:nth-child(4)
+                width: 6rem
            
             &:last-child
                 cursor: pointer
@@ -122,8 +131,8 @@ $background = rgba( 0, 0, 0, .7 )
             margin: 2rem
        
         span  
-            font-size: 1rem
-            margin: 0rem 2rem
+            //font-size: 1rem
+            //margin: 0rem 2rem
 
 @media (min-width: 1400px)
     .Header
@@ -143,5 +152,5 @@ $background = rgba( 0, 0, 0, .7 )
             margin: 2.5rem
        
         span  
-            font-size: 2rem
-            margin: 0rem 4rem
+            //font-size: 2rem
+            //margin: 0rem 4rem

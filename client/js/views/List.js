@@ -117,7 +117,7 @@ module.exports = Object.assign( { }, Super, {
         const buttonsOnRight = this.model.git('delete') ? `<div class="buttons">${this.deleteIcon}</div>` : ``,
             selection = this.toggleSelection ? `<div class="selection"><input data-js="checkbox" type="checkbox" /></div>` : ``
 
-        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum )}</div>${buttonsOnRight}</li>`
+        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum, this.Format )}</div>${buttonsOnRight}</li>`
     },
 
     hide() {

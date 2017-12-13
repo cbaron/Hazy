@@ -570,6 +570,51 @@ button.back-btn:hover {
 .ByopWaitingListSwap .waiting-list >div {
   flex: 3;
 }
+.Cart {
+  padding: 6rem 2rem 2rem;
+  text-align: center;
+}
+.Cart >h2 {
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.Cart >ul {
+  padding: 1rem;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.Cart >ul >li {
+  width: 9rem;
+}
+.Cart >ul >li:first-child {
+  flex: 1;
+  text-align: left;
+}
+.Cart .List .list >li {
+  width: 100%;
+  border-bottom: 1px solid;
+  margin-bottom: 1rem;
+}
+.Cart .List .list >li .cart-item {
+  padding: 1rem;
+}
+.Cart .List .list >li .cart-item >div {
+  width: 9rem;
+}
+.Cart .List .list >li .cart-item >div:nth-child(2) {
+  flex: 1;
+  text-align: left;
+  margin-left: 2rem;
+}
+.Cart >div:last-child {
+  text-align: right;
+}
+.Cart .subtotal {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
 .CollectionManager {
   display: flex;
   height: 100%;
@@ -750,34 +795,34 @@ button.back-btn:hover {
   content: "\2713";
   text-align: center;
 }
-.Discs .content {
+.Discs .inventory {
   display: flex;
 }
-.Discs .content .left-panel {
+.Discs .inventory .left-panel {
   width: 14rem;
   border-right: 1px solid #000;
   padding: 1rem;
 }
-.Discs .content .left-panel .filter {
+.Discs .inventory .left-panel .filter {
   margin: 2rem 0;
   text-align: left;
 }
-.Discs .content .left-panel .filter >div:first-child {
+.Discs .inventory .left-panel .filter >div:first-child {
   font-weight: 700;
   font-size: 1.2rem;
 }
-.Discs .content .left-panel .filter ul {
+.Discs .inventory .left-panel .filter ul {
   overflow-y: auto;
   padding: 0.5rem;
 }
-.Discs .content .left-panel .filter ul li input,
-.Discs .content .left-panel .filter ul li label {
+.Discs .inventory .left-panel .filter ul li input,
+.Discs .inventory .left-panel .filter ul li label {
   cursor: pointer;
 }
-.Discs .content .left-panel .filter ul li input {
+.Discs .inventory .left-panel .filter ul li input {
   display: none;
 }
-.Discs .content .left-panel .filter ul li input + span:before {
+.Discs .inventory .left-panel .filter ul li input + span:before {
   border: 1px solid #7f83a2;
   border-radius: 0.25rem;
   content: "\00a0";
@@ -789,22 +834,15 @@ button.back-btn:hover {
   padding: 0;
   width: 16px;
 }
-.Discs .content .left-panel .filter ul li input:checked + span:before {
+.Discs .inventory .left-panel .filter ul li input:checked + span:before {
   background: #3d404e;
   border-radius: 0.25rem;
   color: #fff;
   content: "\2713";
   text-align: center;
 }
-.Discs .content .main-panel {
+.Discs .inventory .main-panel {
   padding: 1rem;
-}
-.Discs .content .main-panel .inventory {
-  display: flex;
-  flex-wrap: wrap;
-}
-.Discs .content .main-panel .inventory .disc {
-  margin: 1rem;
 }
 .Division {
   padding: 2rem 6rem;
@@ -1202,19 +1240,28 @@ select {
   height: 2.75rem;
   margin: 0.25rem;
 }
+.Header .cart {
+  cursor: pointer;
+  height: 2rem;
+  margin: 0.4rem 1rem 0;
+}
 .Header .nav {
   align-items: center;
   display: flex;
   text-transform: uppercase;
   font-weight: 700;
-  padding: 0 1rem;
+  padding: 0 2rem;
   color: #fff;
 }
 .Header .nav >li:first-child {
   flex: 1;
+  text-align: left;
 }
 .Header .nav >li:nth-child(3) {
   cursor: pointer;
+}
+.Header .nav >li:nth-child(4) {
+  width: 6rem;
 }
 .Header .nav >li:last-child {
   cursor: pointer;
@@ -1298,10 +1345,6 @@ select {
     height: 1rem;
     margin: 2rem;
   }
-  .Header span {
-    font-size: 1rem;
-    margin: 0rem 2rem;
-  }
 }
 @media (min-width: 1400px) {
   .Header {
@@ -1318,10 +1361,6 @@ select {
   .Header .profile {
     height: 2rem;
     margin: 2.5rem;
-  }
-  .Header span {
-    font-size: 2rem;
-    margin: 0rem 4rem;
   }
 }
 .Home {
@@ -1779,10 +1818,10 @@ select {
 }
 .Shop {
   text-align: center;
-  margin-top: 4rem;
 }
 .Shop >div:first-child {
   padding: 2rem;
+  margin-top: 4rem;
 }
 .Shop >div:first-child h4 {
   font-weight: 700;
@@ -1820,6 +1859,13 @@ select {
   color: #fff;
   font-size: 1.5rem;
   line-height: 2rem;
+}
+.Shop .List .list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.Shop .List .list .item {
+  margin: 1rem;
 }
 .Toast {
   position: fixed;

@@ -33,12 +33,12 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
         } )
     },
 
-    git( attr ) { console.log( attr ); console.log( this.data[ attr ] );return this.data[ attr ] },
+    git( attr ) { return this.data[ attr ] },
 
     get( opts={ query:{} } ) {
         if( opts.query || this.pagination ) Object.assign( opts.query, this.pagination )
 
-        return this.Xhr( { method: opts.method || 'get', resource: this.resource, headers: this.headers || {}, qs: opts.query ? JSON.stringify( opts.query ) : undefined } )
+        return this.Xhr( { method: opts.method || 'get', resource: this.resource, id: opts.id, headers: this.headers || {}, qs: opts.query ? JSON.stringify( opts.query ) : undefined } )
         .then( response => {
 
             if( Array.isArray( this.data ) ) {
