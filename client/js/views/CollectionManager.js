@@ -51,7 +51,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         documentList() {
             return {
-                model: Object.create( this.Model ).constructor( {
+                model: Object.create( this.Model ).constructor( Object.assign ( {
                     add: true,
                     collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } ),
                     delete: true,
@@ -60,7 +60,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     skip: 0,
                     sort: { 'label': 1 },
                     scrollPagination: true
-                } ),
+                }, this.model.meta[ this.model.git('currentCollection') ] ) ),
                 events: { list: 'click' },
                 insertion: { el: this.els.mainPanel },
                 itemTemplate: this.Templates.Document
@@ -87,9 +87,15 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     createDocumentModel( data={} ) {
+        const collection = this.model.git('currentCollection')
+
         return Object.create( this.Model ).constructor(
             data,
-            Object.assign( { resource: this.model.git('currentCollection') }, this.views.collections.collection.store.name[ this.model.git('currentCollection') ].schema )
+            Object.assign( {
+                meta: this.model.meta[ collection ] || { },
+                resource: collection },
+                this.views.collections.collection.store.name[ collection ].schema
+            )
         )
     },
 
