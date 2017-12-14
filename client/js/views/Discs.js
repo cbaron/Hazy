@@ -19,7 +19,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                     collection: Object.create( this.Model ).constructor( [ ], { meta: { key: '_id' } } ),
 
                 } ),
-                itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( datum, format ) ),
+                itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( { }, { datum, ImageSrc: format.ImageSrc, Currency: format.Currency, addToCart: true } ) ),
                 onAddToCartBtnClick( e ) {
                     const listEl = e.target.closest('li')
                     if( !listEl ) return

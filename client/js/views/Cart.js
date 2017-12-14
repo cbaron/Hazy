@@ -13,7 +13,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                     collection: Object.create( this.Model ).constructor( [ ], { meta: { key: '_id' } } ),
 
                 } ),
-                itemTemplate: ( datum, format ) => this.Templates.CartItem( Object.assign( datum, format ) ),
+                itemTemplate: ( datum, format ) => this.Templates.CartItem( Object.assign( { datum, ImageSrc: format.ImageSrc, Currency: format.Currency } ) ),
                 onDeleteBtnClick( e ) {
                     const listEl = e.target.closest('li')
                     if( !listEl ) return
@@ -41,16 +41,22 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     fkNames: [ 'DiscClass', 'DiscType' ],
 
     onCheckoutBtnClick() {
+        console.log( 'onCheckoutBtnClick' )
         this.emit( 'navigate', 'checkout' )
     },
 
     postRender() {
+        this.cartPromise = new Promise( resolve => this.resolver = resolve )
+
         this.DiscClass = Object.create( this.Model ).constructor( {}, { resource: 'DiscClass' } )
         this.Disc = Object.create( this.Model ).constructor( {}, { resource: 'Disc' } )
 
         this.DiscClass.get()
         .then( () => this.retrieveCart() )
-        .then( () => this.calculateSubtotal() )
+        .then( () => {
+            this.calculateSubtotal()
+            this.resolver()
+        } )
         .catch( this.Error )
 
         this.user.on( 'addToCart', item => {

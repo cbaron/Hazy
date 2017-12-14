@@ -1,9 +1,12 @@
-module.exports = p =>{
-    //console.log( p )
+module.exports = ( { datum, ImageSrc, Currency, addToCart } ) => {
+    const button = addToCart ? `<button data-js="addToCartBtn" type="button">Add To Cart</button>` : ``
+
 return `` +
 `<div class="disc">
-    <img src="${p.ImageSrc(p.PhotoUrls[0])}" />
-    <div>${p.DiscType}</div>
-    <div>${p.DiscClass}</div>
-    <button data-js="addToCartBtn" type="button">Add To Cart</button>
-</div>`}
+    <img src="${ImageSrc(datum.PhotoUrls[0])}" />
+    <div>${datum.DiscType}</div>
+    <div>${datum.DiscClass}</div>
+    <div>${Currency.format( datum.price ) || '$0.00'}</div>
+    ${button}
+</div>`
+}

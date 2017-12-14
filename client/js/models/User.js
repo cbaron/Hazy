@@ -31,6 +31,12 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
         this.emit('logout')
     },
 
+    resetCart() {
+        this.data.cart = [ ]
+        this.emit('cartReset')
+        return this.setCookie()
+    },
+
     setCookie() {
         return this.Xhr( { method: 'post', resource: 'cart-item', data: JSON.stringify( this.data ) } )
         .catch( this.Error )

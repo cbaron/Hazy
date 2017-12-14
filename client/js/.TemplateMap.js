@@ -11,6 +11,7 @@ module.exports={
 	ByopWaitingListSwap: require('./views/templates/ByopWaitingListSwap'),
 	Cart: require('./views/templates/Cart'),
 	CartItem: require('./views/templates/CartItem'),
+	Checkout: require('./views/templates/Checkout'),
 	CollectionManager: require('./views/templates/CollectionManager'),
 	Deleter: require('./views/templates/Deleter'),
 	Disc: require('./views/templates/Disc'),

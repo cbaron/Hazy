@@ -615,6 +615,37 @@ button.back-btn:hover {
   font-weight: bold;
   margin-bottom: 1rem;
 }
+.Checkout {
+  padding: 6rem 2rem 2rem;
+  text-align: left;
+  width: 100%;
+}
+.Checkout >div {
+  display: flex;
+}
+.Checkout >div .forms {
+  width: 55%;
+}
+.Checkout >div .forms .Form .form-group {
+  margin: 1rem 0;
+}
+.Checkout >div .forms .Form .form-group.nested {
+  margin-top: 3rem;
+}
+.Checkout >div .forms .total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 2rem 0;
+}
+.Checkout >div .summary {
+  width: 45%;
+  text-align: center;
+  margin-top: 3rem;
+}
+.Checkout >div .summary .List .list {
+  display: flex;
+  justify-content: center;
+}
 .CollectionManager {
   display: flex;
   height: 100%;
