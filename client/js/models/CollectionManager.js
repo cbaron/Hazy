@@ -9,6 +9,10 @@ module.exports = Object.create( Object.assign( { }, require('./__proto__'), {
         GiftCardTransaction: {
             add: false,
             payment: { hide: true }
+        },
+        StoreTransaction: {
+            add: false,
+            payment: { hide: true }
         }
     }
 

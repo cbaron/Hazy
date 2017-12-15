@@ -38,6 +38,12 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         .then( results => Promise.resolve( results.length === 1 ? results[0] : results ) )
     },
 
+    PATCH( resource, query={} ) {
+        return this.getDb()
+        .then( db => db.collection( resource.path[0] ).findOneAndUpdate( query, { $set: resource.body } ) )
+        .then( result => Promise.resolve( result ) )
+    },
+
     POST( resource ) {
         return this.getDb()
         .then( db => db.collection( resource.path[0] ).insert( resource.body ) )

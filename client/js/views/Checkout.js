@@ -19,7 +19,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 model: Object.create( this.Model ).constructor( { }, {
                     attributes: require('../../../models/StoreTransaction').attributes,
                     data: { total: 0 },
-                    meta: { noLabel: true },
+                    meta: {
+                        noLabel: true,
+                        isSold: { hide: true }
+                    },
                     resource: 'StoreTransaction'
                 } ),
                 templateOptions() {
@@ -46,32 +49,32 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     calclulateTotal() {
-        const total = this.shoppingCart.reduce( ( memo, item ) => memo + item.price, 0 )
+        const total = this.views.storeTransaction.model.git( 'shoppingCart' ).reduce( ( memo, item ) => {
+            if( item.price ) memo += window.parseFloat( item.price )
+            return memo
+        }, 0 )
+
         this.views.storeTransaction.model.set( 'total', total )
     },
 
     onNavigation( path, data ) {
         ( this.isHidden() ? this.show() : Promise.resolve() )
+        .then( () => this.els.container.scrollIntoView( { behavior: 'smooth' } ) )
         .then( () => this.update( data.shoppingCart ) )
         .catch( this.Error )
     },
 
     postRender() {
-        this.views.storeTransaction.views.shipping.els.name.value = 'Scott Parton'
-        this.views.storeTransaction.views.shipping.els.street.value = '1327 Sumac Dr'
-        this.views.storeTransaction.views.shipping.els.cityStateZip.value = 'Knoxville, TN 37919'
-        this.views.storeTransaction.views.shipping.els.email.value = 'saparton@gmail.com'
-        this.views.storeTransaction.views.shipping.els.phone.value = '7737938718'
-
-        this.views.storeTransaction.views.payment.els.ccName.value = 'Scott Parton'
-        this.views.storeTransaction.views.payment.els.ccNo.value = '4242424242424242'
-        this.views.storeTransaction.views.payment.els.ccMonth.value = '10'
-        this.views.storeTransaction.views.payment.els.ccYear.value = '2020'
-        this.views.storeTransaction.views.payment.els.cvc.value = '666'
-
         this.views.storeTransaction.model.on( 'totalChanged', () =>
             this.views.storeTransaction.els.total.textContent = this.Format.Currency.format( this.views.storeTransaction.model.git('total') )
         )
+
+        this.views.storeTransaction.on( 'error', err => {
+            if( err.item ) {
+                this.user.deleteFromCart( err.item._id )
+                this.emit( 'navigate', '/shop/cart' )
+            }
+        } )
 
         this.update( this.shoppingCart )
 

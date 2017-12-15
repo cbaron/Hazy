@@ -55,6 +55,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     postRender() {
         this.views.giftCardTransaction.on( 'cancel', () => this.reset() )
+        this.views.giftCardTransaction.on( 'error', e => true )
 
         this.views.giftCardTransaction.model.on( 'totalChanged', () =>
             this.views.giftCardTransaction.els.total.textContent = this.Format.Currency.format( this.views.giftCardTransaction.model.git('total') )

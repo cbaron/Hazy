@@ -1,1 +1,1 @@
-db.createCollection("storeTransaction")
+db.createCollection("StoreTransaction")

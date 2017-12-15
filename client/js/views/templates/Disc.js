@@ -6,7 +6,7 @@ return `` +
     <img src="${ImageSrc(datum.PhotoUrls[0])}" />
     <div>${datum.DiscType}</div>
     <div>${datum.DiscClass}</div>
-    <div>${Currency.format( datum.price ) || '$0.00'}</div>
+    <div>${Currency.format( datum.price )}</div>
     ${button}
 </div>`
 }

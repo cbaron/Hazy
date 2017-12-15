@@ -1,6 +1,6 @@
 module.exports = Object.create( Object.assign( {}, require('../../lib/MyObject'), require('events').EventEmitter.prototype, {
 
-    env: require('../../.env'),
+    env: require('../.env'),
 
     constructor() {
         const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss'

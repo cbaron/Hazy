@@ -19,7 +19,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     onNavigation( path ) {
-        this.path = path
+        this.path = path;
 
         if( this.model.git('collections').find( collection => collection.name === path[0] ) || path[0] === 'cart' ) return this.showView( path[0] )
 
@@ -44,7 +44,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
         this.views.cart.on( 'navigate', ( route, opts ) => this.emit( 'navigate', route, opts ) )
 
-        if( this.path.length > 1 ) this.onNavigation( this.path.slice( 1 ) )
+        if( this.path.length > 1 ) this.onNavigation( this.path.slice(1) )
 
         return this
     },

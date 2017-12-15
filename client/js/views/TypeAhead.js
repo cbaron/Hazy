@@ -102,9 +102,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     postRender() {
-        console.log( 'typeahead postRender' )
-        console.log( this.Resource )
-        console.log( this.Type )
         this.Resource = this.Resource
         this.Type = this.Type
         this.resource = this.Resources[ this.Type ]
@@ -115,8 +112,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     setResource( resource ) {
-        console.log( 'setResource' )
-        console.log( resource )
         this.Resource = resource
         this.resource = this.Resources[ this.Type ]
         return this

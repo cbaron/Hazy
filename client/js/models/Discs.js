@@ -4,7 +4,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     meta: {
         filterCategories: [
-            { name: 'DiscClass', label: 'Class', fk: true }
+            { name: 'DiscClass', label: 'Class', fk: 'DiscType' }
         ] 
     },
 

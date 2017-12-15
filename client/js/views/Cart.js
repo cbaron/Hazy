@@ -41,8 +41,13 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     fkNames: [ 'DiscClass', 'DiscType' ],
 
     onCheckoutBtnClick() {
-        console.log( 'onCheckoutBtnClick' )
         this.emit( 'navigate', 'checkout' )
+    },
+
+    onNavigation() {
+        ( this.isHidden() ? this.show() : Promise.resolve() )
+        .then( () => this.els.container.scrollIntoView( { behavior: 'smooth' } ) )
+        .catch( this.Error )
     },
 
     postRender() {
@@ -77,6 +82,12 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             this.calculateSubtotal()
         } )
 
+        this.user.on( 'cartReset', () => {
+            this.views.cartContents.collection.data = [ ]
+            this.views.cartContents.empty()
+            this.calculateSubtotal()
+        } )
+
         return this
     },
 
@@ -101,8 +112,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                     .catch( this.Error )
                 } ) )
                 .then( () => {
+                    response.collectionName = cartDatum.collectionName
                     response.quantity = cartDatum.quantity
-                    response.price = 5
                     return Promise.resolve( this.views.cartContents.add( response ) )
                 } )
                 .catch( this.Error )

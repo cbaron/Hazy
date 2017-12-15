@@ -69,7 +69,6 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
         this.updateCartCount()
 
         this.user.on( 'got', () => {
-            console.log( 'header got' )
             if( this.user.isLoggedIn() ) this.onUserLogin()
             this.updateCartCount()
         } )

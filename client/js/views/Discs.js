@@ -32,12 +32,11 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     insertDiscs( data ) {
         data.forEach( datum =>
             this.Xhr( { resource: 'DiscType', id: datum.DiscType } )
-            .then( doc => {
-                datum.DiscType = doc.label
+            .then( discTypeDoc => {
+                datum.DiscType = discTypeDoc.label
 
-                const discClass = this.DiscClasses.data.find( klass => klass._id === datum.DiscClass )
+                const discClass = this.DiscClasses.data.find( klass => klass._id === discTypeDoc.DiscClass )
                 datum.DiscClass = discClass ? discClass.label : ``
-                datum.price = 5
                 datum.quantity = 1
                 datum.collectionName = 'Disc'
 
@@ -119,8 +118,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             return memo
         }, [ ] )
 
+
         if( queries.length === 1 ) query = queries[0]
         else if( queries.length > 1 ) query[ '$or' ] = queries
+
  
         this.model.get( { query } )
         .then( () => this.insertDiscs( this.model.data ) )

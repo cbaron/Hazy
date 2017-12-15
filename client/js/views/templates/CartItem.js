@@ -7,5 +7,5 @@ module.exports = ( { datum, ImageSrc, Currency } ) =>
         <button data-js="deleteBtn" type="button">Delete</button>
     </div>
     <div class="form-group"><input type="text" data-js="itemQuantity" value="${datum.quantity || '1'}" /></div>
-    <div class="price">${Currency.format( datum.price ) || '$0.00'}</div>
+    <div class="price">${Currency.format( datum.price )}</div>
 </div>`
