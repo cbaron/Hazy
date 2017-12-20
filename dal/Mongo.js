@@ -17,7 +17,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     },
 
     GET( resource ) {
-        this.checkQueries( resource.query )
+        if( !resource.query.aggregate ) this.checkQueries( resource.query )
 
         if( resource.path.length === 2 ) return this.handleSingleDocument( resource )
         if( resource.query.countOnly ) return this.handleCountOnly( resource )
@@ -29,6 +29,8 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
             },
             { skip: 0, limit: 2147483648, sort: { } }
         );
+
+        if( resource.query.aggregate ) return this.aggregate( resource.path[0], resource.query.aggregate, cursorMethods )
        
         return this.forEach(
             db => db.collection( resource.path[0] ).find( resource.query ).skip( cursorMethods.skip ).limit( cursorMethods.limit ).sort( cursorMethods.sort ),
@@ -60,6 +62,16 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         this.routes[ name ] = '__proto__'
         this.collectionNames.push( name )
         this.model[ name ] = this.SuperModel.create()
+    },
+
+    aggregate( collection, pipeline, cursorMethods ) {
+        if( !Object.keys( cursorMethods.sort ).length ) cursorMethods.sort = { _id: 1 }
+
+        return this.forEach(
+            db => db.collection( collection ).aggregate( pipeline ).skip( cursorMethods.skip ).limit( cursorMethods.limit ).sort( cursorMethods.sort ),
+            result => Promise.resolve( result ),
+            this
+        )
     },
 
     checkQueries( queries ) {

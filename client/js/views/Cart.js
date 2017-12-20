@@ -1,8 +1,7 @@
 module.exports = Object.assign( {}, require('./__proto__'), {
 
     Templates: {
-        CartItem: require('./templates/CartItem'),
-        Disc: require('./templates/Disc')
+        CartItem: require('./templates/CartItem')
     },
 
     Views: {

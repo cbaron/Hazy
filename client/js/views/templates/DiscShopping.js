@@ -7,7 +7,9 @@ module.exports = p =>
             <div data-js="filters"></div>
         </div>
         <div class="main-panel">
-            <div data-view="list" data-name="productResults"></div>
+            <div data-view="typeAhead"></div>
+            <div data-view="list" data-name="discTypes"></div>
+            <div class="hidden" data-view="list" data-name="availableDiscs"></div>
         </div>
     </div>
 </div>`

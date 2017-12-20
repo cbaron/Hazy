@@ -1,18 +1,33 @@
-module.exports = p => {
-    const dataAttr = p.fk ? 'id' : 'name'
+module.exports = ( { filter, data } ) => {
+    data = filter.minMax ? [ ] : data
 
-    const checkboxes = p.data.map( datum =>
+    const inputs = filter.minMax
+        ? `<div class="form-group">
+              <input type="text" placeholder="Min" />
+          </div>
+          <div class="form-group">
+              <input type="text" placeholder="Max" />
+          </div>
+          <button type="button" data-js="minMaxBtn">Go</button>`
+        : ``
+
+    const checkboxes = data.length ? data.map( datum => {
+        const dataAttr = filter.fk
+            ? `data-id="${datum._id}"`
+            : `data-name="${datum.name}"`
+
+        return `` +
         `<li>
             <label>
-                <input data-${dataAttr}="${datum[ dataAttr === 'id' ? '_id' : dataAttr ]}" type="checkbox" />
+                <input ${dataAttr} type="checkbox" />
                 <span>${datum.label}</span>
             </label>
         </li>`
-    ).join('')
+    } ).join('') : ``
 
 return `` +
-`<div data-name="${p.name}" class="filter">
-    <div>${p.label}</div>
-    <ul class="filters">${checkboxes}</ul>
+`<div data-name="${filter.name}" class="filter">
+    <div>${filter.label}</div>
+    <ul class="filters">${checkboxes}${inputs}</ul>
 </div>`
 }

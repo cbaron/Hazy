@@ -13,7 +13,7 @@ module.exports={
 	Checkout: require('./views/Checkout'),
 	CollectionManager: require('./views/CollectionManager'),
 	Deleter: require('./views/Deleter'),
-	Discs: require('./views/Discs'),
+	DiscShopping: require('./views/DiscShopping'),
 	Division: require('./views/Division'),
 	DivisionDropdown: require('./views/DivisionDropdown'),
 	Dragger: require('./views/Dragger'),

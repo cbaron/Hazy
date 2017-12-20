@@ -1,7 +1,7 @@
 module.exports = Object.assign( {}, require('./__proto__'), {
 
     Templates: {
-        Disc: require('./templates/Disc')
+        DiscType: require('./templates/DiscType')
     },
 
     Views: {
@@ -10,7 +10,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 model: Object.create( this.Model ).constructor( {
                     collection: Object.create( this.Model ).constructor( [ ], { meta: { key: '_id' } } ),
                 } ),
-                itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( { datum, ImageSrc: format.ImageSrc, Currency: format.Currency } ) )
+                itemTemplate: ( datum, format ) => this.Templates.DiscType( Object.assign( { datum, ImageSrc: format.ImageSrc, Currency: format.Currency } ) )
             }
         },
 

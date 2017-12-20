@@ -93,6 +93,8 @@ module.exports = Object.assign( { }, Super, {
     },
 
     fetch( nextPage=false ) {
+        console.log( 'fetch' )
+        console.log( this.model.git('pageSize') )
         this.fetching = true
         if( nextPage ) this.model.set( 'skip', this.model.git('skip') + this.model.git('pageSize') )
 

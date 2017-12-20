@@ -21,7 +21,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     onNavigation( path ) {
         this.path = path;
 
-        if( this.model.git('collections').find( collection => collection.name === path[0] ) || path[0] === 'cart' ) return this.showView( path[0] )
+        const modelDatum = this.model.git('collections').find( collection => collection.url === path[0] )
+        if( modelDatum ) return this.showView( modelDatum.name )
+
+        if( path[0] === 'cart' ) return this.showView('cart')
 
         if( path[0] === 'checkout' ) {
             return this.views.cart.cartPromise
