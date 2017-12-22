@@ -3,7 +3,7 @@
         display: flex
 
         .left-panel
-            width: 16rem
+            width: 14rem
             border-right: 1px solid black
             padding: 1rem
             
@@ -46,4 +46,40 @@
                             text-align: center
                             
         .main-panel
+            width: 100%
             padding: 1rem
+            
+            .TypeAhead
+                width: 100%
+                margin-bottom: 1rem
+            
+            .List
+                &:nth-child(2)
+                    .list
+                        overflow-y: auto
+                        max-height: 700px
+                
+                &:nth-child(3) 
+                    .list
+                        >li
+                            width: 100%
+                            border-bottom: 1px solid
+                            margin-bottom: 1rem
+                            cursor: default
+                            
+                            img
+                                width: 15rem
+                                
+                            .disc-overview
+                                >div:first-child
+                                    justify-content: space-between
+
+                                    >div
+                                        &:first-child
+                                            flex: 1
+                                        &:nth-child(2)
+                                            flex: 1
+                                        &:nth-child(3)
+                                            flex: 2
+                                            text-align: right
+                                    

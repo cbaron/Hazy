@@ -29,7 +29,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     calculateSubtotal() {
         const collection = this.views.cartContents.collection.data,
             subtotal = collection.reduce( ( memo, datum ) => {
-                if( datum.price && datum.quantity ) memo += ( window.parseFloat( datum.price ) * window.parseFloat( datum.quantity ) )
+                if( !datum.quantity ) datum.quantity = 1
+                memo += ( window.parseFloat( datum.price ) * window.parseFloat( datum.quantity ) )
                 return memo
             }, 0 )
 

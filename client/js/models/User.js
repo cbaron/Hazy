@@ -7,8 +7,9 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
 
         if( itemAlreadyInCart ) {
             //item.quantity = window.parseFloat( item.quantity ) + window.parseFloat( itemAlreadyInCart.quantity )
-        } else this.data.cart.push( { id: item._id, quantity: item.quantity || 1, collectionName: item.collectionName } )
+        } else this.data.cart.push( { id: item._id, quantity: item.quantity || 1, collectionName: item.collectionName || 'Disc' } )
 
+        this.set( 'cart', this.data.cart )
         this.emit( 'addToCart', item )
         return this.setCookie()
     },
@@ -16,6 +17,8 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
     deleteFromCart( id ) {
         const index = this.data.cart.findIndex( datum => datum.id === id )
         this.data.cart.splice( index, 1 )
+
+        this.set( 'cart', this.data.cart )
         this.emit( 'deleteFromCart', id )
         return this.setCookie()        
     },
@@ -32,7 +35,7 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
     },
 
     resetCart() {
-        this.data.cart = [ ]
+        this.set( 'cart', [ ] )
         this.emit('cartReset')
         return this.setCookie()
     },

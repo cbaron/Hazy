@@ -1,7 +1,7 @@
 module.exports = Object.assign( {}, require('./__proto__'), {
 
     Templates: {
-        DiscType: require('./templates/DiscType')
+        CheckoutItem: require('./templates/CheckoutItem')
     },
 
     Views: {
@@ -10,7 +10,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 model: Object.create( this.Model ).constructor( {
                     collection: Object.create( this.Model ).constructor( [ ], { meta: { key: '_id' } } ),
                 } ),
-                itemTemplate: ( datum, format ) => this.Templates.DiscType( Object.assign( { datum, ImageSrc: format.ImageSrc, Currency: format.Currency } ) )
+                itemTemplate: ( datum, format ) => this.Templates.CheckoutItem( Object.assign( { datum, ImageSrc: format.ImageSrc, Currency: format.Currency } ) )
             }
         },
 
@@ -91,6 +91,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     update( cartData ) {
+        if( !Array.isArray( cartData ) ) cartData = [ cartData ]
         this.views.storeTransaction.model.set( 'shoppingCart', cartData )
         this.views.cartContents.update( cartData )
         this.calclulateTotal()

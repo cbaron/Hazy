@@ -2,8 +2,9 @@ module.exports = ( { datum, ImageSrc, Currency } ) =>
 `<div class="cart-item side-by-side">
     <div><img src="${ImageSrc(datum.PhotoUrls[0])}" /></div>
     <div>
-        <div>${datum.DiscType}</div>
-        <div>${datum.DiscClass}</div>
+        <div>${datum.label}</div>
+        <div>Type: ${datum.DiscType}</div>
+        <div>Weight: ${datum.weight}g</div>
         <button data-js="deleteBtn" type="button">Delete</button>
     </div>
     <div class="form-group"><input type="text" data-js="itemQuantity" value="${datum.quantity || '1'}" /></div>

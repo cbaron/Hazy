@@ -10,6 +10,7 @@ module.exports = p =>
             <div data-view="typeAhead"></div>
             <div data-view="list" data-name="discTypes"></div>
             <div class="hidden" data-view="list" data-name="availableDiscs"></div>
+            <div class="hidden" data-view="productDetails"></div>
         </div>
     </div>
 </div>`

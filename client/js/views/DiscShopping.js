@@ -6,42 +6,99 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     model: require('../models/DiscShopping'),
 
     Templates: {
+        Disc: require('./templates/Disc'),
         DiscType: require('./templates/DiscType'),
         Filter: require('./templates/Filter')
     },
 
     events: {
         filters: 'click',
-        minMaxBtn: 'click'
+        minMaxBtn: 'click',
+        views: {
+            availableDiscs: [
+                [ 'discDetailsClicked', function( model ) {
+                    this.emit( 'navigate', model.name, { append: true } )
+                } ]
+            ],
+            productDetails: [
+                [ 'addToCart', function( model ) {
+                    this.user.addToCart( model )
+                    this.emit( 'navigate', '/shop/cart' )
+                } ]
+            ],
+            discTypes: [
+                [ 'paginate', function() {
+                    window.requestAnimationFrame( () => this.views.discTypes.fetch( true, {
+                        query: this.discTypeQuery,
+                        parse: this.views.discTypes.collection.parse
+                    } ).catch(this.Error) )
+                } ],
+                [ 'seeDiscsClicked', function( model ) { this.emit( 'navigate', model.name, { append: true } ) } ]
+            ],
+            typeAhead: [
+                [ 'itemSelected', function( model ) { this.emit( 'navigate', model.name, { append: true } ) } ]
+            ]
+        }
     },
 
     Views: {
         availableDiscs() {
             return {
+                events: {
+                    discDetailsBtn: 'click'                    
+                },
                 model: Object.create( this.Model ).constructor( {
-                    collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: 'Disc' } ),
+                    collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: 'Disc', meta: { key: 'name' } } ),
                 } ),
-                itemTemplate: datum => `<div><img src="${this.Format.ImageSrc( datum.PhotoUrls[0] )}"/></div>`
+                itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( { }, { datum, typeDatum: this.selectedDiscType, ImageSrc: format.ImageSrc, Currency: format.Currency } ) ),
+                templateOptions() {
+                    return { name: 'Available Discs' }
+                },
+                onDiscDetailsBtnClick( e ) {
+                    const listEl = e.target.closest('li')
+                    if( !listEl ) return
+                    this.emit( 'discDetailsClicked', this.collection.store.name[ listEl.getAttribute('data-key') ] )
+                }
             }
         },
         discTypes() {
             return {
                 events: { seeDiscsBtn: 'click' },
                 model: Object.create( this.Model ).constructor( {
-                    collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: 'DiscType' } ),
+                    collection: Object.create( this.DocumentModel ).constructor( { }, {
+                        meta: { key: 'name' },
+                        resource: 'DiscType',
+                        parse: response => {
+                            if( !Array.isArray( response ) ) response = [ response ]
+
+                            return response.map( datum => {
+                                if( datum.DiscClass ) datum.DiscClass = this.DiscClass.store._id[ datum.DiscClass ].label
+                                if( datum.Manufacturer ) datum.Manufacturer = this.Manufacturer.store._id[ datum.Manufacturer ].label
+
+                                datum.collectionName = 'DiscType'
+                            } )
+                        }
+                    } ),
                     scrollPagination: true,
-                    pageSize: 9
+                    pageSize: 9,
+                    skip: 0,
+                    sort: { 'label': 1 }
                 } ),
-                itemTemplate: ( datum, format ) => this.Templates.DiscType( Object.assign( { }, { datum, ImageSrc: format.ImageSrc, Currency: format.Currency, addToCart: true } ) ),
-                /*onAddToCartBtnClick( e ) {
-                    const listEl = e.target.closest('li')
-                    if( !listEl ) return
-                    this.emit( 'addToCart', listEl.getAttribute('data-key') )
-                }*/
+                initializeScrollPagination() {
+                    const listEl = this.els.list
+
+                    this.onScrollPagination = e => {
+                        if( this.fetching ) return
+                        if( ( this.scrollHeight - ( listEl.scrollTop + this.offsetHeight ) ) < 100 ) this.emit('paginate')
+                    }
+
+                    listEl.addEventListener( 'scroll', this.onScrollPagination )
+                },
+                itemTemplate: ( datum, format ) => this.Templates.DiscType( Object.assign( { }, { datum, ImageSrc: format.ImageSrc, Currency: format.Currency } ) ),
                 onSeeDiscsBtnClick( e ) {
                     const listEl = e.target.closest('li')
                     if( !listEl ) return
-                    this.emit( 'seeDiscsClicked', this.collection.store._id[ listEl.getAttribute('data-key') ] )
+                    this.emit( 'seeDiscsClicked', this.collection.store.name[ listEl.getAttribute('data-key') ] )
                 }
             }
         },
@@ -54,22 +111,16 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         }
     },
 
-    insertDiscs( data ) {
-        console.log( 'insertDiscs' )
-        console.log( data )
+    createLookupStage( query, category, pipeline ) {
+        const lookup = { $lookup: {
+            from: category.name,
+            localField: category.name,
+            foreignField: '_id',
+            as: `_${category.name}`
+        } },
+            match = { $match: query }
 
-
-        data.forEach( datum => {
-
-            datum.DiscClass = this.DiscClass.store._id[ datum.DiscClass ].label
-            datum.Manufacturer = this.Manufacturer.store._id[ datum.Manufacturer ].label
-
-            datum.quantity = 1
-            datum.collectionName = 'DiscType'
-
-            this.views.discTypes.add( datum )
-
-        } )
+        pipeline.push( lookup, match )
     },
 
     insertFilters() {
@@ -93,7 +144,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
         const inputEl = e.target,
             filterCategory = inputEl.closest('.filter').getAttribute('data-name'),
-            //filterDatum = this.model.meta.filterCategories.find( datum => datum.name === filterCategory )
             filter = inputEl.getAttribute('data-name') || inputEl.getAttribute('data-id')
 
         if( inputEl.checked ) this.filters[ filterCategory ].push( filter )
@@ -106,23 +156,15 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     onMinMaxBtnClick( e ) {
-        console.log( 'onMinMaxBtnClick' )
-        console.log( e.target )
         const filterEl = e.target.closest('.filter')
         if( !filterEl ) return
 
         const min = filterEl.querySelector('input[placeholder="Min"]').value,
             max = filterEl.querySelector('input[placeholder="Max"]').value
 
-        console.log( filterEl )
-        console.log( min )
-        console.log( max )
-
         let query = { }
         if( min ) query.$gte = min
         if( max ) query.$lte = max
-
-        console.log( query )
 
         this.filters[ filterEl.getAttribute('data-name') ].push( query )
 
@@ -133,49 +175,45 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         this.path = path;
 
         ( this.isHidden() ? this.show() : Promise.resolve() )
+        .then( () => {
+            if( path.length > 1 ) {
+                const discTypeDatum = this.views.discTypes.collection.store.name[ path[1] ];
+                 
+                return ( discTypeDatum
+                    ? Promise.resolve( discTypeDatum )
+                    : this.views.discTypes.collection.get( { parse: this.views.discTypes.collection.parse, query: { aggregate: [
+                        { $match: { name: path[1] } },
+                        { $lookup: {
+                            from: 'Disc',
+                            localField: '_id',
+                            foreignField: 'DiscType',
+                            as: '_Disc'
+                        } },
+                        { $match: { '_Disc.isSold': 'false' } }
+                      ] } } )
+                )
+                .then( discTypeDatum => {
+                    if( path.length === 2 ) return this.showAvailableDiscs( discTypeDatum )
+                    if( path.length > 2 ) {
+                        const discDatum = discTypeDatum._Disc.find( discDatum => discDatum.name === path[2] )
+                        return discDatum ? this.showDiscDetails( discDatum, discTypeDatum ) : Promise.resolve()
+                    }
+                } )
+                .catch( this.Error )
+            }
+
+            return Promise.all( Object.keys( this.views ).map( view => this.views[ view ].hide() ) )
+            .then( () => Promise.all( [ this.views.typeAhead.show(), this.views.discTypes.show(), this.showEl( this.els.leftPanel ) ] ) )
+
+        } )
         .catch( this.Error )
     },
-
-/*let's include filters for disc class, manufacturer, weight
-and add a typeahead where the person can search by disc type label
-It will probably be best to use aggregate functions 
-please run those statements by me so that I can sign off on them
-utilize pagination as is done in the collection manager, let's say 9 at a time for now
-we want to display `DiscTypes` that have discs available for sale 
-don't put the typeahead on the left, include it in the center (edited)
-
-db.Disc.aggregate( [
-    { $match: { weight: { $lte: '160' }, isSold: 'false' } },
-    { $lookup:
-        {
-            from: 'DiscType',
-            localField: 'DiscType',
-            foreignField: '_id',
-            as: 'Disc_Types'
-        }
-    },
-    { $lookup:
-        {
-            from: 'Manufacturer',
-            localField: 'Disc_Types.Manufacturer',
-            foreignField: '_id',
-            as: 'manufacturer'
-        }
-    },
-    { $match: { 'manufacturer.name': 'axiom' } },
-    { $project: { 'Disc_Types': 0, 'manufacturer': 0 } }
-] )
-
-
-*/
 
     postRender() {
         this.filters = { }
 
-        Promise.all( [
-            this.DiscClass.get( { storeBy: ['_id'] } ),
-            this.Manufacturer.get( { storeBy: ['_id'] } ),
-            this.views.discTypes.collection.get( { query: { limit: 9, aggregate: [
+        this.discTypeQuery = {
+            aggregate: [
                 { $lookup: {
                     from: 'Disc',
                     localField: '_id',
@@ -183,59 +221,44 @@ db.Disc.aggregate( [
                     as: '_Disc'
                 } },
                 { $match: { '_Disc.isSold': 'false' } }
-            ] } } )
+            ]
+        }
+
+        Promise.all( [
+            this.DiscClass.get( { storeBy: ['_id'] } ),
+            this.Manufacturer.get( { storeBy: ['_id'] } ),
+            this.views.discTypes.fetch( false, { query: this.discTypeQuery } )
         ] )
         .then( () => {
             this.insertFilters()
-            this.insertDiscs( this.views.discTypes.collection.data )
+            if( this.path.length > 1 ) this.onNavigation( this.path )
         } )
         .catch( this.Error )
-
-        this.views.discTypes.on( 'seeDiscsClicked', datum => {
-            console.log( 'seeDiscsClicked' )
-            console.log( datum )
-            console.log( datum._Disc )
-            this.showAvailableDiscs( datum )
-        } )
-
-        this.views.discTypes.on( 'addToCart', id => {
-            this.user.addToCart( this.model.store['_id'][id] )
-            this.emit( 'navigate', '/shop/cart' )
-        } )
 
         return this
     },
 
     showAvailableDiscs( datum ) {
-        this.views.discTypes.hide()
+        this.selectedDiscType = datum
+
+        return Promise.all( Object.keys( this.views ).map( view => this.views[ view ].hide() ).concat( this.hideEl( this.els.leftPanel ) ) )
         .then( () => this.views.availableDiscs.show() )
-        .then( () => this.views.availableDiscs.update( datum._Disc ) )
+        .then( () => {
+            if( datum._Disc.length ) datum._Disc = datum._Disc.filter( disc => disc.isSold === 'false' )
+            this.views.availableDiscs.els.heading.textContent = `Available ${datum.label} Discs`
+            return Promise.resolve( this.views.availableDiscs.update( datum._Disc ) )
+        } )
+        .catch( this.Error )
+    },
+
+    showDiscDetails( discModel, discTypeModel ) {
+        return Promise.all( Object.keys( this.views ).map( view => this.views[ view ].hide() ).concat( this.hideEl( this.els.leftPanel ) ) )
+        .then( () => this.views.productDetails.show() )
+        .then( () => Promise.resolve( this.views.productDetails.update( discModel, discTypeModel ) ) )
         .catch( this.Error )
     },
 
     update() {
-/*db.DiscType.aggregate( [
-    { $lookup:
-        {
-            from: 'Disc',
-            localField: '_id',
-            foreignField: 'DiscType',
-            as: '_disc'
-        }
-    },
-    { $match: { '_disc.weight': { $gt: '158' }, '_disc.isSold': 'false' } },
-    { $lookup:
-        {
-            from: 'Manufacturer',
-            localField: 'Manufacturer',
-            foreignField: '_id',
-            as: '_manufacturer'
-        }
-    },
-    { $match: { '_manufacturer.name': 'axiom' } }
-] )*/
-        console.log( 'update' )
-        //console.log( this.filters )
         const pipeline = [ { $lookup:
             {
                 from: 'Disc',
@@ -264,38 +287,22 @@ db.Disc.aggregate( [
                 return { [ key ]: val }
             } )
 
-            console.log( 'filters' )
-            console.log( filters )
-
             if( filters.length === 1 ) query = filters[0]
             else if( filters.length > 1 ) query[ '$or' ] = filters
-            //console.log( query )
 
             if( category.collection === 'Disc' ) discMatch.$match.$and.push( query )
-            else this.createLookup( query, category, pipeline )
+            else this.createLookupStage( query, category, pipeline )
         } )
 
-        console.log( pipeline )
+        this.discTypeQuery = { aggregate: pipeline }
 
-        this.views.discTypes.collection.data = [ ]
+        this.views.discTypes.collection.data = { }
+        this.views.discTypes.model.set( 'skip', 0 )
         this.views.discTypes.empty()
  
-        return this.views.discTypes.collection.get( { query: { aggregate: pipeline } } )
-        .then( () => this.insertDiscs( this.views.discTypes.collection.data ) )
+        return this.views.discTypes.fetch( false, { query: this.discTypeQuery } )
+        .then( () => this.views.discTypes.initializeScrollPagination() )
         .catch( this.Error )
-    },
-
-    createLookup( query, category, pipeline ) {
-        const lookup = { $lookup: {
-            from: category.name,
-            localField: category.name,
-            foreignField: '_id',
-            as: `_${category.name}`
-        } },
-            match = { $match: query }
-
-        pipeline.push( lookup, match )
-
     }
 
 } )

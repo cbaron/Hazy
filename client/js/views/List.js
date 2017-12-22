@@ -92,13 +92,14 @@ module.exports = Object.assign( { }, Super, {
         this.emit( 'successfulDrop', { dropped: model, droppedOn: localModel } )
     },
 
-    fetch( nextPage=false ) {
-        console.log( 'fetch' )
-        console.log( this.model.git('pageSize') )
+    fetch( nextPage=false, opts={ query: { } } ) {
         this.fetching = true
         if( nextPage ) this.model.set( 'skip', this.model.git('skip') + this.model.git('pageSize') )
 
-        return this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
+        return this.collection.get( {
+            query: Object.assign( opts.query, { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } ),
+            parse: opts.parse
+        } )
         .then( newData => {
             this.populateList( newData )
             this.fetched = true

@@ -9,17 +9,17 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     insertCategories() {
         this.slurpTemplate( {
             insertion: { el: this.els.categories },
-            template: this.Format.GetListItems( this.model.git('collections'), { dataAttr: 'name' } )
+            template: this.Format.GetListItems( this.model.git('collections'), { dataAttr: 'url' } )
         } )
     },
 
     onCategoriesClick( e ) {
         if( e.target.tagName !== 'LI' ) return
-        this.emit( 'navigate', `/shop/${e.target.getAttribute('data-name')}` )
+        this.emit( 'navigate', e.target.getAttribute('data-url'), { append: true } )
     },
 
     onNavigation( path ) {
-        this.path = path;
+        this.path = path
 
         const modelDatum = this.model.git('collections').find( collection => collection.url === path[0] )
         if( modelDatum ) return this.showView( modelDatum.name )
@@ -56,8 +56,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         return this.hideEl( this.currentEl )
         .then( () => {
             this.views[ name ]
-                ? this.views[ name ].onNavigation( this.path.slice( 1 ), data )
-                : this.views[ name ] = this.factory.create( name, Object.assign( { insertion: { el: this.els.views }, path: this.path.slice(1) }, data ) )
+                ? this.views[ name ].onNavigation( this.path, data )
+                : this.views[ name ] = this.factory.create( name, Object.assign( { insertion: { el: this.els.views }, path: this.path }, data ) )
                     .on( 'navigate', ( route, opts ) => this.emit( 'navigate', route, opts ) )
         
             this.currentView = this.views[ name ]

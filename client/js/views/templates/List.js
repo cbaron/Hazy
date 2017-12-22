@@ -5,7 +5,7 @@ const getHeading = ( p = { opts:{} } ) => {
             ${p.GetIcon('caret-down')}
             <span>${p.opts.name}</span>
           </div>`
-        : `<h3 class="heading">${p.opts.name}</h3>`
+        : `<h3 data-js="heading" class="heading">${p.opts.name}</h3>`
 }
 
 module.exports = function( p ) {

@@ -1,5 +1,4 @@
-module.exports = ( { datum, ImageSrc, Currency, addToCart } ) => {
-    //const button = addToCart ? `<button data-js="addToCartBtn" type="button">Add To Cart</button>` : ``
+module.exports = ( { datum, ImageSrc, Currency } ) => {
 
 return `` +
 `<div class="disc">

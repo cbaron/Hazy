@@ -75,9 +75,7 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
 
         this.user.on( 'logout', () => this.onUserLogout() )
 
-        this.user.on( 'addToCart', () => this.updateCartCount() )
-        this.user.on( 'deleteFromCart', () => this.updateCartCount() )
-        this.user.on( 'cartReset', () => this.updateCartCount() )
+        this.user.on( 'cartChanged', () => this.updateCartCount() )
 
         return this
     },
