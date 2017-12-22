@@ -17,7 +17,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         views: {
             availableDiscs: [
                 [ 'discDetailsClicked', function( model ) {
-                    this.emit( 'navigate', model.name, { append: true } )
+                    this.emit( 'navigate', model.name, { append: true, silent: true } )
+                    this.showDiscDetails( model, this.selectedDiscType )
                 } ]
             ],
             productDetails: [
@@ -33,7 +34,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                         parse: this.views.discTypes.collection.parse
                     } ).catch(this.Error) )
                 } ],
-                [ 'seeDiscsClicked', function( model ) { this.emit( 'navigate', model.name, { append: true } ) } ]
+                [ 'seeDiscsClicked', function( model ) {
+                    this.emit( 'navigate', model.name, { append: true, silent: true } )
+                    this.showAvailableDiscs( model )
+                } ]
             ],
             typeAhead: [
                 [ 'itemSelected', function( model ) { this.emit( 'navigate', model.name, { append: true } ) } ]
