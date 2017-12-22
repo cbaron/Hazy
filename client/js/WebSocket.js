@@ -1,11 +1,9 @@
 module.exports = Object.create( Object.assign( {}, require('../../lib/MyObject'), require('events').EventEmitter.prototype, {
 
-    env: require('../.env'),
-
     constructor() {
         const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss'
 
-       this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${this.env.websocketPort}` );
+       this.socket = new WebSocket(`${protocol}://${window.location.hostname}:1342` );
 
         this.socket.onopen = event => {
             this.isOpen = true
