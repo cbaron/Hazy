@@ -1879,6 +1879,9 @@ label {
   background-color: #4ab74a;
   color: #fff;
 }
+.ManageDrawers {
+  margin-top: 5rem;
+}
 .ProductDetails {
   width: 100%;
 }

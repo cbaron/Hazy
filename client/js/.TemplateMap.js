@@ -37,6 +37,7 @@ module.exports={
 	Literal: require('./views/templates/Literal'),
 	Login: require('./views/templates/Login'),
 	ManageByop: require('./views/templates/ManageByop'),
+	ManageDrawers: require('./views/templates/ManageDrawers'),
 	PaidCash: require('./views/templates/PaidCash'),
 	ProductDetails: require('./views/templates/ProductDetails'),
 	Shop: require('./views/templates/Shop'),
