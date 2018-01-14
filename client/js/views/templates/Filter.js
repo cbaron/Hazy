@@ -14,13 +14,13 @@ module.exports = ( { filter, data } ) => {
     const checkboxes = data.length ? data.map( datum => {
         const dataAttr = filter.fk
             ? `data-id="${datum._id}"`
-            : `data-name="${datum.name}"`
+            : `data-name="${datum.name || datum}"`
 
         return `` +
         `<li>
             <label>
                 <input ${dataAttr} type="checkbox" />
-                <span>${datum.label}</span>
+                <span>${datum.label || datum}</span>
             </label>
         </li>`
     } ).join('') : ``

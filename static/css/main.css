@@ -615,6 +615,59 @@ button.back-btn:hover {
   font-weight: bold;
   margin-bottom: 1rem;
 }
+.CartAddition {
+  position: absolute;
+  top: 0;
+  right: 2rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border: 1px solid;
+  box-shadow: 1px 1px 3px #666, -1px -1px 3px #666;
+  text-align: left;
+}
+.CartAddition h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.CartAddition >div {
+  display: flex;
+}
+.CartAddition >div >div {
+  padding: 0 1rem;
+}
+.CartAddition >div >div:first-child {
+  display: flex;
+}
+.CartAddition .close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 15px;
+  height: 15px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.CartAddition .close-btn:hover::before,
+.CartAddition .close-btn:hover::after {
+  background: #808080;
+}
+.CartAddition .close-btn::before,
+.CartAddition .close-btn::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  margin-top: -1px;
+  background: #000;
+}
+.CartAddition .close-btn::before {
+  transform: rotate(45deg);
+}
+.CartAddition .close-btn::after {
+  transform: rotate(-45deg);
+}
 .Checkout {
   padding: 6rem 2rem 2rem;
   text-align: left;
@@ -825,12 +878,25 @@ button.back-btn:hover {
   text-align: center;
 }
 .DiscShopping .inventory .main-panel {
+  position: relative;
   width: 100%;
   padding: 1rem;
 }
 .DiscShopping .inventory .main-panel .TypeAhead {
   width: 100%;
   margin-bottom: 1rem;
+}
+.DiscShopping .inventory .main-panel .disc-type {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.DiscShopping .inventory .main-panel .disc-type ul li {
+  margin-left: 1rem;
+}
+.DiscShopping .inventory .main-panel .disc-type >button {
+  margin-top: 1rem;
+  height: 2.7rem;
 }
 .DiscShopping .inventory .main-panel .List:nth-child(2) .list {
   overflow-y: auto;
@@ -857,55 +923,6 @@ button.back-btn:hover {
 .DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:nth-child(3) {
   flex: 2;
   text-align: right;
-}
-.Discs .inventory {
-  display: flex;
-}
-.Discs .inventory .left-panel {
-  width: 16rem;
-  border-right: 1px solid #000;
-  padding: 1rem;
-}
-.Discs .inventory .left-panel .filter {
-  margin: 2rem 0;
-  text-align: left;
-}
-.Discs .inventory .left-panel .filter >div:first-child {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
-.Discs .inventory .left-panel .filter ul {
-  overflow-y: auto;
-  padding: 0.5rem;
-}
-.Discs .inventory .left-panel .filter ul li input,
-.Discs .inventory .left-panel .filter ul li label {
-  cursor: pointer;
-}
-.Discs .inventory .left-panel .filter ul li input {
-  display: none;
-}
-.Discs .inventory .left-panel .filter ul li input + span:before {
-  border: 1px solid #7f83a2;
-  border-radius: 0.25rem;
-  content: "\00a0";
-  color: #fff;
-  display: inline-block;
-  font: 16px/1em sans-serif;
-  height: 16px;
-  margin: 0 0.25em 0 0;
-  padding: 0;
-  width: 16px;
-}
-.Discs .inventory .left-panel .filter ul li input:checked + span:before {
-  background: #3d404e;
-  border-radius: 0.25rem;
-  color: #fff;
-  content: "\2713";
-  text-align: center;
-}
-.Discs .inventory .main-panel {
-  padding: 1rem;
 }
 .Division {
   padding: 2rem 6rem;

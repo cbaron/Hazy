@@ -7,11 +7,25 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
 
         if( itemAlreadyInCart ) {
             //item.quantity = window.parseFloat( item.quantity ) + window.parseFloat( itemAlreadyInCart.quantity )
-        } else this.data.cart.push( { id: item._id, quantity: item.quantity || 1, collectionName: item.collectionName || 'Disc' } )
+        } else this.data.cart.push( {
+            id: item._id,
+            quantity: item.quantity || 1,
+            price: item.price || 0,
+            collectionName: item.collectionName || 'Disc'
+        } )
 
         this.set( 'cart', this.data.cart )
+        this.calculateSubtotal()
+
         this.emit( 'addToCart', item )
         return this.setCookie()
+    },
+
+    calculateSubtotal() {
+        this.meta.subtotal = this.git('cart').reduce( ( memo, datum ) => {
+            memo += ( window.parseFloat( datum.price ) * window.parseFloat( datum.quantity ) )
+            return memo
+        }, 0 )
     },
 
     deleteFromCart( id ) {
@@ -19,6 +33,8 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
         this.data.cart.splice( index, 1 )
 
         this.set( 'cart', this.data.cart )
+        this.calculateSubtotal()
+
         this.emit( 'deleteFromCart', id )
         return this.setCookie()        
     },
@@ -36,6 +52,7 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__.js'), {
 
     resetCart() {
         this.set( 'cart', [ ] )
+        this.meta.subtotal = 0
         this.emit('cartReset')
         return this.setCookie()
     },

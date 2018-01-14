@@ -11,6 +11,7 @@ module.exports = p =>
             <div data-view="list" data-name="discTypes"></div>
             <div class="hidden" data-view="list" data-name="availableDiscs"></div>
             <div class="hidden" data-view="productDetails"></div>
+            <div class="hidden" data-view="cartAddition"></div>
         </div>
     </div>
 </div>`

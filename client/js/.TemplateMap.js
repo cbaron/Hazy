@@ -10,6 +10,7 @@ module.exports={
 	ByopTeamEditor: require('./views/templates/ByopTeamEditor'),
 	ByopWaitingListSwap: require('./views/templates/ByopWaitingListSwap'),
 	Cart: require('./views/templates/Cart'),
+	CartAddition: require('./views/templates/CartAddition'),
 	CartItem: require('./views/templates/CartItem'),
 	Checkout: require('./views/templates/Checkout'),
 	CheckoutItem: require('./views/templates/CheckoutItem'),

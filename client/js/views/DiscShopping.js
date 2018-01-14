@@ -21,10 +21,12 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                     this.showDiscDetails( model, this.selectedDiscType )
                 } ]
             ],
+            cartAddition: [
+                [ 'viewCartClicked', function() { this.emit( 'navigate', '/shop/cart' ) } ]
+            ],
             productDetails: [
                 [ 'addToCart', function( model ) {
                     this.user.addToCart( model )
-                    this.emit( 'navigate', '/shop/cart' )
                 } ]
             ],
             discTypes: [
@@ -130,15 +132,16 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     insertFilters() {
         this.model.meta.filterCategories.forEach( filter => {
             this.filters[ filter.name ] = [ ]
-            const model = Object.create( this.Model ).constructor( { }, { resource: filter.name } );
+            const model = filter.fk ? Object.create( this.Model ).constructor( { }, { resource: filter.name } ) : undefined;
 
-            ( filter.minMax ? Promise.resolve() : model.get() )
-            .then( () =>
+            ( model ? model.get() : Promise.resolve() )
+            .then( () => {
+                const data = model ? model.data : this.model.git( filter.name ) ? this.model.git( filter.name ) : [ ]
                 this.slurpTemplate( {
-                    template: this.Templates.Filter( { filter, data: model.data || [ ] } ),
+                    template: this.Templates.Filter( { filter, data } ),
                     insertion: { el: this.els.filters }
                 } )
-            )
+            } )
             .catch( this.Error )
         } )
     },
@@ -229,6 +232,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         }
 
         Promise.all( [
+            this.model.get(),
             this.DiscClass.get( { storeBy: ['_id'] } ),
             this.Manufacturer.get( { storeBy: ['_id'] } ),
             this.views.discTypes.fetch( false, { query: this.discTypeQuery } )
@@ -238,6 +242,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             if( this.path.length > 1 ) this.onNavigation( this.path )
         } )
         .catch( this.Error )
+
+        this.user.on( 'addToCart', item => this.showCartAddition( item ) )
 
         return this
     },
@@ -255,7 +261,13 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         .catch( this.Error )
     },
 
+    showCartAddition( item ) {
+        this.views.cartAddition.update( item, this.selectedDiscType ).show().catch( this.Error )
+    },
+
     showDiscDetails( discModel, discTypeModel ) {
+        this.selectedDiscType = discTypeModel
+
         return Promise.all( Object.keys( this.views ).map( view => this.views[ view ].hide() ).concat( this.hideEl( this.els.leftPanel ) ) )
         .then( () => this.views.productDetails.show() )
         .then( () => Promise.resolve( this.views.productDetails.update( discModel, discTypeModel ) ) )

@@ -26,16 +26,16 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         checkoutBtn: 'click'
     },
 
-    calculateSubtotal() {
-        const collection = this.views.cartContents.collection.data,
+    updateSubtotal() {
+        /*const collection = this.views.cartContents.collection.data,
             subtotal = collection.reduce( ( memo, datum ) => {
                 if( !datum.quantity ) datum.quantity = 1
                 memo += ( window.parseFloat( datum.price ) * window.parseFloat( datum.quantity ) )
                 return memo
-            }, 0 )
+            }, 0 )*/
 
-        this.els.itemCount.textContent = `(${collection.length} items):`
-        this.els.subtotal.textContent = this.Format.Currency.format( subtotal )
+        this.els.itemCount.textContent = `(${this.user.git('cart').length} items):`
+        this.els.subtotal.textContent = this.Format.Currency.format( this.user.meta.subtotal )
     },
 
     fkNames: [ 'DiscClass', 'DiscType' ],
@@ -59,7 +59,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         this.DiscClass.get()
         .then( () => this.retrieveCart() )
         .then( () => {
-            this.calculateSubtotal()
+            this.updateSubtotal()
             this.resolver()
         } )
         .catch( this.Error )
@@ -73,19 +73,19 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 //this.views.cartContents.update( this.views.cartContents.collection.data )
             } else this.views.cartContents.add( item )
 
-            this.calculateSubtotal()
+            this.updateSubtotal()
         } )
 
         this.user.on( 'deleteFromCart', id => {
             const cartDatum = this.views.cartContents.collection.data.find( datum => datum._id === id )
             this.views.cartContents.remove( cartDatum )
-            this.calculateSubtotal()
+            this.updateSubtotal()
         } )
 
         this.user.on( 'cartReset', () => {
             this.views.cartContents.collection.data = [ ]
             this.views.cartContents.empty()
-            this.calculateSubtotal()
+            this.updateSubtotal()
         } )
 
         return this
@@ -93,6 +93,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     retrieveCart() {
         if( !this.user.git('cart') || !this.user.git('cart').length ) return Promise.resolve()
+
+        this.user.calculateSubtotal()
 
         return Promise.all( this.user.git('cart').map( cartDatum => {
             if( !this[ cartDatum.collectionName ] ) this[ cartDatum.collectionName ] = Object.create( this.Model ).constructor( {}, { resource: cartDatum.collectionName } )

@@ -149,6 +149,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
                 return Promise.resolve()
             } )
         } )
+        .then( () => this.saveFilterData() )
     },
 
     getDb() { return this.Client.connect(process.env.MONGODB) },
@@ -156,6 +157,22 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
     removeCollection( collectionName ) {
         this.collectionNames = this.collectionNames.filter( name => name != collectionName )
         delete this.model[ collectionName ]
+    },
+
+    filterFields: {
+        Disc: [ 'color' ]
+    },
+
+    saveFilterData() {
+        this.filters = { }
+
+        return this.getDb()
+        .then( db => Promise.all( Object.keys( this.filterFields ).map( collection => 
+            Promise.all( this.filterFields[ collection ].map( field =>
+                db.collection( collection ).distinct( field )
+                .then( result => Promise.resolve( this.filters[ field ] = result ) )
+            ) )
+        ) ) )
     },
 
     transform( collectionName, document ) {
