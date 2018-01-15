@@ -1,0 +1,55 @@
+.ManageDevices
+    padding: 2rem 6rem
+    .device
+        padding: 2rem
+        justify-content: center
+        
+        >div:first-child
+            flex: 2
+        >select
+            flex: 5
+            
+    .Form
+        height: 100%
+        display: flex
+        flex-direction: column
+        
+        .prompt
+            text-align: center
+            
+        .total
+            margin: 1rem 0 2rem
+            font-weight: bold
+            font-size: 1.3rem
+        
+        .heading
+            font-weight: bold
+            font-size: 1.5rem
+        
+        .form-box
+            display: flex;
+            flex-direction: column;
+
+            form
+                overflow-y: auto
+
+                .form-group
+                    &:not(.nested)
+                        align-items: center
+                        display: flex
+                        margin: 1rem 0rem
+                            
+                        >*:first-child
+                            flex: 1
+                        >*:nth-child(2)
+                            flex: 5
+                        
+                    &.nested
+                        flex-direction: column
+                        align-items: center
+                        margin: 3rem 0 0
+                        padding: 0 3rem
+                        
+                        >label
+                            margin-right: 0
+                            width: 100%

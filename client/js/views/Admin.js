@@ -3,14 +3,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     events: {
         collectionManager: 'click',
         manageByop: 'click',
-        manageDrawers: 'click'
+        manageDevices: 'click'
     },
 
     model: {
 
         manageByop: { label: 'Manage Byop', roles: new Set( [ 'superuser' ] ), url: 'manage-byop' },
 
-        manageDrawers: { label: 'Manage Drawers', roles: new Set( [ 'drawer' ] ), url: 'manage-drawers' },
+        manageDevices: { label: 'Manage Devices', roles: new Set( [ 'device' ] ), url: 'manage-devices' },
 
         collectionManager: {
             label: 'Collection Manager',
@@ -25,8 +25,8 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.emit( 'navigate', `manage-byop`, { append: true } )
     },
 
-    onManageDrawersClick() {
-        this.emit( 'navigate', 'manage-drawers', { append: true } )
+    onManageDevicesClick() {
+        this.emit( 'navigate', 'manage-devices', { append: true } )
     },
 
     onCollectionManagerClick() {

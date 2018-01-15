@@ -1879,8 +1879,63 @@ label {
   background-color: #4ab74a;
   color: #fff;
 }
-.ManageDrawers {
-  margin-top: 5rem;
+.ManageDevices {
+  padding: 2rem 6rem;
+}
+.ManageDevices .device {
+  padding: 2rem;
+  justify-content: center;
+}
+.ManageDevices .device >div:first-child {
+  flex: 2;
+}
+.ManageDevices .device >select {
+  flex: 5;
+}
+.ManageDevices .Form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.ManageDevices .Form .prompt {
+  text-align: center;
+}
+.ManageDevices .Form .total {
+  margin: 1rem 0 2rem;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+.ManageDevices .Form .heading {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.ManageDevices .Form .form-box {
+  display: flex;
+  flex-direction: column;
+}
+.ManageDevices .Form .form-box form {
+  overflow-y: auto;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) {
+  align-items: center;
+  display: flex;
+  margin: 1rem 0rem;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) >*:first-child {
+  flex: 1;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) >*:nth-child(2) {
+  flex: 5;
+}
+.ManageDevices .Form .form-box form .form-group.nested {
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem 0 0;
+  padding: 0 3rem;
+}
+.ManageDevices .Form .form-box form .form-group.nested >label {
+  margin-right: 0;
+  width: 100%;
 }
 .ProductDetails {
   width: 100%;

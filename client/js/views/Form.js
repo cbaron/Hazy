@@ -70,8 +70,9 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
     },
 
     initTypeAheads() {
+        console.log( this.model.meta )
         this.model.attributes.forEach( attribute => {
-            if( this.model.meta[ attribute.name ] && this.model.meta[ attribute.name ].hide ) return
+            if( this.model.meta[ attribute.name || attribute.fk ] && this.model.meta[ attribute.name || attribute.fk ].hide ) return
             else if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
             else if( typeof attribute.range === "object" ) {
                 if( !this.Views ) this.Views = { }
