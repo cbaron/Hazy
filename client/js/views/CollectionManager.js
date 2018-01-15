@@ -70,7 +70,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             return {
                 insertion: { el: this.els.mainPanel },
                 model,
-                templateOptions: { heading: model.git('label') || model.git('name') },
+                templateOptions: { heading: model.git('label') || model.git('name') || model.git('createdAt') },
                 Views: {
                     typeAhead: {
                         Type: 'Document',

@@ -26,11 +26,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 events: { cancelBtn: 'click' },
                 model: Object.create( this.Model ).constructor( { }, {
                     attributes: require('../../../models/DeviceLog').attributes,
-                    data: { total: 0 },
+                    data: {
+                        total: 0,
+                        user: { id: this.user.git('id'), name: this.user.git('name') }
+                    },
                     meta: {
                         user: { hide: true },
                         Device: { hide: true },
-                        Action: { hide: true },
+                        DeviceAction: { hide: true },
                         createdAt: { hide: true },
                         total: { hide: true },
                         denominationValues: {
@@ -60,30 +63,36 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         }
     },
-//{ `User`, `Device`, `Action`, `createdAt`, denominations: { }, `total` }
+
     events: {
         views: {
             devices: [
-                [ 'actionChosen', function( e ) {
-                    const listEl = e.target.closest('li')
-                    if( !listEl ) return
-
-                    const actionDatum = this.DeviceAction.store.name[ e.target.value ],
-                        deviceDatum = this.Device.store.name[ listEl.getAttribute('data-key') ]
-
-                    this.toggleTotal( actionDatum.name )
-
-                    this.views.deviceLog.els.heading.textContent = `${deviceDatum.label}: ${actionDatum.label}`
-                    this.views.deviceLog.model.set( 'user', this.user.git('name') )
-                    this.views.deviceLog.model.set( 'Device', deviceDatum._id )
-                    this.views.deviceLog.model.set( 'DeviceAction', actionDatum._id )
-                    this.views.devices.hide().then( () => this.views.deviceLog.show() ).catch( this.Error )
-                } ]
+                [ 'actionChosen', function( e ) { this.onActionChosen( e ) } ]
             ],
             deviceLog: [
-                [ 'cancelClicked', function() { this.reset() } ]
+                [ 'cancelClicked', function() { this.reset() } ],
+                [ 'posted', function() { this.reset() } ]
             ]
         }
+    },
+
+    onActionChosen( e ) {
+        const listEl = e.target.closest('li')
+        if( !listEl ) return
+
+        this.selectBox = e.target
+
+        const actionDatum = this.DeviceAction.store.name[ e.target.value ],
+            deviceDatum = this.Device.store.name[ listEl.getAttribute('data-key') ]
+
+        this.toggleTotalVisibility( actionDatum.name )
+
+        this.views.deviceLog.els.heading.textContent = `${deviceDatum.label}: ${actionDatum.label}`
+
+        this.views.deviceLog.model.set( 'Device', deviceDatum._id )
+        this.views.deviceLog.model.set( 'DeviceAction', actionDatum._id )
+
+        return this.views.devices.hide().then( () => this.views.deviceLog.show() ).catch( this.Error )
     },
 
     postRender() {
@@ -108,17 +117,18 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     reset() {
         return this.views.deviceLog.hide()
         .then( () => {
+            this.selectBox.selectedIndex = 0
             this.views.deviceLog.clear()
-            this.views.deviceLog.model.data = { total: 0 }
+            this.views.deviceLog.model.data = { user: { id: this.user.git('id'), name: this.user.git('name') } }
+            this.views.deviceLog.model.set( 'total', 0 )
             return this.views.devices.show()
         } )
         .catch( this.Error )
     },
 
-    toggleTotal( action ) { this.views.deviceLog.els.total.parentNode.classList.toggle( 'hidden', action === 'closeDevice' ) },
+    toggleTotalVisibility( action ) { this.views.deviceLog.els.total.parentNode.classList.toggle( 'hidden', action === 'closeDevice' ) },
 
     updateTotal() {
-        console.log( 'updateTotal' )
         const total = Object.keys( this.denominationValues ).reduce( ( memo, key ) => {
             const el = this.denominations.els[ key ]
             if( el.value ) memo += ( window.parseInt( el.value ) * this.denominationValues[ key ] )

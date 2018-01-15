@@ -1,13 +1,25 @@
 .ManageDevices
     padding: 2rem 6rem
+
     .device
         padding: 2rem
         justify-content: center
+        position: relative
         
         >div:first-child
             flex: 2
         >select
             flex: 5
+            
+        .caret-down
+            fill: #a3a3a3
+            stroke: #8b8b8b
+            height: 1rem
+            position: absolute
+            right: 2.7rem
+            top: 2.5rem
+            width: 1rem
+            z-index: 1
             
     .Form
         height: 100%

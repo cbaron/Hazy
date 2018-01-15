@@ -1885,12 +1885,23 @@ label {
 .ManageDevices .device {
   padding: 2rem;
   justify-content: center;
+  position: relative;
 }
 .ManageDevices .device >div:first-child {
   flex: 2;
 }
 .ManageDevices .device >select {
   flex: 5;
+}
+.ManageDevices .device .caret-down {
+  fill: #a3a3a3;
+  stroke: #8b8b8b;
+  height: 1rem;
+  position: absolute;
+  right: 2.7rem;
+  top: 2.5rem;
+  width: 1rem;
+  z-index: 1;
 }
 .ManageDevices .Form {
   height: 100%;

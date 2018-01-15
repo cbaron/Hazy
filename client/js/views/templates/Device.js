@@ -1,6 +1,4 @@
 module.exports = p => {
-
-    console.log( p )
     const options = p.GetSelectOptions( p.actionData, null, { valueAttr: 'name' } )
 
 return `` +
@@ -10,5 +8,6 @@ return `` +
         <option selected disabled>Choose Action</option>
         ${options}
     </select>
+    ${p.GetIcon('caret-down')}
 </div>`
 }

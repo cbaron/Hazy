@@ -3,11 +3,21 @@ module.exports = {
         {
             name: 'user',
             label: 'User',
-            range: 'String'
+            range: [
+                {
+                    name: 'id',
+                    label: 'Id',
+                    range: 'Integer'
+                }, {
+                    name: 'name',
+                    label: 'Name',
+                    range: 'String'
+                }
+            ]
         }, {
             fk: 'Device'
         }, {
-            fk: 'Action'
+            fk: 'DeviceAction'
         }, {
             name: 'denominations',
             label: 'Denominations',
@@ -76,7 +86,7 @@ module.exports = {
         }, {
             name: 'createdAt',
             label: 'CreatedAt',
-            range: 'Date'
+            range: 'DateTime'
         }
     ]
 }
