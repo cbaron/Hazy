@@ -21,6 +21,12 @@
 .Admin .splash >* {
   flex: 1;
 }
+.Admin .splash >div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justfiy-content: center;
+}
 .Admin .splash img {
   display: block;
   margin: 1rem auto;
@@ -33,6 +39,7 @@
   border-radius: 10px;
   box-shadow: 1px 2px 5px #ccc;
   padding: 1.25rem;
+  margin: 0.5rem 0;
   width: 10rem;
   text-transform: uppercase;
 }
@@ -1329,11 +1336,14 @@ label {
 .Header .nav >li:last-child {
   cursor: pointer;
   height: 100%;
-  text-align: right;
+  padding: 0 1rem;
+  margin-left: 1rem;
   transition: background-color 0.5s;
 }
 .Header .nav >li:last-child svg {
   fill: #fff;
+  height: 1.9rem;
+  margin-top: 0.5rem;
 }
 .Header .nav >li:last-child ul {
   background-color: rgba(0,0,0,0.7);
@@ -1342,7 +1352,7 @@ label {
   display: none;
   height: initial;
   position: absolute;
-  top: 5rem;
+  top: 3.1rem;
   right: 0rem;
 }
 .Header .nav >li:last-child ul li {
@@ -1886,6 +1896,7 @@ label {
   padding: 2rem;
   justify-content: center;
   position: relative;
+  cursor: default;
 }
 .ManageDevices .device >div:first-child {
   flex: 2;

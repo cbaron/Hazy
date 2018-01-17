@@ -28,7 +28,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     attributes: require('../../../models/DeviceLog').attributes,
                     data: {
                         total: 0,
-                        user: { id: this.user.git('id'), name: this.user.git('name') }
+                        user: { personId: this.user.git('id'), name: this.user.git('name') }
                     },
                     meta: {
                         user: { hide: true },
@@ -119,7 +119,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         .then( () => {
             this.selectBox.selectedIndex = 0
             this.views.deviceLog.clear()
-            this.views.deviceLog.model.data = { user: { id: this.user.git('id'), name: this.user.git('name') } }
+            this.views.deviceLog.model.data = { user: { personId: this.user.git('id'), name: this.user.git('name') } }
             this.views.deviceLog.model.set( 'total', 0 )
             return this.views.devices.show()
         } )
@@ -135,7 +135,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             return memo
         }, 0 )
 
-        this.views.deviceLog.model.set( 'total', total )
+        this.views.deviceLog.model.set( 'total', total.toFixed(2) )
     }
 
 } )

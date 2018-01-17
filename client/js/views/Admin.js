@@ -10,7 +10,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         manageByop: { label: 'Manage Byop', roles: new Set( [ 'superuser' ] ), url: 'manage-byop' },
 
-        manageDevices: { label: 'Manage Devices', roles: new Set( [ 'device' ] ), url: 'manage-devices' },
+        manageDevices: { label: 'Manage Devices', roles: new Set( [ 'device', 'superuser' ] ), url: 'manage-devices' },
 
         collectionManager: {
             label: 'Collection Manager',

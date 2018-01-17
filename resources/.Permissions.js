@@ -8,6 +8,11 @@ module.exports = {
         POST: AdminOnly
     },
 
+    DeviceLog: {
+        GET: AdminOnly,
+        DELETE: AdminOnly
+    },
+
     Document: {
         PATCH: AdminOnly
     },

@@ -8,8 +8,10 @@ module.exports = Object.create( Object.assign( { }, require('./__proto__'), {
     meta: {
         DeviceLog: {
             add: false,
-            displayBy: 'createdAt'
-        }
+            displayAttr: 'createdAt',
+            sort: { createdAt: -1 },
+            templateOptions: { hideButtonRow: true }
+        },
         GiftCardTransaction: {
             add: false,
             payment: { hide: true }

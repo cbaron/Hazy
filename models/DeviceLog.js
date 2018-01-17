@@ -5,8 +5,8 @@ module.exports = {
             label: 'User',
             range: [
                 {
-                    name: 'id',
-                    label: 'Id',
+                    name: 'personId',
+                    label: 'Person Id',
                     range: 'Integer'
                 }, {
                     name: 'name',

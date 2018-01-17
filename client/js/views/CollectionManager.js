@@ -50,6 +50,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         },
 
         documentList() {
+            const meta = this.model.meta[ this.model.git('currentCollection') ]
             return {
                 model: Object.create( this.Model ).constructor( Object.assign ( {
                     add: true,
@@ -60,17 +61,26 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                     skip: 0,
                     sort: { 'label': 1 },
                     scrollPagination: true
-                }, this.model.meta[ this.model.git('currentCollection') ] ) ),
+                }, meta ) ),
                 events: { list: 'click' },
                 insertion: { el: this.els.mainPanel },
-                itemTemplate: this.Templates.Document
+                itemTemplate: datum => `<div><span>${this.getDisplayAttributeValue( meta, datum )}</span></div>`
             }
         },
         documentView( model ) {
+            const meta = this.model.meta[ model.resource ] || { }
             return {
                 insertion: { el: this.els.mainPanel },
                 model,
-                templateOptions: { heading: model.git('label') || model.git('name') || model.git('createdAt') },
+                templateOptions() {
+                    const heading = meta.displayAttr
+                        ? meta.displayAttr === 'createdAt'
+                            ? this.Format.Moment.utc( model.git('createdAt') ).format('YYYY-MM-DD hh:mm:ss')
+                            : model.git( meta.displayAttr )
+                        : model.git('label') || model.git('name')
+
+                    return Object.assign( { heading }, meta.templateOptions )
+                },
                 Views: {
                     typeAhead: {
                         Type: 'Document',
@@ -81,9 +91,13 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         }
 
     },
-                
-    Templates: {
-        Document: require('./templates/Document')
+
+    getDisplayAttributeValue( meta, datum ) {
+        return meta && meta.displayAttr
+            ? meta.displayAttr === 'createdAt'
+                ? this.Format.Moment.utc( datum[ meta.displayAttr ] ).format('YYYY-MM-DD hh:mm:ss')
+                : datum[ meta.displayAttr ]
+            : datum.label || datum.name
     },
 
     createDocumentModel( data={} ) {
@@ -100,11 +114,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     getDocument( collection, documentName ) {
-        return Object.create( this.Model ).constructor( {}, { resource: this.path[0] } ).get( { query: { name: this.path[1] } } )
+        const meta = this.model.meta[ collection ] || { },
+            queryAttr = meta.displayAttr || 'name'
+
+        return Object.create( this.Model ).constructor( {}, { resource: collection } ).get( { query: { [ queryAttr ]: documentName } } )
     },
     
     clearCurrentView() {
-        const currentView = this.model.git('currentView');
+        const currentView = this.model.git('currentView')
         return ( currentView !== 'documentList'
             ? this.views[ currentView ].delete( { silent: true } )
             : this.views[ currentView ].hide()
@@ -236,7 +253,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     postRender() {
-
         if( this.path.length > 0 ) this.model.set( 'currentCollection', this.path[0] )
 
         this.model.on( 'currentCollectionChanged', () =>
@@ -248,8 +264,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         this.model.on( 'currentViewChanged', () => {
             const currentView = this.model.git('currentView'),
                 currentCollection = this.model.git('currentCollection'),
+                currentCollectionMeta = this.model.meta[ this.model.git('currentCollection') ] || { },
+                displayAttr = currentCollectionMeta.displayAttr || 'name',
                 path = currentView === 'documentView'
-                    ? `/${currentCollection}/${this.views.documentView.model.git('name')}`
+                    ? `/${currentCollection}/${this.views.documentView.model.git( displayAttr )}`
                     : currentView === 'documentList'
                         ? `/${currentCollection}`
                         : ``
@@ -314,16 +332,18 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     showProperView() {
+        const path = this.path
         return (this.views.documentList ? Promise.resolve() : this.createDocumentList( this.model.git('currentCollection'), this.path.length === 2 ? false : true ) )
-        .then( () =>
-            this.path.length === 2
-                ? this.getDocument()
+        .then( () => {
+            return path.length === 2
+                ? this.getDocument( path[0], path[1] )
                   .then( document =>
-                  Array.isArray( document )
+                    Array.isArray( document )
                       ? Promise.resolve( this.model.set( 'currentView', 'documentList' ) )
-                      : this.clearCurrentView().then( () => Promise.resolve( this.showDocumentView( document, false ) ) ).catch( this.Catch )
-                  )
+                      : this.clearCurrentView().then( () => Promise.resolve( this.showDocumentView( document, false ) ) ).catch( this.Error )
+                    )
                 : Promise.resolve( this.model.git('currentView') === 'documentList' ? `` : this.model.set( 'currentView', 'documentList' ) )
+        }
         )
     },
 

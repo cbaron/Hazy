@@ -6,6 +6,8 @@ module.exports = {
       minimumFractionDigits: 2
     } ),
 
+    Moment: require('moment'),
+
     GetFormField( datum, value, meta ) {
         const isNested = datum.range === 'List' || typeof datum.range === 'object'
 
