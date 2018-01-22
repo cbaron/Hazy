@@ -50,9 +50,11 @@ img
     display: block
     width: 100%
     opacity: 1
-    transition: opacity .5s
+    transition: opacity 1s
     &[data-src]
-        opacity: 0  
+        opacity: 0
+    &[data-img-sm]
+        display: none
     
 h1, h2, h3, h4, h5, h6
     margin-top: 0
@@ -165,3 +167,10 @@ textarea
 .Toast
     &.success
         background-color: $HazyGreen
+        
+@media (max-width: 767px)
+    img
+        &[data-img-lg]
+            display: none
+        &[data-img-sm]
+            display: block

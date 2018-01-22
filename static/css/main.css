@@ -2109,10 +2109,13 @@ img {
   display: block;
   width: 100%;
   opacity: 1;
-  transition: opacity 0.5s;
+  transition: opacity 1s;
 }
 img[data-src] {
   opacity: 0;
+}
+img[data-img-sm] {
+  display: none;
 }
 h1,
 h2,
@@ -2219,6 +2222,14 @@ textarea:focus {
 }
 .Toast.success {
   background-color: #4ab74a;
+}
+@media (max-width: 767px) {
+  img[data-img-lg] {
+    display: none;
+  }
+  img[data-img-sm] {
+    display: block;
+  }
 }
 @-moz-keyframes fadeIn {
   from {

@@ -42,7 +42,10 @@ const logos = model.map( item => `<li><img src="/static/img/${item}-logo.jpg"/><
 return `` +
 `<div>
     <div>
-        <div data-js="headerImage"></div>
+        <div>
+            <img data-src="${ImageSrc('header-image.jpg')}" data-img-lg="true" />
+            <img data-src="${ImageSrc('header-image-mobile.jpg')}" data-img-sm="true" />
+        </div>
         <div class="overlay hidden side-by-side">
             <div><img src="${ImageSrc('logo-white-discgolf.png')}"/></div>
             <div>
@@ -52,7 +55,10 @@ return `` +
         </div>
     </div>
     <div>
-        <div data-js="giftCardBgImage"></div>
+        <div>
+            <img data-src="${ImageSrc('homepage-giftcard-bg.jpg')}" data-img-lg="true" />
+            <img data-src="${ImageSrc('homepage-giftcard-bg-mobile.jpg')}" data-img-sm="true" />
+        </div>
         <div class="overlay hidden side-by-side">  
             <div class="featured">
                 <div>Holiday</div>
@@ -65,7 +71,10 @@ return `` +
         </div>
     </div>
     <div>
-        <div data-js="byopImage"></div>
+        <div>
+            <img data-src="${ImageSrc('homepage-byop.jpg')}" data-img-lg="true" />
+            <img data-src="${ImageSrc('homepage-byop-mobile.jpg')}" data-img-sm="true" />
+        </div>
         <div class="overlay hidden side-by-side">
             <div>
                 <div class="featured">2017 Results</div>
