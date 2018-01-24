@@ -766,6 +766,10 @@ button.back-btn:hover {
   display: flex;
   flex-direction: column;
 }
+.CollectionManager .main-panel .Form .List .floating {
+  position: static;
+  margin: 1rem 0 0 1rem;
+}
 .CollectionManager .main-panel .Form .heading {
   font-weight: bold;
   font-size: 1.5rem;
@@ -781,26 +785,40 @@ button.back-btn:hover {
 .CollectionManager .main-panel .form-box form {
   overflow-y: auto;
 }
-.CollectionManager .main-panel .form-box form .form-group:not(.nested) {
-  align-items: center;
+.CollectionManager .main-panel .form-box form .form-group {
   display: flex;
+}
+.CollectionManager .main-panel .form-box form .form-group:not(.nested):not(.has-image) {
+  align-items: center;
   margin: 1rem 0rem;
 }
-.CollectionManager .main-panel .form-box form .form-group:not(.nested) >*:first-child {
+.CollectionManager .main-panel .form-box form .form-group:not(.nested):not(.has-image) >*:first-child {
   flex: 1;
 }
-.CollectionManager .main-panel .form-box form .form-group:not(.nested) >*:nth-child(2) {
+.CollectionManager .main-panel .form-box form .form-group:not(.nested):not(.has-image) >*:nth-child(2) {
   flex: 5;
 }
 .CollectionManager .main-panel .form-box form .form-group.nested {
   flex-direction: column;
-  align-items: center;
   margin: 3rem 0;
   padding: 0 3rem;
 }
 .CollectionManager .main-panel .form-box form .form-group.nested >label {
   margin-right: 0;
   width: 100%;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image {
+  align-items: center;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image >input {
+  flex: 1;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image >div {
+  flex: 1;
+  margin-left: 1rem;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image >div >img {
+  max-width: 20rem;
 }
 .CollectionManager .main-panel .btn-row {
   margin-top: 1rem;
@@ -830,6 +848,9 @@ button.back-btn:hover {
 }
 .Deleter .side-by-side button {
   margin: 0rem 1rem;
+}
+.DiscShopping {
+  padding-top: 5rem;
 }
 .DiscShopping .inventory {
   display: flex;
@@ -918,11 +939,11 @@ button.back-btn:hover {
   flex: 1;
 }
 .DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:nth-child(2) {
-  flex: 1;
-}
-.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:nth-child(3) {
   flex: 2;
-  text-align: right;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:last-child button {
+  display: block;
+  margin: 1rem 0;
 }
 .Division {
   padding: 2rem 6rem;

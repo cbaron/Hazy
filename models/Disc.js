@@ -13,7 +13,7 @@ module.exports = {
         range: 'Boolean'
     }, {
         isNullable: false,
-        itemRange: 'String',
+        itemRange: 'ImageUrl',
         label: 'Photo Urls',
         name: 'PhotoUrls',
         range: 'List'

@@ -10,7 +10,7 @@ module.exports = {
         const isNested = datum.range === 'List' || typeof datum.range === 'object'
 
         const image = datum.range === 'ImageUrl'
-            ? `<div><button class="btn" data-js="previewBtn" type="button">Preview</button><img data-src="${this.ImageSrc( value )}" /></div>`
+            ? `<div><img data-src="${value}" /></div>`
             : ``
                            
         const options = datum.range === 'Boolean'
@@ -46,10 +46,11 @@ module.exports = {
                     : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label || ''}" value="${value}" />`
 
         return `` +
-        `<div class="form-group ${isNested ? 'nested' : ''}">
+        `<div class="form-group ${image ? `has-image` : ``} ${isNested ? 'nested' : ''}">
             ${label}
             ${prompt}
-            ${input} 
+            ${input}
+            ${image}
             ${icon}
         </div>`
     },

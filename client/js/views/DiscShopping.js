@@ -16,6 +16,9 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         minMaxBtn: 'click',
         views: {
             availableDiscs: [
+                [ 'addToCart', function( model ) {
+                    this.user.addToCart( model )
+                } ],
                 [ 'discDetailsClicked', function( model ) {
                     this.emit( 'navigate', model.name, { append: true, silent: true } )
                     this.showDiscDetails( model, this.selectedDiscType )
@@ -51,6 +54,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         availableDiscs() {
             return {
                 events: {
+                    addToCartBtn: 'click',
                     discDetailsBtn: 'click'                    
                 },
                 model: Object.create( this.Model ).constructor( {
@@ -59,6 +63,11 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                 itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( { }, { datum, typeDatum: this.selectedDiscType, ImageSrc: format.ImageSrc, Currency: format.Currency } ) ),
                 templateOptions() {
                     return { name: 'Available Discs' }
+                },
+                onAddToCartBtnClick( e ) {
+                    const listEl = e.target.closest('li')
+                    if( !listEl ) return
+                    this.emit( 'addToCart', this.collection.store.name[ listEl.getAttribute('data-key') ] )
                 },
                 onDiscDetailsBtnClick( e ) {
                     const listEl = e.target.closest('li')
@@ -254,7 +263,16 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         return Promise.all( Object.keys( this.views ).map( view => this.views[ view ].hide() ).concat( this.hideEl( this.els.leftPanel ) ) )
         .then( () => this.views.availableDiscs.show() )
         .then( () => {
-            if( datum._Disc.length ) datum._Disc = datum._Disc.filter( disc => disc.isSold === 'false' )
+            if( datum._Disc.length ) {
+                datum._Disc = datum._Disc
+                    .filter( disc => disc.isSold === 'false' )
+                    .map( disc => {
+                        disc.DiscClass = datum.DiscClass
+                        disc.DiscType = datum.label
+                        return disc
+                    } )
+            }
+
             this.views.availableDiscs.els.heading.textContent = `Available ${datum.label} Discs`
             return Promise.resolve( this.views.availableDiscs.update( datum._Disc ) )
         } )

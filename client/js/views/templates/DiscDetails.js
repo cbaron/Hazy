@@ -1,5 +1,5 @@
 module.exports = ( { discModel, discTypeModel, ImageSrc, Currency } ) => {
-    const thumbnails = discModel.PhotoUrls.map( url => `<li><img src="${ImageSrc( url )}" /></li>` ).join(''),
+    const thumbnails = discModel.PhotoUrls.map( url => `<li><img src="${url}" /></li>` ).join(''),
         flight = discTypeModel.flight
             ? `<ul>Flight Stats
                 <li>Speed: ${discTypeModel.flight.speed}</li>
@@ -12,16 +12,15 @@ module.exports = ( { discModel, discTypeModel, ImageSrc, Currency } ) => {
 return `` +
 `<div class="disc-details">
     <div>
-        <div>${discModel.label}</div>
-        <div data-js="manufacturer">by ${discTypeModel.Manufacturer}</div>
+        <div>${discTypeModel.label}</div>
     </div>
     <div class="side-by-side">
         <div class="image-viewer">
-            <div><img data-js="displayedImage" src="${ImageSrc( discModel.PhotoUrls[0] )}" /></div>
+            <div><img data-js="displayedImage" src="${discModel.PhotoUrls[0]}" /></div>
             <ul data-js="thumbnails" class="side-by-side">${thumbnails}</ul>
         </div>
         <div>
-            <div>${discTypeModel.label}</div>
+            <div>${discTypeModel.Vendor} ${discTypeModel.PlasticType} ${discTypeModel.label}</div>
             <div>Weight: ${discModel.weight}g</div>
             <div>Color: ${discModel.color}</div>
             <div>PLH: ${discModel.plh}</div>

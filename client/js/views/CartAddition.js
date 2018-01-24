@@ -16,8 +16,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     update( item, typeDatum ) {
         this.addedItem = item
 
-        this.els.itemImage.src = this.Format.ImageSrc( item.PhotoUrls[0] )
-        this.els.label.textContent = item.label
+        this.els.itemImage.src = item.PhotoUrls[0]
+        this.els.label.textContent = typeDatum.label
         this.els.manufacturer.textContent = typeDatum.Manufacturer
         this.els.price.textContent = this.Format.Currency.format( item.price )
 

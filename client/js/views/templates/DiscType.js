@@ -10,10 +10,8 @@ module.exports = ( { datum, ImageSrc, Currency } ) => {
 
 return `` +
 `<div class="disc-type">
-    <img src="${ImageSrc(datum._Disc[0].PhotoUrls[0])}" />
-    <div>${datum.label}</div>
-    <div>By ${datum.Manufacturer}</div>
-    <div>Plastic: ${datum.plasticType}</div>
+    <img src="${datum._Disc[0].PhotoUrls[0]}" />
+    <div>${datum.Vendor} ${datum.PlasticType} ${datum.label}</div>
     <div>Class: ${datum.DiscClass}</div>
     <div>${flight}</div>
     <div>${Currency.format( datum.price )} (${datum._Disc.length} in stock)</div>

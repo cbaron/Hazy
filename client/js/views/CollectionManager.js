@@ -66,6 +66,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 itemTemplate: this.Templates.Document
             }
         },
+
         documentView( model ) {
             return {
                 insertion: { el: this.els.mainPanel },
