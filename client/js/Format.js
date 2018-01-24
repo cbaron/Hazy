@@ -6,6 +6,8 @@ module.exports = {
       minimumFractionDigits: 2
     } ),
 
+    Moment: require('moment'),
+
     GetFormField( datum, value, meta ) {
         const isNested = datum.range === 'List' || typeof datum.range === 'object'
 
@@ -59,7 +61,7 @@ module.exports = {
         if( !data ) return ``
 
         return data
-            .filter( datum => meta[ datum.name ] && meta[ datum.name ].hide ? false : true )
+            .filter( datum => meta[ datum.name || datum.fk ] && meta[ datum.name || datum.fk ].hide ? false : true )
             .map( datum => this.GetFormField( datum, model && model[ datum.name ], meta ) ).join('')
     },
 

@@ -21,6 +21,12 @@
 .Admin .splash >* {
   flex: 1;
 }
+.Admin .splash >div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justfiy-content: center;
+}
 .Admin .splash img {
   display: block;
   margin: 1rem auto;
@@ -33,6 +39,7 @@
   border-radius: 10px;
   box-shadow: 1px 2px 5px #ccc;
   padding: 1.25rem;
+  margin: 0.5rem 0;
   width: 10rem;
   text-transform: uppercase;
 }
@@ -1367,11 +1374,14 @@ label {
 .Header .nav >li:last-child {
   cursor: pointer;
   height: 100%;
-  text-align: right;
+  padding: 0 1rem;
+  margin-left: 1rem;
   transition: background-color 0.5s;
 }
 .Header .nav >li:last-child svg {
   fill: #fff;
+  height: 1.9rem;
+  margin-top: 0.5rem;
 }
 .Header .nav >li:last-child ul {
   background-color: rgba(0,0,0,0.7);
@@ -1380,7 +1390,7 @@ label {
   display: none;
   height: initial;
   position: absolute;
-  top: 5rem;
+  top: 3.1rem;
   right: 0rem;
 }
 .Header .nav >li:last-child ul li {
@@ -1916,6 +1926,76 @@ label {
 .ManageByop button:not(.disabled):hover {
   background-color: #4ab74a;
   color: #fff;
+}
+.ManageDevices {
+  padding: 2rem 6rem;
+}
+.ManageDevices .device {
+  padding: 2rem;
+  justify-content: center;
+  position: relative;
+  cursor: default;
+}
+.ManageDevices .device >div:first-child {
+  flex: 2;
+}
+.ManageDevices .device >select {
+  flex: 5;
+}
+.ManageDevices .device .caret-down {
+  fill: #a3a3a3;
+  stroke: #8b8b8b;
+  height: 1rem;
+  position: absolute;
+  right: 2.7rem;
+  top: 2.5rem;
+  width: 1rem;
+  z-index: 1;
+}
+.ManageDevices .Form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.ManageDevices .Form .prompt {
+  text-align: center;
+}
+.ManageDevices .Form .total {
+  margin: 1rem 0 2rem;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+.ManageDevices .Form .heading {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.ManageDevices .Form .form-box {
+  display: flex;
+  flex-direction: column;
+}
+.ManageDevices .Form .form-box form {
+  overflow-y: auto;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) {
+  align-items: center;
+  display: flex;
+  margin: 1rem 0rem;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) >*:first-child {
+  flex: 1;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) >*:nth-child(2) {
+  flex: 5;
+}
+.ManageDevices .Form .form-box form .form-group.nested {
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem 0 0;
+  padding: 0 3rem;
+}
+.ManageDevices .Form .form-box form .form-group.nested >label {
+  margin-right: 0;
+  width: 100%;
 }
 .ProductDetails {
   width: 100%;

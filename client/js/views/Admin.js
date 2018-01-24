@@ -3,11 +3,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     events: {
         collectionManager: 'click',
         manageByop: 'click',
+        manageDevices: 'click'
     },
 
     model: {
 
         manageByop: { label: 'Manage Byop', roles: new Set( [ 'superuser' ] ), url: 'manage-byop' },
+
+        manageDevices: { label: 'Manage Devices', roles: new Set( [ 'device', 'superuser' ] ), url: 'manage-devices' },
 
         collectionManager: {
             label: 'Collection Manager',
@@ -20,6 +23,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     onManageByopClick() {
         this.emit( 'navigate', `manage-byop`, { append: true } )
+    },
+
+    onManageDevicesClick() {
+        this.emit( 'navigate', 'manage-devices', { append: true } )
     },
 
     onCollectionManagerClick() {

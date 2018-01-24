@@ -29,6 +29,7 @@ module.exports={
 	Literal: require('./views/Literal'),
 	Login: require('./views/Login'),
 	ManageByop: require('./views/ManageByop'),
+	ManageDevices: require('./views/ManageDevices'),
 	ProductDetails: require('./views/ProductDetails'),
 	Shop: require('./views/Shop'),
 	Submitter: require('./views/Submitter'),
