@@ -624,13 +624,16 @@ button.back-btn:hover {
 }
 .CartAddition {
   position: absolute;
-  top: 0;
-  right: 2rem;
+  top: -1rem;
+  right: 1rem;
   padding: 1.5rem;
   background-color: #fff;
   border: 1px solid;
   box-shadow: 1px 1px 3px #666, -1px -1px 3px #666;
   text-align: left;
+}
+.CartAddition img {
+  max-width: 15rem;
 }
 .CartAddition h4 {
   font-size: 1.2rem;
@@ -639,11 +642,11 @@ button.back-btn:hover {
 .CartAddition >div {
   display: flex;
 }
-.CartAddition >div >div {
-  padding: 0 1rem;
-}
 .CartAddition >div >div:first-child {
   display: flex;
+}
+.CartAddition >div >div:first-child >div:nth-child(2) {
+  margin: 0 1.5rem;
 }
 .CartAddition .close-btn {
   position: absolute;
@@ -676,7 +679,7 @@ button.back-btn:hover {
   transform: rotate(-45deg);
 }
 .Checkout {
-  padding: 6rem 2rem 2rem;
+  padding: 7rem 2rem 2rem;
   text-align: left;
   width: 100%;
 }
@@ -701,6 +704,9 @@ button.back-btn:hover {
   width: 45%;
   text-align: center;
   margin-top: 3rem;
+}
+.Checkout >div .summary img {
+  max-width: 20rem;
 }
 .Checkout >div .summary .List .list {
   display: flex;
@@ -929,6 +935,10 @@ button.back-btn:hover {
 .DiscShopping .inventory .main-panel .List:nth-child(2) .list {
   overflow-y: auto;
   max-height: 700px;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(2) .list >li {
+  flex: 1;
+  max-width: 25rem;
 }
 .DiscShopping .inventory .main-panel .List:nth-child(3) .list >li {
   width: 100%;
@@ -2093,6 +2103,7 @@ label {
 .Shop .List .list {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
 }
 .Shop .List .list .item {
   margin: 1rem;

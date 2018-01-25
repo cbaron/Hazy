@@ -92,7 +92,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     retrieveCart() {
-        if( !this.user.git('cart') || !this.user.git('cart').length ) return Promise.resolve()
+        if( !this.user.git('cart') || !this.user.git('cart').length ) return Promise.resolve( this.user.set( 'cart', [ ] ) )
 
         this.user.calculateSubtotal()
 

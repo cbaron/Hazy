@@ -37,7 +37,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
             result => Promise.resolve( result ),
             this
         )
-        .then( results => Promise.resolve( results.length === 1 ? results[0] : results ) )
+        .then( results => Promise.resolve( results ) )
     },
 
     PATCH( resource, query={} ) {

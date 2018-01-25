@@ -14,7 +14,7 @@ return `` +
     <div>
         <div>${discTypeModel.label}</div>
     </div>
-    <div class="side-by-side">
+    <div>
         <div class="image-viewer">
             <div><img data-js="displayedImage" src="${discModel.PhotoUrls[0]}" /></div>
             <ul data-js="thumbnails" class="side-by-side">${thumbnails}</ul>
