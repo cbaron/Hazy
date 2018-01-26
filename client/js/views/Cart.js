@@ -27,13 +27,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     updateSubtotal() {
-        /*const collection = this.views.cartContents.collection.data,
-            subtotal = collection.reduce( ( memo, datum ) => {
-                if( !datum.quantity ) datum.quantity = 1
-                memo += ( window.parseFloat( datum.price ) * window.parseFloat( datum.quantity ) )
-                return memo
-            }, 0 )*/
-
         this.els.itemCount.textContent = `(${this.user.git('cart').length} items):`
         this.els.subtotal.textContent = this.Format.Currency.format( this.user.meta.subtotal )
     },
@@ -100,6 +93,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             if( !this[ cartDatum.collectionName ] ) this[ cartDatum.collectionName ] = Object.create( this.Model ).constructor( {}, { resource: cartDatum.collectionName } )
             
             const model = this[ cartDatum.collectionName ]
+
+            console.log( model )
+            console.log( model.resource )
+            console.log( cartDatum )
 
             return model.get( { id: cartDatum.id } )
             .then( response => {

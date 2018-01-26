@@ -4,12 +4,6 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     Format: require('../Format'),
 
-/*I think that the __proto__ view should have a`Media` or some other property that defines our screen sizes.
-Could even look into using a single file that the stylus files would use.
-Then, in the template, you could have `data-img` where the image is always used regardless of size.
-But also `data-img-sm`, data-img-lg` or whatever, that would define which image is loaded depending on screen size.
-Then in the __proto__ view size method, it would handle this for every view*/
-
     Media: {
         mobile: { from: 0, to: 767 },
         desktop: { from: 768 }

@@ -2,7 +2,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
 
     DiscClass: Object.create( require('../models/__proto__'), { resource: { value: 'DiscClass' } } ),
     Manufacturer: Object.create( require('../models/__proto__'), { resource: { value: 'Manufacturer' } } ),
-    DocumentModel: require('../models/Document'),
     model: require('../models/DiscShopping'),
 
     Templates: {
@@ -58,7 +57,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                     discDetailsBtn: 'click'                    
                 },
                 model: Object.create( this.Model ).constructor( {
-                    collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: 'Disc', meta: { key: 'name' } } ),
+                    collection: Object.create( this.Model ).constructor( [ ], { resource: 'Disc', meta: { key: 'name' } } ),
                 } ),
                 itemTemplate: ( datum, format ) => this.Templates.Disc( Object.assign( { }, { datum, typeDatum: this.selectedDiscType, ImageSrc: format.ImageSrc, Currency: format.Currency } ) ),
                 templateOptions() {
@@ -80,7 +79,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             return {
                 events: { seeDiscsBtn: 'click' },
                 model: Object.create( this.Model ).constructor( {
-                    collection: Object.create( this.DocumentModel ).constructor( { }, {
+                    collection: Object.create( this.Model ).constructor( { }, {
                         meta: { key: 'name' },
                         resource: 'DiscType',
                         parse: response => {
