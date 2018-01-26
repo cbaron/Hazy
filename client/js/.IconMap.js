@@ -10,5 +10,6 @@ module.exports={
 	"logoWhite": require('./views/templates/lib/logoWhite'),
 	"pencil": require('./views/templates/lib/pencil'),
 	"profile": require('./views/templates/lib/profile'),
-	"search": require('./views/templates/lib/search')
+	"search": require('./views/templates/lib/search'),
+	"shoppingCart": require('./views/templates/lib/shoppingCart')
 }

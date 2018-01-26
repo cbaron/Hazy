@@ -4,8 +4,16 @@ module.exports = {
     attributes: Super.createAttributes( [ {
         fk: 'DiscType'
     }, {
+        name: 'price',
+        label: 'Price',
+        range: 'Float'
+    }, {
+        name: 'isSold',
+        label: 'Is Sold',
+        range: 'Boolean'
+    }, {
         isNullable: false,
-        itemRange: 'String',
+        itemRange: 'ImageUrl',
         label: 'Photo Urls',
         name: 'PhotoUrls',
         range: 'List'
@@ -21,31 +29,12 @@ module.exports = {
         range: 'String'
     }, {
         isNullable: false,
-        label: 'HazySerial',
-        name: 'hazySerial',
-        range: 'String'
-    }, {
-        isNullable: false,
-        label: 'Desription',
+        label: 'Description',
         name: 'description',
         range: 'Text'
     }, {
-        isNullable: false,
-        label: 'MFGFS',
-        name: 'mfgfs',
-        range: 'String'
-    }, {
-        isNullable: false,
-        label: 'MFGFS',
-        name: 'mfgfs',
-        range: 'String'
-    }, {
         name: 'runDate',
         label: 'Run Date',
-        range: 'String'
-    }, {
-        name: 'manufactureLocation',
-        label: 'Manufacturer Location',
         range: 'String'
     }, {
         name: 'quality',
@@ -60,13 +49,19 @@ module.exports = {
         label: 'PLH',
         range: 'String'
     }, {
-        name: 'rimDepth',
-        label: 'Rim Depth',
-        range: 'String'
+        fk: 'StampType'
     }, {
-        name: 'rimVAngle',
-        label: 'Vertical Rim Angle',
-        range: 'String'
+        name: 'sellOnline',
+        label: 'Sell Online',
+        range: 'Boolean'
+    }, {
+        name: 'createdAt',
+        label: 'Created At',
+        range: 'Datetime'
+    }, {
+        name: 'isUsed',
+        label: 'Is Used',
+        range: 'Boolean'
     } ] )
 
 }

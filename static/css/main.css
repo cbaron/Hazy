@@ -21,6 +21,12 @@
 .Admin .splash >* {
   flex: 1;
 }
+.Admin .splash >div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justfiy-content: center;
+}
 .Admin .splash img {
   display: block;
   margin: 1rem auto;
@@ -33,6 +39,7 @@
   border-radius: 10px;
   box-shadow: 1px 2px 5px #ccc;
   padding: 1.25rem;
+  margin: 0.5rem 0;
   width: 10rem;
   text-transform: uppercase;
 }
@@ -570,6 +577,141 @@ button.back-btn:hover {
 .ByopWaitingListSwap .waiting-list >div {
   flex: 3;
 }
+.Cart {
+  padding: 6rem 2rem 2rem;
+  text-align: center;
+}
+.Cart >h2 {
+  text-align: left;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.Cart >ul {
+  padding: 1rem;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+.Cart >ul >li {
+  width: 9rem;
+}
+.Cart >ul >li:first-child {
+  flex: 1;
+  text-align: left;
+}
+.Cart .List .list >li {
+  width: 100%;
+  border-bottom: 1px solid;
+  margin-bottom: 1rem;
+}
+.Cart .List .list >li .cart-item {
+  padding: 1rem;
+}
+.Cart .List .list >li .cart-item >div {
+  width: 9rem;
+}
+.Cart .List .list >li .cart-item >div:nth-child(2) {
+  flex: 1;
+  text-align: left;
+  margin-left: 2rem;
+}
+.Cart >div:last-child {
+  text-align: right;
+}
+.Cart .subtotal {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+.CartAddition {
+  position: absolute;
+  top: -1rem;
+  right: 1rem;
+  padding: 1.5rem;
+  background-color: #fff;
+  border: 1px solid;
+  box-shadow: 1px 1px 3px #666, -1px -1px 3px #666;
+  text-align: left;
+}
+.CartAddition img {
+  max-width: 15rem;
+}
+.CartAddition h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.CartAddition >div {
+  display: flex;
+}
+.CartAddition >div >div:first-child {
+  display: flex;
+}
+.CartAddition >div >div:first-child >div:nth-child(2) {
+  margin: 0 1.5rem;
+}
+.CartAddition .close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 15px;
+  height: 15px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.CartAddition .close-btn:hover::before,
+.CartAddition .close-btn:hover::after {
+  background: #808080;
+}
+.CartAddition .close-btn::before,
+.CartAddition .close-btn::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  margin-top: -1px;
+  background: #000;
+}
+.CartAddition .close-btn::before {
+  transform: rotate(45deg);
+}
+.CartAddition .close-btn::after {
+  transform: rotate(-45deg);
+}
+.Checkout {
+  padding: 7rem 2rem 2rem;
+  text-align: left;
+  width: 100%;
+}
+.Checkout >div {
+  display: flex;
+}
+.Checkout >div .forms {
+  width: 55%;
+}
+.Checkout >div .forms .Form .form-group {
+  margin: 1rem 0;
+}
+.Checkout >div .forms .Form .form-group.nested {
+  margin-top: 3rem;
+}
+.Checkout >div .forms .total {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 2rem 0;
+}
+.Checkout >div .summary {
+  width: 45%;
+  text-align: center;
+  margin-top: 3rem;
+}
+.Checkout >div .summary img {
+  max-width: 20rem;
+}
+.Checkout >div .summary .List .list {
+  display: flex;
+  justify-content: center;
+}
 .CollectionManager {
   display: flex;
   height: 100%;
@@ -637,6 +779,10 @@ button.back-btn:hover {
   display: flex;
   flex-direction: column;
 }
+.CollectionManager .main-panel .Form .List .floating {
+  position: static;
+  margin: 1rem 0 0 1rem;
+}
 .CollectionManager .main-panel .Form .heading {
   font-weight: bold;
   font-size: 1.5rem;
@@ -652,26 +798,40 @@ button.back-btn:hover {
 .CollectionManager .main-panel .form-box form {
   overflow-y: auto;
 }
-.CollectionManager .main-panel .form-box form .form-group:not(.nested) {
-  align-items: center;
+.CollectionManager .main-panel .form-box form .form-group {
   display: flex;
+}
+.CollectionManager .main-panel .form-box form .form-group:not(.nested):not(.has-image) {
+  align-items: center;
   margin: 1rem 0rem;
 }
-.CollectionManager .main-panel .form-box form .form-group:not(.nested) >*:first-child {
+.CollectionManager .main-panel .form-box form .form-group:not(.nested):not(.has-image) >*:first-child {
   flex: 1;
 }
-.CollectionManager .main-panel .form-box form .form-group:not(.nested) >*:nth-child(2) {
+.CollectionManager .main-panel .form-box form .form-group:not(.nested):not(.has-image) >*:nth-child(2) {
   flex: 5;
 }
 .CollectionManager .main-panel .form-box form .form-group.nested {
   flex-direction: column;
-  align-items: center;
   margin: 3rem 0;
   padding: 0 3rem;
 }
 .CollectionManager .main-panel .form-box form .form-group.nested >label {
   margin-right: 0;
   width: 100%;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image {
+  align-items: center;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image >input {
+  flex: 1;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image >div {
+  flex: 1;
+  margin-left: 1rem;
+}
+.CollectionManager .main-panel .form-box form .form-group.has-image >div >img {
+  max-width: 20rem;
 }
 .CollectionManager .main-panel .btn-row {
   margin-top: 1rem;
@@ -701,6 +861,106 @@ button.back-btn:hover {
 }
 .Deleter .side-by-side button {
   margin: 0rem 1rem;
+}
+.DiscShopping {
+  padding-top: 5rem;
+}
+.DiscShopping .inventory {
+  display: flex;
+}
+.DiscShopping .inventory .left-panel {
+  width: 14rem;
+  border-right: 1px solid #000;
+  padding: 1rem;
+}
+.DiscShopping .inventory .left-panel .filter {
+  margin: 2rem 0;
+  text-align: left;
+}
+.DiscShopping .inventory .left-panel .filter >div:first-child {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.DiscShopping .inventory .left-panel .filter ul {
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+.DiscShopping .inventory .left-panel .filter ul li input,
+.DiscShopping .inventory .left-panel .filter ul li label {
+  cursor: pointer;
+}
+.DiscShopping .inventory .left-panel .filter ul li input {
+  display: none;
+}
+.DiscShopping .inventory .left-panel .filter ul li input + span:before {
+  border: 1px solid #7f83a2;
+  border-radius: 0.25rem;
+  content: "\00a0";
+  color: #fff;
+  display: inline-block;
+  font: 16px/1em sans-serif;
+  height: 16px;
+  margin: 0 0.25em 0 0;
+  padding: 0;
+  width: 16px;
+}
+.DiscShopping .inventory .left-panel .filter ul li input:checked + span:before {
+  background: #3d404e;
+  border-radius: 0.25rem;
+  color: #fff;
+  content: "\2713";
+  text-align: center;
+}
+.DiscShopping .inventory .main-panel {
+  position: relative;
+  width: 100%;
+  padding: 1rem;
+}
+.DiscShopping .inventory .main-panel .TypeAhead {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.DiscShopping .inventory .main-panel .disc-type {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.DiscShopping .inventory .main-panel .disc-type ul li {
+  margin-left: 1rem;
+}
+.DiscShopping .inventory .main-panel .disc-type >button {
+  margin-top: 1rem;
+  height: 2.7rem;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(2) .list {
+  overflow-y: auto;
+  max-height: 700px;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(2) .list >li {
+  flex: 1;
+  max-width: 25rem;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li {
+  width: 100%;
+  border-bottom: 1px solid;
+  margin-bottom: 1rem;
+  cursor: default;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li img {
+  width: 15rem;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child {
+  justify-content: space-between;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:first-child {
+  flex: 1;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:nth-child(2) {
+  flex: 2;
+}
+.DiscShopping .inventory .main-panel .List:nth-child(3) .list >li .disc-overview >div:first-child >div:last-child button {
+  display: block;
+  margin: 1rem 0;
 }
 .Division {
   padding: 2rem 6rem;
@@ -1098,21 +1358,40 @@ label {
   height: 2.75rem;
   margin: 0.25rem;
 }
+.Header .cart {
+  cursor: pointer;
+  height: 2rem;
+  margin: 0.4rem 1rem 0;
+}
 .Header .nav {
   align-items: center;
   display: flex;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0 2rem;
+  color: #fff;
 }
 .Header .nav >li:first-child {
   flex: 1;
+  text-align: left;
+}
+.Header .nav >li:nth-child(3) {
+  cursor: pointer;
+}
+.Header .nav >li:nth-child(4) {
+  width: 6rem;
 }
 .Header .nav >li:last-child {
   cursor: pointer;
   height: 100%;
-  text-align: right;
+  padding: 0 1rem;
+  margin-left: 1rem;
   transition: background-color 0.5s;
 }
 .Header .nav >li:last-child svg {
   fill: #fff;
+  height: 1.9rem;
+  margin-top: 0.5rem;
 }
 .Header .nav >li:last-child ul {
   background-color: rgba(0,0,0,0.7);
@@ -1121,7 +1400,7 @@ label {
   display: none;
   height: initial;
   position: absolute;
-  top: 5rem;
+  top: 3.1rem;
   right: 0rem;
 }
 .Header .nav >li:last-child ul li {
@@ -1187,10 +1466,6 @@ label {
     height: 1rem;
     margin: 2rem;
   }
-  .Header span {
-    font-size: 1rem;
-    margin: 0rem 2rem;
-  }
 }
 @media (min-width: 1400px) {
   .Header {
@@ -1207,10 +1482,6 @@ label {
   .Header .profile {
     height: 2rem;
     margin: 2.5rem;
-  }
-  .Header span {
-    font-size: 2rem;
-    margin: 0rem 4rem;
   }
 }
 .Home {
@@ -1666,6 +1937,177 @@ label {
   background-color: #4ab74a;
   color: #fff;
 }
+.ManageDevices {
+  padding: 2rem 6rem;
+}
+.ManageDevices .device {
+  padding: 2rem;
+  justify-content: center;
+  position: relative;
+  cursor: default;
+}
+.ManageDevices .device >div:first-child {
+  flex: 2;
+}
+.ManageDevices .device >select {
+  flex: 5;
+}
+.ManageDevices .device .caret-down {
+  fill: #a3a3a3;
+  stroke: #8b8b8b;
+  height: 1rem;
+  position: absolute;
+  right: 2.7rem;
+  top: 2.5rem;
+  width: 1rem;
+  z-index: 1;
+}
+.ManageDevices .Form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.ManageDevices .Form .prompt {
+  text-align: center;
+}
+.ManageDevices .Form .total {
+  margin: 1rem 0 2rem;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+.ManageDevices .Form .heading {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.ManageDevices .Form .form-box {
+  display: flex;
+  flex-direction: column;
+}
+.ManageDevices .Form .form-box form {
+  overflow-y: auto;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) {
+  align-items: center;
+  display: flex;
+  margin: 1rem 0rem;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) >*:first-child {
+  flex: 1;
+}
+.ManageDevices .Form .form-box form .form-group:not(.nested) >*:nth-child(2) {
+  flex: 5;
+}
+.ManageDevices .Form .form-box form .form-group.nested {
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem 0 0;
+  padding: 0 3rem;
+}
+.ManageDevices .Form .form-box form .form-group.nested >label {
+  margin-right: 0;
+  width: 100%;
+}
+.ProductDetails {
+  width: 100%;
+}
+.ProductDetails .disc-details {
+  width: 100%;
+  padding: 2rem;
+  text-align: left;
+}
+.ProductDetails .disc-details >div:first-child >div:first-child {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+.ProductDetails .disc-details >div:nth-child(2) {
+  display: flex;
+  width: 100%;
+}
+.ProductDetails .disc-details >div:nth-child(2) .image-viewer {
+  width: 45%;
+}
+.ProductDetails .disc-details >div:nth-child(2) .image-viewer >ul {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.ProductDetails .disc-details >div:nth-child(2) .image-viewer >ul >li {
+  cursor: pointer;
+  width: 20%;
+  margin: 0.5rem;
+}
+.ProductDetails .disc-details >div:nth-child(2) >div:nth-child(2) {
+  flex: 1;
+  padding: 0 1rem;
+}
+.ProductDetails .disc-details >div:nth-child(2) >div:nth-child(3) {
+  padding-right: 1rem;
+}
+.ProductDetails .disc-details >div:nth-child(2) >div:last-child >div:first-child {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+.ProductDetails .disc-details >div:last-child {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid;
+}
+.ProductDetails .disc-details >div:last-child h4 {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+.Shop {
+  text-align: center;
+}
+.Shop >div:first-child {
+  padding: 2rem;
+  margin-top: 4rem;
+}
+.Shop >div:first-child h4 {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+}
+.Shop >div:first-child ul {
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.Shop >div:first-child ul li {
+  cursor: pointer;
+}
+.Shop >div:first-child ul li:not(:first-child)::before {
+  content: '|';
+  margin: 0 0.35rem;
+}
+.Shop .ez-finder {
+  position: relative;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+.Shop .ez-finder .title {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+}
+.Shop .ez-finder .caption {
+  position: absolute;
+  width: 33%;
+  text-align: center;
+  left: 33%;
+  bottom: 1rem;
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.Shop .List .list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.Shop .List .list .item {
+  margin: 1rem;
+}
 .Toast {
   position: fixed;
   right: 2rem;
@@ -1779,10 +2221,13 @@ img {
   display: block;
   width: 100%;
   opacity: 1;
-  transition: opacity 0.5s;
+  transition: opacity 1s;
 }
 img[data-src] {
   opacity: 0;
+}
+img[data-img-sm] {
+  display: none;
 }
 h1,
 h2,
@@ -1889,6 +2334,14 @@ textarea:focus {
 }
 .Toast.success {
   background-color: #4ab74a;
+}
+@media (max-width: 767px) {
+  img[data-img-lg] {
+    display: none;
+  }
+  img[data-img-sm] {
+    display: block;
+  }
 }
 @-moz-keyframes fadeIn {
   from {

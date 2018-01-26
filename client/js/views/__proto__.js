@@ -4,6 +4,11 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     Format: require('../Format'),
 
+    Media: {
+        mobile: { from: 0, to: 767 },
+        desktop: { from: 768 }
+    },
+
     Model: require('../models/__proto__'),
 
     OptimizedResize: require('./lib/OptimizedResize'),
@@ -56,15 +61,6 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
 
     events: {},
 
-    fadeInImage( el ) {
-        el.onload = () => {
-            this.emit( 'imgLoaded', el )
-            el.removeAttribute('data-src')
-        }
-
-        el.setAttribute( 'src', el.getAttribute('data-src') )
-    },
-
     getEventMethodName( key, event ) { return `on${this.capitalizeFirstLetter(key)}${this.capitalizeFirstLetter(event)}` },
 
     getContainer() { return this.els.container },
@@ -84,6 +80,17 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         return rv
     },
 
+    handleImageEl( el ) {
+        el.onload = () => {
+            this.emit( 'imgLoaded', el )
+            el.removeAttribute('data-src')
+        }
+
+        if( el.getAttribute('data-img-sm') ) this.mobileImages.push( el )
+        else if( el.getAttribute('data-img-lg') ) this.desktopImages.push( el )
+        else el.setAttribute( 'src', el.getAttribute('data-src') )
+    },
+
     handleLogin() {
         this.factory.create( 'login', { insertion: { el: document.querySelector('#content') } } )
         .on( "loggedIn", () => this.onLogin() )
@@ -92,12 +99,11 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     hide( isSlow ) {
-        //views not hiding consistently with this
-        //if( !this.els || this.isHiding ) return Promise.resolve()
+        if( !this.els || this.isHiding ) return Promise.resolve()
 
         this.isHiding = true;
         return this.hideEl( this.els.container, isSlow )
-        .then( () => Promise.resolve( this.hiding = false ) )
+        .then( () => Promise.resolve( this.isHiding = false ) )
     },
     
     hideSync() { this.els.container.classList.add('hidden'); return this },
@@ -129,7 +135,13 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     initialize() {
-        return Object.assign( this, { els: { }, slurp: { attr: 'data-js', view: 'data-view', name: 'data-name', img: 'data-src' }, views: { } } )
+        return Object.assign( this, {
+            desktopImages: [ ],
+            els: { },
+            mobileImages: [ ],
+            slurp: { attr: 'data-js', view: 'data-view', name: 'data-name', img: 'data-src' },
+            views: { }
+        } )
     },
 
     insertToDom( fragment, options ) {
@@ -224,7 +236,7 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
     },
 
     scootAway() {
-        this.Toast.showMessage( 'error', 'You are not allowed here.')
+        this.Toast.createMessage( 'error', 'You are not allowed here.')
         .catch( e => { this.Error( e ); this.emit( 'navigate', `/` ) } )
         .then( () => this.emit( 'navigate', `/` ) )
 
@@ -256,6 +268,20 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
         } )        
     },
 
+    size() {
+        if( !this.mobileImages.length && !this.desktopImages.length ) return
+
+        const isMobile = window.matchMedia(`(max-width: ${this.Media.mobile.to}px)`).matches,
+            imageEls = isMobile ? this.mobileImages : this.desktopImages
+
+        imageEls.forEach( el => {
+            if( el.src ) return
+            el.setAttribute( 'src', el.getAttribute('data-src') )
+        } )
+
+        return true
+    },
+
     slurpEl( el ) {
         const key = el.getAttribute( this.slurp.attr ) || 'container'
 
@@ -283,9 +309,10 @@ module.exports = Object.assign( { }, require('../../../lib/MyObject'), require('
             firstEl = fragment.querySelector('*')
 
         if( options.isView || firstEl.getAttribute( this.slurp.attr ) ) this.slurpEl( firstEl )
+
         Array.from( fragment.querySelectorAll( `${selector}, ${viewSelector}, ${imgSelector}` ) ).forEach( el => {
             if( el.hasAttribute( this.slurp.attr ) ) { this.slurpEl( el ) }
-            else if( el.hasAttribute( this.slurp.img ) ) this.fadeInImage( el )
+            else if( el.hasAttribute( this.slurp.img ) ) this.handleImageEl( el )
             else if( el.hasAttribute( this.slurp.view ) ) {
                 this.subviewElements.push( { el, view: el.getAttribute(this.slurp.view), name: el.getAttribute(this.slurp.name) } )
             }

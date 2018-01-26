@@ -1,6 +1,9 @@
 module.exports = p =>
 `<footer>
-    <div data-js="footerImage"></div>
+    <div>
+        <img data-src="${p.ImageSrc('footer-image.jpg')}" data-img-lg="true" />
+        <img data-src="${p.ImageSrc('footer-image-mobile.jpg')}" data-img-sm="true" />
+    </div>
     <div class="overlay hidden">
         <div>
             <img src="${p.ImageSrc('logo-white-discgolf.png')}"/>

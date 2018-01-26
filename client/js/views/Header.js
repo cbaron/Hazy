@@ -34,7 +34,9 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
 
     events: {
         logo: 'click',
-        logout: 'click'
+        logout: 'click',
+        shopBtn: 'click',
+        shoppingCart: 'click'
     },
 
     insertion() { return { el: document.querySelector('#content'), method: 'insertBefore' } },
@@ -47,6 +49,10 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
         this.user.logout()
     },
 
+    onShopBtnClick() { this.emit( 'navigate', '/shop' ) },
+
+    onShoppingCartClick() { this.emit( 'navigate', '/shop/cart') },
+
     onUserLogin() {
         this.els.profileBtn.classList.remove('hidden')        
         this.els.name.textContent = this.user.data.name || this.user.data.email
@@ -58,16 +64,27 @@ module.exports = Object.create( Object.assign( {}, require('./__proto__'), {
     },
 
     postRender() {
-
         if( this.user.isLoggedIn() ) this.onUserLogin()
 
-        this.user.on( 'got', () => { if( this.user.isLoggedIn() ) this.onUserLogin() } )
+        this.updateCartCount()
+
+        this.user.on( 'got', () => {
+            if( this.user.isLoggedIn() ) this.onUserLogin()
+            this.updateCartCount()
+        } )
+
         this.user.on( 'logout', () => this.onUserLogout() )
+
+        this.user.on( 'cartChanged', () => this.updateCartCount() )
 
         return this
     },
 
     template: require('./templates/Header'),
+
+    updateCartCount() {
+        this.els.cartCount.textContent = this.user.git('cart') ? `(${this.user.data.cart.length})` : '(0)'
+    },
 
     user: require('../models/User')
 

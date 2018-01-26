@@ -22,7 +22,7 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
         return this.model.delete()
         .then( keyValue => {
             this.emit( 'modelDeleted', this.model.data )
-            this.Toast.showMessage( 'success', this.toastSuccess || `Success` )
+            this.Toast.createMessage( 'success', this.toastSuccess || `Success` )
             return Promise.resolve()
         } )
     }

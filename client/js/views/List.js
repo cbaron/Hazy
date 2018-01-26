@@ -14,7 +14,10 @@ module.exports = Object.assign( { }, Super, {
         if( sort && this.collection.data.length !== 1 ) {
             this.collection.sort( this.model.git('sort') )
             let index = this.collection.data.findIndex( datum => datum[this.key] == keyValue )
-            if( index !== -1 ) insertion = { method: 'insertBefore', el: this.els.list.children.item(index) }
+
+            if( index !== -1 ) insertion = this.els.list.children.item(index)
+                ? { method: 'insertBefore', el: this.els.list.children.item( index ) }
+                : { el: this.els.list }
         }
         
         this.updateStyle()
@@ -89,11 +92,14 @@ module.exports = Object.assign( { }, Super, {
         this.emit( 'successfulDrop', { dropped: model, droppedOn: localModel } )
     },
 
-    fetch( nextPage=false ) {
+    fetch( nextPage=false, opts={ query: { } } ) {
         this.fetching = true
         if( nextPage ) this.model.set( 'skip', this.model.git('skip') + this.model.git('pageSize') )
 
-        return this.collection.get( { query: { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } } )
+        return this.collection.get( {
+            query: Object.assign( opts.query, { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } ),
+            parse: opts.parse
+        } )
         .then( newData => {
             this.populateList( newData )
             this.fetched = true
@@ -114,7 +120,7 @@ module.exports = Object.assign( { }, Super, {
         const buttonsOnRight = this.model.git('delete') ? `<div class="buttons">${this.deleteIcon}</div>` : ``,
             selection = this.toggleSelection ? `<div class="selection"><input data-js="checkbox" type="checkbox" /></div>` : ``
 
-        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum )}</div>${buttonsOnRight}</li>`
+        return `<li data-key="${keyValue}">${selection}<div class="item">${this.itemTemplate( datum, this.Format )}</div>${buttonsOnRight}</li>`
     },
 
     hide() {

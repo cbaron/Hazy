@@ -18,7 +18,10 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
                         if( itemView.name !== 'Form' ) return
                         itemView.clear()
                     } )
-                } else view.clear()
+                } else {
+                    if( view.name !== 'Form' ) return
+                    view.clear()
+                }
             } )
         }
     },
@@ -48,7 +51,8 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
         )
 
         attributes.forEach( attribute => {
-            if( this.model.meta[ attribute.name ] && this.model.meta[ attribute.name ].hide ) return
+            if( attribute.range === 'DateTime' ) { data[ attribute.name ] = new Date() }
+            else if( this.model.meta[ attribute.name || attribute.fk ] && this.model.meta[ attribute.name || attribute.fk ].hide ) return
             else if( attribute.fk ) { data[ attribute.fk ] = this.views[ attribute.fk ].getSelectedId() }
             else if( typeof attribute.range === "object" ) { data[ attribute.name ] = this.views[ attribute.name ].getFormValues() }
             else if( attribute.range === "List" ) {
@@ -68,7 +72,7 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
 
     initTypeAheads() {
         this.model.attributes.forEach( attribute => {
-            if( this.model.meta[ attribute.name ] && this.model.meta[ attribute.name ].hide ) return
+            if( this.model.meta[ attribute.name || attribute.fk ] && this.model.meta[ attribute.name || attribute.fk ].hide ) return
             else if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
             else if( typeof attribute.range === "object" ) {
                 if( !this.Views ) this.Views = { }

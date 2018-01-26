@@ -65,7 +65,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
     },
 
     initAutoComplete( initialId ) {
-
         new this.AutoComplete( {
             delay: 500,
             selector: this.els.input,
@@ -79,9 +78,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             },
             onSelect: ( e, term, item ) => {
                 const store = this.resource.Model.store;
-                
                 this.selectedModel = ( store.id ? store.id : store['_id'] )[ item.getAttribute( 'data-id' ) ]
-
                 this.emit( 'itemSelected', this.selectedModel )
             }
         } )

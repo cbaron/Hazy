@@ -6,11 +6,13 @@ module.exports = {
       minimumFractionDigits: 2
     } ),
 
+    Moment: require('moment'),
+
     GetFormField( datum, value, meta ) {
         const isNested = datum.range === 'List' || typeof datum.range === 'object'
 
         const image = datum.range === 'ImageUrl'
-            ? `<div><button class="btn" data-js="previewBtn" type="button">Preview</button><img data-src="${this.ImageSrc( value )}" /></div>`
+            ? `<div><img data-src="${value}" /></div>`
             : ``
                            
         const options = datum.range === 'Boolean'
@@ -46,10 +48,11 @@ module.exports = {
                     : `<input type="${this.RangeToInputType[ datum.range ]}" data-js="${datum.name}" placeholder="${datum.label || ''}" value="${value}" />`
 
         return `` +
-        `<div class="form-group ${isNested ? 'nested' : ''}">
+        `<div class="form-group ${image ? `has-image` : ``} ${isNested ? 'nested' : ''}">
             ${label}
             ${prompt}
-            ${input} 
+            ${input}
+            ${image}
             ${icon}
         </div>`
     },
@@ -58,11 +61,14 @@ module.exports = {
         if( !data ) return ``
 
         return data
-            .filter( datum => meta[ datum.name ] && meta[ datum.name ].hide ? false : true )
+            .filter( datum => meta[ datum.name || datum.fk ] && meta[ datum.name || datum.fk ].hide ? false : true )
             .map( datum => this.GetFormField( datum, model && model[ datum.name ], meta ) ).join('')
     },
 
-    GetIcon( name, opts={ IconDataJs: this.IconDataJs } ) { return Reflect.apply( this.Icons[ name ], this, [ opts ] ) },
+    GetIcon( name, opts={ } ) { 
+        opts = Object.assign( { IconDataJs: this.IconDataJs, name }, opts )
+        return Reflect.apply( this.Icons[ name ], this, [ opts ] )
+    },
 
     GetListItems( items=[], opts={} ) {
         return items.map( item => {

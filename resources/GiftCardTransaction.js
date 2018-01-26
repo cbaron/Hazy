@@ -11,7 +11,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         ).join('\n\n')
 
         return this.email.send( {
-            to: 'sales@hazyshade.com',
+            to: process.env.POST_TRANSACTION_EMAIL,
             from: 'no-reply@hazyshade.com',
             subject: `Gift Card(s) Purchased`,
             body:

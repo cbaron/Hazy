@@ -1,5 +1,5 @@
 module.exports = p => {
-    const heading = p.opts.heading ? `<div class="heading">${p.opts.heading}</div>` : ``,
+    const heading = p.opts.heading ? `<div data-js="heading" class="heading">${p.opts.heading}</div>` : ``,
         deleteBtn = p.opts.delete ? `<div data-js="deleteBtn" class="hidden delete">${p.GetIcon('garbage')}</div>` : ``,
         prompt  = p.opts.prompt ?  `<div class="prompt">${p.opts.prompt}</div>` : ``,
         fields = p.GetFormFields( p.attributes, p.model, p.meta ),
