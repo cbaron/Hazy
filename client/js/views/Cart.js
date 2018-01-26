@@ -94,10 +94,6 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             
             const model = this[ cartDatum.collectionName ]
 
-            console.log( model )
-            console.log( model.resource )
-            console.log( cartDatum )
-
             return model.get( { id: cartDatum.id } )
             .then( response => {
                 const keys = Object.keys( response )
