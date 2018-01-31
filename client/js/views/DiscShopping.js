@@ -86,8 +86,8 @@ module.exports = Object.assign( {}, require('./__proto__'), {
                             if( !Array.isArray( response ) ) response = [ response ]
 
                             return response.map( datum => {
-                                if( datum.DiscClass ) datum.DiscClass = this.DiscClass.store._id[ datum.DiscClass ].label
-                                if( datum.Manufacturer ) datum.Manufacturer = this.Manufacturer.store._id[ datum.Manufacturer ].label
+                                if( datum.DiscClass && this.DiscClass.store._id[ datum.DiscClass ] ) datum.DiscClass = this.DiscClass.store._id[ datum.DiscClass ].label
+                                if( datum.Manufacturer && this.Manufacturer.store._id[ datum.Manufacturer ] ) datum.Manufacturer = this.Manufacturer.store._id[ datum.Manufacturer ].label
 
                                 datum.collectionName = 'DiscType'
                             } )
