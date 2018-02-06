@@ -10,9 +10,10 @@ module.exports = Object.assign( { }, require('./__proto__'), require('./Submitte
     },
 
     onSubmitBtnClick() {
+        console.log( 'deleter onSubmitBtnClick' )
         if( this.submitting ) return
         this.onSubmitStart()
-        this.submit()
+        return this.submit()
         .then( () => Promise.resolve( this.onSubmitEnd() ) )
         .then( () => this.delete() )
         .catch( e => this.handleSubmissionError(e) )

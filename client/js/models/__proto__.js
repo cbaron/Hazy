@@ -11,9 +11,12 @@ module.exports = Object.assign( { }, require('../../../lib/Model'), require('eve
     },
 
     delete() {
+        console.log( 'delete' )
         const keyValue = this.data[ this.meta.key ]
         return this.Xhr( { method: 'DELETE', resource: this.resource, id: keyValue } )
-        .then( () => {
+        .then( response => {
+            console.log( 'lkdfljs' )
+            console.log( response )
             const key = this.meta.key
 
             if( Array.isArray( this.data ) ) {

@@ -30,7 +30,11 @@ module.exports = {
             ? `<label>${datum.fk || datum.label}</label>`
             : ``
 
-        value = ( value === undefined ) ? '' : value
+        value = ( value === undefined )
+            ? datum.default
+                ? datum.default
+                : ''
+            : value
 
         if( options ) {
             if( typeof options === 'function' ) { options(); return this.GetSelect( datum, value, [ ], icon, label ) }

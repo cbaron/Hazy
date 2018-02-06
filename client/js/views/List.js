@@ -97,7 +97,7 @@ module.exports = Object.assign( { }, Super, {
         if( nextPage ) this.model.set( 'skip', this.model.git('skip') + this.model.git('pageSize') )
 
         return this.collection.get( {
-            query: Object.assign( opts.query, { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } ),
+            query: Object.assign( opts.query || { }, { skip: this.model.git('skip'), limit: this.model.git('pageSize'), sort: this.model.git('sort') } ),
             parse: opts.parse
         } )
         .then( newData => {

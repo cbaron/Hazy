@@ -774,6 +774,14 @@ button.back-btn:hover {
 .CollectionManager .main-panel .List ol >div .item {
   padding: 1rem;
 }
+.CollectionManager .main-panel .List ol >li .item .composite-label >img,
+.CollectionManager .main-panel .List ol >div .item .composite-label >img {
+  max-width: 10rem;
+}
+.CollectionManager .main-panel .List ol >li .item .composite-label >*,
+.CollectionManager .main-panel .List ol >div .item .composite-label >* {
+  padding-right: 1rem;
+}
 .CollectionManager .main-panel .Form {
   height: 100%;
   display: flex;

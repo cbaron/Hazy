@@ -12,8 +12,46 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
 
     DELETE( resource, id ) {
         return this.getDb()
-        .then( db => db.collection( resource.path[0] ).remove( { _id: this.ObjectId( id || resource.path[1] ) } ) )
-        .then( result => Promise.resolve( [ { } ] ) )
+        .then( db =>
+            this.checkForeignKeyReferences( resource.path[0], id || resource.path[1] )
+            .then( fkReferences => {
+                if( Object.keys( fkReferences ).length ) return Promise.resolve( resource.respond( { stopChain: true, body: { fkReferences }, code: 400 } ) )
+                return Promise.resolve()
+                //return db.collection( resource.path[0] ).remove( { _id: this.ObjectId( id || resource.path[1] ) } )
+                //.then( result => Promise.resolve( [ { } ] ) )
+            } )
+        )
+    },
+
+    checkForeignKeyReferences( collection, id ) {
+        console.log( 'checkForeignKeyReferences' )
+        console.log( collection )
+        console.log( id )
+        const fkReferences = { }
+
+        return Promise.all( Object.keys( this.model ).map( key =>
+            Promise.all( this.model[ key ].attributes.map( attr => {
+                if( collection !== attr.fk ) return Promise.resolve()
+
+                console.log( 'match' )
+                console.log( attr )
+                console.log( key )
+                return this.forEach(
+                    db => db.collection( key ).find( { [ attr.fk ]: this.ObjectId( id ) } ),
+                    result => Promise.resolve( result ),
+                    this
+                )
+                .then( results => {
+                    console.log( 'results' )
+                    console.log( results.length )
+                    if( results.length ) fkReferences[ key ] = results.length
+                    return Promise.resolve()
+                } )
+
+            } ) )
+
+        ) )
+        .then( () => Promise.resolve( fkReferences ) )
     },
 
     GET( resource ) {
@@ -149,7 +187,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
                 return Promise.resolve()
             } )
         } )
-        .then( () => this.saveFilterData() )
+        .then( () => this.storeFilterData() )
     },
 
     getDb() { return this.Client.connect(process.env.MONGODB) },
@@ -163,7 +201,7 @@ module.exports = Object.create( Object.assign( { }, require('../lib/MyObject'), 
         Disc: [ 'color' ]
     },
 
-    saveFilterData() {
+    storeFilterData() {
         this.filters = { }
 
         return this.getDb()

@@ -64,7 +64,11 @@ module.exports = Object.assign( {}, require('./__proto__'), {
         return JSON.stringify( Object.assign( {}, { [ attr ]: { operation: '~*', value: term } } ) )
     },
 
-    initAutoComplete( initialId ) {
+    initAutoComplete( initialId, defaultName ) {
+        const queryAttr = initialId
+            ? { id: initialId }
+            : defaultName ? { name: defaultName } : undefined
+
         new this.AutoComplete( {
             delay: 500,
             selector: this.els.input,
@@ -83,9 +87,10 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             }
         } )
 
-        if( initialId ) {
-            this.Xhr( { resource: this.Resource, id: initialId } )
+        if( queryAttr ) {
+            this.Xhr( Object.assign ( { resource: this.Resource }, queryAttr ) )
             .then( document => {
+                document = Array.isArray( document ) ? document[0] : document
                 this.selectedModel = document
                 this.els.input.value = document.label
                 return Promise.resolve()

@@ -85,6 +85,7 @@ module.exports = Object.assign( { }, require('../lib/MyObject'), {
 
         this.response.writeHead( data.code || 200, Object.assign( this.getHeaders( data.body ), data.headers || {} ) )
         this.response.end( data.body )
+
         if( data.stopChain ) { throw new Error("Handled") }
     },
 

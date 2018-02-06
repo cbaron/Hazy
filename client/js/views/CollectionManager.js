@@ -3,9 +3,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     model: require('../models/CollectionManager'),
 
     Collection: require('../models/Collection'),
+    DiscTypes: Object.create( require('../models/__proto__'), { resource: { value: 'DiscType' } } ),
     DocumentModel: require('../models/Document'),
     JsonPropertyModel: require('../models/JsonProperty'),
     WebSocket: require('../WebSocket'),
+
+    Templates: {
+        DiscDocument: require('./templates/DiscDocument')
+    },
 
     Views: {
 
@@ -43,6 +48,14 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         deleteDocument( document ) {
             return {
+                handleSubmissionError( e ) {
+                    //this.emit( 'error', e )
+                    console.log( 'handleSubmissionError deleteDocument' )
+                    console.log( e )
+                    this.Toast.createMessage( 'error', e.message || this.toastError || 'Error' )
+                    this.Error( e )
+                    this.onSubmitEnd()
+                },
                 insertion: { el: this.els.mainPanel },
                 model: Object.create( this.DocumentModel ).constructor( document, { resource: this.model.git('currentCollection') } ),
                 templateOptions: { message: `Delete '${document.label}' ${this.model.git('currentCollection')}?` }
@@ -50,11 +63,28 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         },
 
         documentList() {
-            const meta = this.model.meta[ this.model.git('currentCollection') ]
+            const collection = this.model.git('currentCollection'),
+                meta = this.model.meta[ collection ] || { }
+
             return {
                 model: Object.create( this.Model ).constructor( Object.assign ( {
                     add: true,
-                    collection: Object.create( this.DocumentModel ).constructor( [ ], { resource: this.model.git('currentCollection') } ),
+                    collection: Object.create( this.DocumentModel ).constructor( [ ], {
+                        parse: response => {
+                            if( collection !== 'Disc' ) return response
+
+                            return response.map( datum => {
+                                datum.discTypeLabel = this.DiscTypes.store._id[ datum.DiscType ] && this.DiscTypes.store._id[ datum.DiscType ].label
+                                    ? this.DiscTypes.store._id[ datum.DiscType ].label
+                                    : 'No Disc Type'
+
+                                console.log( datum.discTypeLabel )
+
+                                return datum
+                            } )
+                        },
+                        resource: collection
+                    } ),
                     delete: true,
                     draggable: 'document',
                     pageSize: 100,
@@ -64,7 +94,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 }, meta ) ),
                 events: { list: 'click' },
                 insertion: { el: this.els.mainPanel },
-                itemTemplate: datum => `<div><span>${this.getDisplayAttributeValue( meta, datum )}</span></div>`
+                itemTemplate: datum => this.getDocumentListDisplayValue( meta, datum )
             }
         },
 
@@ -93,12 +123,16 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     },
 
-    getDisplayAttributeValue( meta, datum ) {
-        return meta && meta.displayAttr
+    getDocumentListDisplayValue( meta, datum ) {
+        if( this.Templates[ meta.displayAttr ] ) return this.Templates[ meta.displayAttr ]( datum )
+
+        const value = meta.displayAttr
             ? meta.displayAttr === 'createdAt'
                 ? this.Format.Moment.utc( datum[ meta.displayAttr ] ).format('YYYY-MM-DD hh:mm:ss')
                 : datum[ meta.displayAttr ]
             : datum.label || datum.name
+
+        return `<div><span>${value}</span></div>`
     },
 
     createDocumentModel( data={} ) {
@@ -129,11 +163,19 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         )
     },
 
+    getDiscTypeLabels() {
+        return Promise.resolve()
+    },
+
     createDocumentList( collectionName, fetch=true ) {
-        this.createView( 'list', 'documentList' )
-        this.views.documentList.getCount().then( count => this.updateCount(count) ).catch(this.Error)
-        this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, templateOptions: { placeholder: `Search ${collectionName} collection.` } }, document => this.onDocumentSelected(document) )
-        return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
+        return ( collectionName === 'Disc' ? this.getDiscTypeLabels() : Promise.resolve() )
+        .then( () => {
+            this.createView( 'list', 'documentList' )
+            this.views.documentList.getCount().then( count => this.updateCount(count) ).catch(this.Error)
+            this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, templateOptions: { placeholder: `Search ${collectionName} collection.` } }, document => this.onDocumentSelected(document) )
+            return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
+        } )
+        .catch( this.Error )
     },
 
     createView( type, name, model ) {
@@ -275,17 +317,20 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             
             let splitPath = path.length === 0 ? [ ] : path.split('/').slice(1)
             this.path = splitPath;
-                    
+
             this.emit( 'navigate', `/admin/collection-manager${path}`, { silent: true } );
 
-            ( currentView === 'documentList' && this.views.documentList.collection.data.length === 0 ? this.views.documentList.fetch() : Promise.resolve() )
+            ( currentView === 'documentList' && this.views.documentList.collection.data.length === 0
+                ? this.views.documentList.fetch( false, { parse: this.views.documentList.collection.parse } )
+                : Promise.resolve()
+            )
             .then( () => this.views[ currentView ].show() )
             .catch( this.Error )
         } )
 
         this.WebSocket.on( 'createDisc', data => {
             if( this.path.join('/') === 'Disc/undefined' ) {
-                this.WebSocket.send( { type: 'proceedWithUpload', userId: this.user.git('id'), discName: this.views.documentView.els.name.value } )
+                this.WebSocket.send( { type: 'proceedWithUpload', userId: this.user.git('id'), discName: this.views.documentView.views.DiscType.selectedModel.name } )
                 this.status = 'waitingForUpload'
             }
         } )
@@ -314,8 +359,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             }
         } )
 
-        this.showProperView( true ).catch( this.Error )
-
+        this.DiscTypes.get( { storeBy: ['_id'] } ).then( () => this.showProperView( true ) ).catch( this.Error )
 
         return this
     },
