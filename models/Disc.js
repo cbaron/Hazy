@@ -1,7 +1,5 @@
-const Super = require('./__proto__')
-
 module.exports = {
-    attributes: Super.createAttributes( [ {
+    attributes: [ {
         fk: 'DiscType'
     }, {
         isNullable: false,
@@ -62,6 +60,6 @@ module.exports = {
         name: 'discHistory',
         label: 'Disc History',
         range: 'Text'
-    } ] )
+    } ]
 
 }
