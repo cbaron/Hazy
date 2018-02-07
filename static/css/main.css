@@ -756,6 +756,12 @@ button.back-btn:hover {
   height: 100%;
   overflow-x: hidden;
 }
+.CollectionManager .main-panel .composite-label >img {
+  max-width: 10rem;
+}
+.CollectionManager .main-panel .composite-label >* {
+  padding-right: 1rem;
+}
 .CollectionManager .main-panel .List {
   display: flex;
   flex-direction: column;
@@ -774,14 +780,6 @@ button.back-btn:hover {
 .CollectionManager .main-panel .List ol >div .item {
   padding: 1rem;
 }
-.CollectionManager .main-panel .List ol >li .item .composite-label >img,
-.CollectionManager .main-panel .List ol >div .item .composite-label >img {
-  max-width: 10rem;
-}
-.CollectionManager .main-panel .List ol >li .item .composite-label >*,
-.CollectionManager .main-panel .List ol >div .item .composite-label >* {
-  padding-right: 1rem;
-}
 .CollectionManager .main-panel .Form {
   height: 100%;
   display: flex;
@@ -795,6 +793,9 @@ button.back-btn:hover {
   font-weight: bold;
   font-size: 1.5rem;
   padding-bottom: 1rem;
+}
+.CollectionManager .main-panel .Form .heading >.composite-label {
+  justify-content: center;
 }
 .CollectionManager .main-panel .Form .prompt {
   display: none;
@@ -869,6 +870,14 @@ button.back-btn:hover {
 }
 .Deleter .side-by-side button {
   margin: 0rem 1rem;
+}
+.Deleter >div:last-child {
+  padding: 0 20%;
+}
+.Deleter >div:last-child ul {
+  padding: 2rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 .DiscShopping {
   padding-top: 5rem;

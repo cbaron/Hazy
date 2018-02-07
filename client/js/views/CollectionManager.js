@@ -48,14 +48,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         deleteDocument( document ) {
             return {
-                handleSubmissionError( e ) {
-                    //this.emit( 'error', e )
-                    console.log( 'handleSubmissionError deleteDocument' )
-                    console.log( e )
-                    this.Toast.createMessage( 'error', e.message || this.toastError || 'Error' )
-                    this.Error( e )
-                    this.onSubmitEnd()
-                },
                 insertion: { el: this.els.mainPanel },
                 model: Object.create( this.DocumentModel ).constructor( document, { resource: this.model.git('currentCollection') } ),
                 templateOptions: { message: `Delete '${document.label}' ${this.model.git('currentCollection')}?` }
@@ -78,8 +70,6 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                                     ? this.DiscTypes.store._id[ datum.DiscType ].label
                                     : 'No Disc Type'
 
-                                console.log( datum.discTypeLabel )
-
                                 return datum
                             } )
                         },
@@ -94,23 +84,16 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 }, meta ) ),
                 events: { list: 'click' },
                 insertion: { el: this.els.mainPanel },
-                itemTemplate: datum => this.getDocumentListDisplayValue( meta, datum )
+                itemTemplate: datum => this.getDisplayValue( meta, datum )
             }
         },
 
         documentView( model ) {
-            const meta = this.model.meta[ model.resource ] || { }
             return {
                 insertion: { el: this.els.mainPanel },
                 model,
                 templateOptions() {
-                    const heading = meta.displayAttr
-                        ? meta.displayAttr === 'createdAt'
-                            ? this.Format.Moment.utc( model.git('createdAt') ).format('YYYY-MM-DD hh:mm:ss')
-                            : model.git( meta.displayAttr )
-                        : model.git('label') || model.git('name')
-
-                    return Object.assign( { heading }, meta.templateOptions )
+                    return Object.assign( { heading: model.heading }, model.meta.templateOptions )
                 },
                 Views: {
                     typeAhead: {
@@ -123,7 +106,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     },
 
-    getDocumentListDisplayValue( meta, datum ) {
+    getDisplayValue( meta, datum ) {
         if( this.Templates[ meta.displayAttr ] ) return this.Templates[ meta.displayAttr ]( datum )
 
         const value = meta.displayAttr
@@ -136,13 +119,16 @@ module.exports = Object.assign( { }, require('./__proto__'), {
     },
 
     createDocumentModel( data={} ) {
-        const collection = this.model.git('currentCollection')
+        const collection = this.model.git('currentCollection'),
+            meta = this.model.meta[ collection ] || { }
 
         return Object.create( this.Model ).constructor(
             data,
             Object.assign( {
-                meta: this.model.meta[ collection ] || { },
-                resource: collection },
+                meta,
+                resource: collection,
+                heading: this.getDisplayValue( meta, data )
+            },
                 this.views.collections.collection.store.name[ collection ].schema
             )
         )
@@ -153,6 +139,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             queryAttr = meta.displayAttr || 'name'
 
         return Object.create( this.Model ).constructor( {}, { resource: collection } ).get( { query: { [ queryAttr ]: documentName } } )
+        .then( document => Promise.resolve( document.length === 1 ? document[0] : document ) )
     },
     
     clearCurrentView() {
@@ -163,19 +150,11 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         )
     },
 
-    getDiscTypeLabels() {
-        return Promise.resolve()
-    },
-
     createDocumentList( collectionName, fetch=true ) {
-        return ( collectionName === 'Disc' ? this.getDiscTypeLabels() : Promise.resolve() )
-        .then( () => {
-            this.createView( 'list', 'documentList' )
-            this.views.documentList.getCount().then( count => this.updateCount(count) ).catch(this.Error)
-            this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, templateOptions: { placeholder: `Search ${collectionName} collection.` } }, document => this.onDocumentSelected(document) )
-            return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
-        } )
-        .catch( this.Error )
+        this.createView( 'list', 'documentList' )
+        this.views.documentList.getCount().then( count => this.updateCount(count) ).catch(this.Error)
+        this.Header.enableTypeAhead( { Type: 'Document', Resource: collectionName, templateOptions: { placeholder: `Search ${collectionName} collection.` } }, document => this.onDocumentSelected(document) )
+        return this.views.collections.unhideItems().hideItems( [ this.model.git('currentCollection') ] )
     },
 
     createView( type, name, model ) {
@@ -378,18 +357,18 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
     showProperView() {
         const path = this.path
-        return (this.views.documentList ? Promise.resolve() : this.createDocumentList( this.model.git('currentCollection'), this.path.length === 2 ? false : true ) )
-        .then( () => {
-            return path.length === 2
+        return ( this.views.documentList ? Promise.resolve() : this.createDocumentList( this.model.git('currentCollection'), this.path.length === 2 ? false : true ) )
+        .then( () =>
+            path.length === 2
                 ? this.getDocument( path[0], path[1] )
                   .then( document =>
                     Array.isArray( document )
                       ? Promise.resolve( this.model.set( 'currentView', 'documentList' ) )
                       : this.clearCurrentView().then( () => Promise.resolve( this.showDocumentView( document, false ) ) ).catch( this.Error )
-                    )
+                   )
                 : Promise.resolve( this.model.git('currentView') === 'documentList' ? `` : this.model.set( 'currentView', 'documentList' ) )
-        }
         )
+        .catch( this.Error )
     },
 
     swapDocument( { document, to, from } ) {
