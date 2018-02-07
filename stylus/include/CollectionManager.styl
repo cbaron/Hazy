@@ -42,6 +42,12 @@
         flex: 4
         height: 100%
         overflow-x: hidden
+        
+        .composite-label
+            >img
+                max-width: 10rem
+            >*
+                padding-right: 1rem
 
         .List
             display: flex
@@ -73,6 +79,9 @@
                 font-weight: bold
                 font-size: 1.5rem
                 padding-bottom: 1rem
+                
+                >.composite-label
+                    justify-content: center
             
             .prompt
                 display: none

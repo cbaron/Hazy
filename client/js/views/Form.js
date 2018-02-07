@@ -28,17 +28,6 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
 
     getElementValue( el, attribute ) {
         if( attribute === undefined || ( !attribute.fk && typeof attribute.range === 'string' && attribute.range ) ) return el.value.trim()
-
-        /*
-        if( attribute.fk ) {
-            let selectedItem = this.views[ attribute.name ].selectedItem
-            return selectedItem
-                ? selectedItem._id || selectedItem.id
-                : undefined
-        } else if( typeof attribute.range === 'object' ) {
-            return el.getFormValues()
-        } else if( attribute.range === "List" ) { return Array.from( this.views[ attribute.name ].els.list.children ).map( item => this.getElementValue( item, { range: attribute.itemRange } ) ) }
-        */
     },
 
     getFormValues() {
@@ -73,7 +62,7 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
     initTypeAheads() {
         this.model.attributes.forEach( attribute => {
             if( this.model.meta[ attribute.name || attribute.fk ] && this.model.meta[ attribute.name || attribute.fk ].hide ) return
-            else if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ) )
+            else if( attribute.fk ) this.views[ attribute.fk ].setResource( attribute.fk ).initAutoComplete( this.model.git( attribute.fk ), attribute.default )
             else if( typeof attribute.range === "object" ) {
                 if( !this.Views ) this.Views = { }
                     

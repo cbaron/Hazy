@@ -12,6 +12,9 @@ module.exports = Object.create( Object.assign( { }, require('./__proto__'), {
             sort: { createdAt: -1 },
             templateOptions: { hideButtonRow: true }
         },
+        Disc: {
+            displayAttr: 'DiscDocument'
+        },
         GiftCardTransaction: {
             add: false,
             payment: { hide: true }

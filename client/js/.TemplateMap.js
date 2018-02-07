@@ -19,6 +19,7 @@ module.exports={
 	Device: require('./views/templates/Device'),
 	Disc: require('./views/templates/Disc'),
 	DiscDetails: require('./views/templates/DiscDetails'),
+	DiscDocument: require('./views/templates/DiscDocument'),
 	DiscSelection: require('./views/templates/DiscSelection'),
 	DiscShopping: require('./views/templates/DiscShopping'),
 	DiscType: require('./views/templates/DiscType'),
