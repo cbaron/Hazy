@@ -8,6 +8,7 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
     GoogleCloudStorage: require('../lib/GoogleCloudStorage'),
     Postgres: require('../dal/Postgres'),
     Readline: require('readline'),
+    UUID: require('uuid-v4'),
     Watch: require('watch'),
     WebSocket: require('ws'),
 
@@ -79,10 +80,11 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
         if( data.userId === this.userId && this.state === 'waiting' ) {
             this.state = 'uploading'
             console.log('uploading')
-            Promise.all( Object.keys( this.newFiles ).map( ( filename, i ) =>
-                this.GoogleCloudStorage.POST( `${data.discName}-${i}`, this.Fs.createReadStream( filename ) )
-                .then( () => Promise.resolve( this.GoogleCloudStorage.getUri( `${data.discName}-${i}` ) ) )
-            ) )
+            Promise.all( Object.keys( this.newFiles ).map( ( filename, i ) => {
+                const uuid = this.UUID()
+                return this.GoogleCloudStorage.POST( `${data.discName}-${data.discWeight}g-${uuid}`, this.Fs.createReadStream( filename ) )
+                .then( () => Promise.resolve( this.GoogleCloudStorage.getUri( `${data.discName}-${data.discWeight}g-${uuid}` ) ) )
+            } ) )
             .then( uris => {
                 console.log('doneuploading');
                 this.uris = uris
@@ -100,9 +102,9 @@ Object.create( Object.assign( {}, require('../lib/MyObject'), require('../lib/So
             this.directory,
             { ignoreDotFiles: true, ignoreNotPermitted: true, ignoreUnreadableDir: true, interval: 5 },
             ( f, curr, prev ) => {
-                if( typeof f !== 'object' && prev === null && this.state !== 'uploading' ) {
-                    this.newFiles[ f ] = true;
-                    if( this.socketOpen && this.state === 'waiting' ) {
+                if( typeof f !== 'object' && prev === null && this.state !== 'uploading' ) {                    
+                    this.newFiles[ f ] = true
+                    if( Object.keys( this.newFiles ).length === 3 && this.socketOpen && this.state === 'waiting' ) {
                         this.state = 'notifying'
                         console.log('sending create disc');
                         this.socket.send( JSON.stringify( { type: 'createDisc', userId: this.userId } ) )

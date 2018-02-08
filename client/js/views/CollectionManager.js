@@ -310,7 +310,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
 
         this.WebSocket.on( 'createDisc', data => {
             if( this.path.join('/') === 'Disc/undefined' ) {
-                this.WebSocket.send( { type: 'proceedWithUpload', userId: this.user.git('id'), discName: this.views.documentView.views.DiscType.selectedModel.name } )
+                this.WebSocket.send( {
+                    type: 'proceedWithUpload',
+                    userId: this.user.git('id'),
+                    discName: this.views.documentView.views.DiscType.selectedModel.name,
+                    discWeight: this.views.documentView.els.weight.value
+                } )
                 this.status = 'waitingForUpload'
             }
         } )
