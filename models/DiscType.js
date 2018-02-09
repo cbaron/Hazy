@@ -38,16 +38,16 @@ module.exports = {
             label: 'Speed',
             range: 'Integer'
         }, {
-            name: 'fade',
-            label: 'Fade',
-            range: 'Integer'
-        }, {
             name: 'glide',
             label: 'Glide',
             range: 'Integer'
         }, {
             name: 'turn',
             label: 'Turn',
+            range: 'Integer'
+        }, {
+            name: 'fade',
+            label: 'Fade',
             range: 'Integer'
         } ]
     }, {
