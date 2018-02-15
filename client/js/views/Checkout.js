@@ -69,7 +69,7 @@ module.exports = Object.assign( {}, require('./__proto__'), {
             this.views.storeTransaction.els.total.textContent = this.Format.Currency.format( this.views.storeTransaction.model.git('total') )
         )
 
-        this.views.storeTransaction.on( 'error', err => {
+        this.views.storeTransaction.on( 'submissionError', err => {
             if( err.item ) {
                 this.user.deleteFromCart( err.item._id )
                 this.emit( 'navigate', '/shop/cart' )
