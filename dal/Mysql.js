@@ -7,7 +7,7 @@ module.exports = Object.create( Object.assign( {}, MyObject, {
     },
 
     deleteDiscFromPos( id ) {
-        return this.query( `DELETE FROM ospos_items WHERE id = ?`, [ id ] )
+        return this.query( `DELETE FROM ospos_items WHERE item_number = ?`, [ id ] )
     },
 
     selectFromPos( where = { }, opts = { } ) {

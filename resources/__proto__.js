@@ -12,6 +12,8 @@ module.exports = Object.assign( { }, require('../lib/MyObject'), {
 
     Mongo: require('../dal/Mongo'),
 
+    Mysql: require('../dal/Mysql'),
+
     Postgres: require('../dal/Postgres'),
 
     QueryString: require('querystring'),

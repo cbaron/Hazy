@@ -1,6 +1,7 @@
 module.exports = {
     attributes: [ {
-        fk: 'DiscType'
+        fk: 'DiscType',
+        error: 'DiscType is a required field'
     }, {
         isNullable: false,
         label: 'Weight',
@@ -22,14 +23,15 @@ module.exports = {
         name: 'PhotoUrls',
         range: 'List'
     }, {
+        name: 'cost',
+        label: 'Cost',
+        range: 'Float',
+        error: 'Cost is a required field'
+    }, {
         name: 'price',
         label: 'Price',
-        range: 'Float'
-    }, {
-        isNullable: false,
-        label: 'Description',
-        name: 'description',
-        range: 'Text'
+        range: 'Float',
+        error: 'Price is a required field'
     }, {
         name: 'isSold',
         label: 'Is Sold',

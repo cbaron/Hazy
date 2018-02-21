@@ -1,7 +1,7 @@
 module.exports = ( { opts } ) =>
 `<section>
     <div data-js="deletion">
-        <p>${opts.message}</p>
+        ${opts.message}
         <div class="side-by-side">
            <button data-js="submitBtn" class="btn">Delete</button>
            <button data-js="cancelBtn" class="btn">Cancel</button>

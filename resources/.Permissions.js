@@ -20,5 +20,11 @@ module.exports = {
     DiscType: {
         DELETE: AdminOnly,
         PUT: AdminOnly
+    },
+
+    pos: {
+        DELETE: AdminOnly,
+        PATCH: AdminOnly,
+        POST: AdminOnly
     }
 }

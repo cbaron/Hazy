@@ -13,7 +13,12 @@ module.exports = Object.create( Object.assign( { }, require('./__proto__'), {
             templateOptions: { hideButtonRow: true }
         },
         Disc: {
-            displayAttr: 'DiscDocument'
+            displayAttr: 'DiscDocument',
+            validate: {
+                DiscType: val => val !== undefined,
+                cost: val => val !== '',
+                price: val => val !== ''
+            }
         },
         GiftCardTransaction: {
             add: false,

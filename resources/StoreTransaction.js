@@ -54,6 +54,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 { _id: this.Mongo.ObjectId( item._id ) },
                 { $set: { isSold: 'true' } }
             ) )
+            .then( () => this.Mysql.deleteDiscFromPos( item._id ) )
         ) )
     },
 

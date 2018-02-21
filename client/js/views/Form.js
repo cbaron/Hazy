@@ -55,8 +55,9 @@ module.exports = Object.assign( { }, require('./__proto__'), Submitter, {
     },
 
     handleValidationError( attr ) {
+        const inputEl = attr.fk ? this.views[ attr.fk ].els.input : this.els[ attr.name ]
         this.Toast.createMessage( 'error', attr.error )
-        this.els[ attr.name ].classList.add( 'error' )
+        inputEl.classList.add( 'error' )
     },
 
     initTypeAheads() {

@@ -871,6 +871,13 @@ button.back-btn:hover {
 .Deleter .side-by-side button {
   margin: 0rem 1rem;
 }
+.Deleter >div:first-child >div:first-child {
+  margin-bottom: 1rem;
+}
+.Deleter >div:first-child >div:first-child >div {
+  margin: 1rem 0;
+  font-weight: bold;
+}
 .Deleter >div:last-child {
   padding: 0 20%;
 }

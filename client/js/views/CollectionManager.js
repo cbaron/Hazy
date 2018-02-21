@@ -47,10 +47,13 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         },
 
         deleteDocument( document ) {
+            const collection = this.model.git('currentCollection'),
+                meta = this.model.meta[ collection ] || { }
+
             return {
                 insertion: { el: this.els.mainPanel },
                 model: Object.create( this.DocumentModel ).constructor( document, { resource: this.model.git('currentCollection') } ),
-                templateOptions: { message: `Delete '${document.label}' ${this.model.git('currentCollection')}?` }
+                templateOptions: { message: `<div><span>Delete </span>${this.getDisplayValue( meta, document )}<span> from ${collection}?</span></div>` }
             }
         },
 
@@ -123,6 +126,12 @@ module.exports = Object.assign( { }, require('./__proto__'), {
         const collection = this.model.git('currentCollection'),
             meta = this.model.meta[ collection ] || { }
 
+        let schema = this.views.collections.collection.store.name[ collection ].schema
+
+        schema.attributes.forEach( attr => {
+            if( meta.validate && meta.validate[ attr.name || attr.fk ] ) attr.validate = meta.validate[ attr.name || attr.fk ]
+        } )
+
         return Object.create( this.Model ).constructor(
             data,
             Object.assign( {
@@ -130,7 +139,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 resource: collection,
                 heading: this.getDisplayValue( meta, data )
             },
-                this.views.collections.collection.store.name[ collection ].schema
+                schema
             )
         )
     },
@@ -200,7 +209,10 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             ],
             deleteDocument: [
                 [ 'deleted', function() { this.model.set('currentView', 'documentList' ) } ],
-                [ 'modelDeleted', function( model ) { this.views.documentList.remove( model ) } ]
+                [ 'modelDeleted', function( model ) {
+                    this.views.documentList.remove( model )
+                    if( this.model.git('currentCollection') === 'Disc' ) this.deleteDiscOnPos( model._id ).catch( this.Error )
+                } ]
             ],
             documentList: [
                 [ 'addClicked', function() {
@@ -221,7 +233,7 @@ module.exports = Object.assign( { }, require('./__proto__'), {
                 [ 'dragStart', function( type ) { this.views.collections.showDroppable( type ) } ],
                 [ 'dropped', function( data ) { this.views.collections.hideDroppable(); this.views.collections.checkDrop( data ) } ],
                 [ 'deleteClicked',
-                  function( document ) { 
+                  function( document ) {
                     this.clearCurrentView()
                     .then( () => Promise.resolve( this.createView( 'deleter', 'deleteDocument', document ) ) )
                     .catch( this.Error )
@@ -231,17 +243,38 @@ module.exports = Object.assign( { }, require('./__proto__'), {
             documentView: [
                 [ 'deleted', function( model ) { this.model.set( 'currentView', 'documentList' ) } ],
                 [ 'put', function( model ) {
-                    if( this.views.documentList.fetched ) this.views.documentList.updateItem( this.createDocumentModel( model ) )
-                    this.clearCurrentView().then( () => Promise.resolve( this.model.set('currentView', 'documentList') ) ).catch(this.Catch)
+                    if( this.views.documentList.fetched ) this.views.documentList.updateItem( this.createDocumentModel( model ) );
 
+                    return ( this.model.git('currentCollection') === 'Disc' ? this.updateDiscOnPos( model ) : Promise.resolve() )
+                    .then( () => this.clearCurrentView() )
+                    .then( () => Promise.resolve( this.model.set('currentView', 'documentList') ) )
+                    .catch( this.Error )
                 } ],
                 [ 'posted', function( model ) {
-                    if( this.views.documentList.fetched ) this.views.documentList.add( model, true )
-                    this.clearCurrentView().then( () => Promise.resolve( this.model.set('currentView', 'documentList') ) ).catch(this.Catch)
+                    if( this.views.documentList.fetched ) this.views.documentList.add( model, true );
+
+                    return ( this.model.git('currentCollection') === 'Disc' ? this.insertDiscOnPos( model ) : Promise.resolve() )
+                    .then( () => this.clearCurrentView() )
+                    .then( () => Promise.resolve( this.model.set('currentView', 'documentList') ) )
+                    .catch( this.Error )
                 } ]
             ]
 
         }
+    },
+
+    insertDiscOnPos( model ) {
+        const discType = model.DiscType && this.DiscTypes.store['_id'][ model.DiscType ]
+        return this.Xhr( { resource: 'pos', method: 'post', data: JSON.stringify( { disc: model, discType } ) } )
+    },
+
+    updateDiscOnPos( model ) {
+        const discType = model.DiscType && this.DiscTypes.store['_id'][ model.DiscType ]
+        return this.Xhr( { resource: 'pos', method: 'patch', data: JSON.stringify( { disc: model, discType } ) } )
+    },
+
+    deleteDiscOnPos( id ) {
+        return this.Xhr( { resource: 'pos', method: 'delete', id } )
     },
 
     onBackBtnClick() { this.emit( 'navigate', '/admin' ) },

@@ -2,6 +2,10 @@ const Super = require('./__proto__')
 
 module.exports = {
     attributes: Super.createAttributes( [ {
+        name: 'cost',
+        label: 'Cost',
+        range: 'Float'
+    }, {
         name: 'price',
         label: 'Price',
         range: 'Float'
